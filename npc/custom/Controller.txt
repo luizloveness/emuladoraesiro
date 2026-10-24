@@ -1,0 +1,53 @@
+-	script	ChefeniaController	-1,{
+
+OnNPCKillEvent:
+
+	if (strcharinfo(3) != "gef_dun03")
+		end;
+
+	switch(killedrid) {
+
+		case 1399:
+		case 1817:
+		case 1708:
+		case 1876:
+		case 1873:
+		case 1891:
+		case 1890:
+		case 1649:
+		case 1650:
+		case 1651:
+		case 1646:
+		case 2202:
+
+			.@party_id = getcharid(1);
+
+			// Sem party
+			if (!.@party_id) {
+				#chefenia_points++;
+				dispbottom "[Cheffenia] +1 ponto recebido!";
+				end;
+			}
+
+			getpartymember .@party_id,1;
+			getpartymember .@party_id,2;
+
+			for (.@i = 0; .@i < $@partymembercount; .@i++) {
+
+				if (!isloggedin($@partymemberaid[.@i],$@partymembercid[.@i]))
+					continue;
+
+				attachrid($@partymemberaid[.@i]);
+
+				if (strcharinfo(3) != "gef_dun03")
+					continue;
+
+				#chefenia_points++;
+
+				dispbottom "[Cheffenia] +1 ponto recebido!";
+			}
+			break;
+	}
+
+	end;
+}

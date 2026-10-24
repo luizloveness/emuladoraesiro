@@ -1,0 +1,63 @@
+//======================================================
+// Executioner Sword Quest NPC
+//======================================================
+
+izlude,132,178,4	script	Executioner Master	635,{
+	
+	if (ExecutionerQuest == 1) {
+		mes "[Executioner Master]";
+		mes "You already possess an Executioner Sword.";
+		mes "Use it wisely.";
+		close;
+	}
+
+	mes "[Executioner Master]";
+	mes "So... you seek the ^FF0000Executioner Sword^000000?";
+	mes "That blade is not for the weak.";
+	next;
+
+	mes "[Executioner Master]";
+	mes "Bring me the following materials:";
+	mes "^0000FF1 Emperium^000000";
+	mes "^0000FF50 Amulets^000000";
+	mes "^0000FF3 Necklaces of Oblivion^000000";
+	mes "^0000FF10 Bloody Blades^000000";
+	mes "^0000FF2 Gloves of Executioner^000000";
+	next;
+
+	if (
+		countitem(714) < 1 ||
+		countitem(609) < 50 ||
+		countitem(1008) < 3 ||
+		countitem(7024) < 10 ||
+		countitem(7017) < 2
+	) {
+		mes "[Executioner Master]";
+		mes "You do not have everything I asked for.";
+		mes "Return when you are ready.";
+		close;
+	}
+
+	mes "[Executioner Master]";
+	mes "Excellent...";
+	mes "These materials will suffice.";
+	next;
+
+	// Remove itens
+	delitem 714,1;     // Emperium
+	delitem 609,50;    // Amulet
+	delitem 1008,3;     // Necklace of Oblivion
+	delitem 7024,10;   // Bloody Blade
+	delitem 7017,2;     // Glove of Executioner
+
+	// Entrega da arma
+	getitem 1169,1;   // Executioner Sword
+
+	set ExecutionerQuest,1;
+
+	mes "[Executioner Master]";
+	mes "The ritual is complete.";
+	mes "Take the ^FF0000Executioner Sword^000000.";
+	mes "May it thirst for justice... or blood.";
+	close;
+}

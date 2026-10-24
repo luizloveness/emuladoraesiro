@@ -639,7 +639,7 @@ function	script	refinemain	{
 	mes "know what you want me to refine.";
 	next;
 
-	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
+	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES;
 	for(.@i = 1; .@i<getarraysize(.@indices); ++.@i) {
 		if(getequipisequiped(.@indices[.@i])) {
 			.@menu$ = .@menu$ + F_getpositionname(.@indices[.@i]) + "-[" + getequipname(.@indices[.@i]) + "]";
@@ -1251,6 +1251,12 @@ sch_gld,340,80,7	script	Repairman#sch_gld	86,{
 	callfunc "repairmain","Repairman";
 	end;
 }
+
+//gef_dun03,197,206,5	script	Repairman#sch_gld	86,{
+//	callfunc "repairmain","Repairman";
+//	end;
+//}
+
 
 // Equipment Repair Function
 //============================================================

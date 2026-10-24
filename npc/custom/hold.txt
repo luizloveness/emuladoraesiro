@@ -1,0 +1,25 @@
+
+-	script	hold	-1,{
+
+	OnInit:
+		bindatcmd("hold", strnpcinfo(3)+"::OnHold");
+		end;
+
+	OnHold:
+		// Somente VIP (Group Level 5)
+		if (getgroupid() < 5) {
+			message strcharinfo(0), "Este comando é exclusivo para jogadores VIP.";
+			end;
+		}
+
+		if ( !@Hold ) {
+			set @Hold, 1;
+			message strcharinfo(0), "Hold mode is ON.";
+			pcblockmove getcharid(3), 1;
+		} else {
+			set @Hold, 0;
+			message strcharinfo(0), "Hold mode is OFF.";
+			pcblockmove getcharid(3), 0;
+		}
+		end;
+}

@@ -14,10 +14,10 @@
 //============================================================
 
 //= Juno Field ===============================================
-//yuno_fild01,286,368,0	warp	yunfild01	1,1,yuno_fild02,294,26
-//yuno_fild02,294,24,0	warp	yunfild01-1	1,1,yuno_fild01,286,366
-//yuno_fild01,70,378,0	warp	yunfild02	1,1,yuno_fild02,70,25
-//yuno_fild02,70,23,0	warp	yunfild02-1	1,1,yuno_fild01,70,376
+yuno_fild01,286,368,0	warp	yunfild01	1,1,yuno_fild02,294,26
+yuno_fild02,294,24,0	warp	yunfild01-1	1,1,yuno_fild01,286,366
+yuno_fild01,70,378,0	warp	yunfild02	1,1,yuno_fild02,70,25
+yuno_fild02,70,23,0	warp	yunfild02-1	1,1,yuno_fild01,70,376
 
 yuno_fild02,18,337,0	warp	yunfild03	1,1,yuno_fild03,381,331
 yuno_fild03,383,331,0	warp	yunfild03-1	1,1,yuno_fild02,20,337

@@ -233,7 +233,7 @@ Body:
     Hit: Single
     HitCount: 1
     Duration1: 30000
-    Cooldown: 1000
+    Cooldown: 0
     Requires:
       SpCost:
         - Level: 1
@@ -262,11 +262,13 @@ Body:
     Description: Magnum Break
     MaxLevel: 10
     Type: Weapon
-    TargetType: Self
+    TargetType: Attack
     DamageFlags:
       Splash: true
+    Range: 2
     Flags:
       TargetTrap: true
+      NoTargetSelf: true      
     Hit: Single
     HitCount: 1
     Element: Fire
@@ -298,7 +300,7 @@ Body:
       Skill:
         Plagiarism: true
         Reproduce: true
-    AfterCastActDelay: 2000
+    AfterCastActDelay: 0
     Duration2: 10000
     Requires:
       HpCost:
@@ -323,7 +325,7 @@ Body:
         - Level: 10
           Amount: 16
       SpCost: 30
-    Status: Watk_Element
+    Status: ElementalChange
   - Id: 8
     Name: SM_ENDURE
     Description: Endure
@@ -356,7 +358,6 @@ Body:
       - Level: 10
         Time: 37000
     Duration2: 10000
-    Cooldown: 10000
     Requires:
       SpCost: 10
     Status: Endure
@@ -376,7 +377,7 @@ Body:
     Hit: Single
     HitCount: 1
     Element: Fire
-    SplashArea: 3
+    SplashArea: 7
     Duration1: 10000
     Requires:
       SpCost: 10
@@ -618,6 +619,8 @@ Body:
     MaxLevel: 10
     Type: Magic
     TargetType: Attack
+    DamageFlags:
+      IgnoreDefense: true
     Flags:
       IsAutoShadowSpell: true
     Range: 9
@@ -956,6 +959,8 @@ Body:
     Description: Fire Bolt
     MaxLevel: 10
     Type: Magic
+    DamageFlags:
+      IgnoreDefense: true
     TargetType: Attack
     Flags:
       IsAutoShadowSpell: true
@@ -1057,6 +1062,8 @@ Body:
     MaxLevel: 10
     Type: Magic
     TargetType: Attack
+    DamageFlags:
+      IgnoreDefense: true
     Flags:
       IsAutoShadowSpell: true
     Range: 9
@@ -1280,10 +1287,8 @@ Body:
     DamageFlags:
       NoDamage: true
       Splash: true
-    Hit: Single
-    HitCount: 1
     Element: Holy
-    SplashArea: 2
+    SplashArea: 5
     CopyFlags:
       Skill:
         Plagiarism: true
@@ -1302,7 +1307,7 @@ Body:
       NoDamage: true
     Range: 9
     Hit: Single
-    HitCount: 1
+    HitCount: 0
     Duration1: 10000
     Requires:
       SpCost: 10
@@ -1408,7 +1413,7 @@ Body:
       Skill:
         Plagiarism: true
         Reproduce: true
-    AfterCastActDelay: 1000
+    AfterCastActDelay: 100
     Requires:
       SpCost:
         - Level: 1
@@ -1920,6 +1925,8 @@ Body:
     Description: Double Attack
     MaxLevel: 10
     Type: Weapon
+    DamageFlags:
+      Critical: true
     Range: -1
     Hit: Multi_Hit
     HitCount: 2
@@ -2252,21 +2259,45 @@ Body:
     MaxLevel: 10
     Type: Weapon
     TargetType: Attack
-    DamageFlags:
-      Splash: true
     Flags:
       TargetTrap: true
-    Range: -2
+    Range: 1
     Hit: Single
-    HitCount: 1
+    HitCount: 3
     Element: Weapon
-    SplashArea: 1
-    Knockback: 1
+    SplashArea: 2
+    DamageFlags:
+      IgnoreFlee: true
+    Knockback:
+      - Level: 1
+        Amount: 1
+      - Level: 2
+        Amount: 1
+      - Level: 3
+        Amount: 2
+      - Level: 4
+        Amount: 2
+      - Level: 5
+        Amount: 3
+      - Level: 6
+        Amount: 3
+      - Level: 7
+        Amount: 4
+      - Level: 8
+        Amount: 4
+      - Level: 9
+        Amount: 5
+      - Level: 10
+        Amount: 5
     CopyFlags:
       Skill:
         Plagiarism: true
         Reproduce: true
-    CastTime: 700
+    CastTime: 0
+    AfterCastActDelay: 0
+    Duration1: 1000
+    Cooldown: 0
+    FixedCastTime: 350
     Requires:
       SpCost:
         - Level: 1
@@ -2824,12 +2855,10 @@ Body:
       Id: Magnus
       Layout: -1
       Range: 1
-      Interval: 3000
+      Interval: 2000
       Target: Enemy
       Flag:
-        NoOverlap: true
         PathCheck: true
-        RemovedByFireRain: true
   - Id: 80
     Name: WZ_FIREPILLAR
     Description: Fire Pillar
@@ -3154,6 +3183,8 @@ Body:
     MaxLevel: 10
     Type: Magic
     TargetType: Attack
+    DamageFlags:
+      IgnoreDefense: true
     Flags:
       IsAutoShadowSpell: true
     Range: 9
@@ -3287,7 +3318,7 @@ Body:
         Time: 10500
     AfterCastActDelay: 5000
     Duration1: 4000
-    Duration2: 30000
+    Duration2: 3000
     Requires:
       SpCost:
         - Level: 1
@@ -3336,7 +3367,7 @@ Body:
         - Level: 11
           Size: 7
       Range: 1
-      Interval: 1250
+      Interval: 750
       Target: Enemy
       Flag:
         NoOverlap: true
@@ -3573,7 +3604,7 @@ Body:
         Time: 14000
       - Level: 10
         Time: 15000
-    AfterCastActDelay: 5000
+    AfterCastActDelay: 1000
     Duration1: 4600
     Duration2: 12000
     Requires:
@@ -3582,10 +3613,9 @@ Body:
       Id: Dummyskill
       Layout: 4
       Range: 1
-      Interval: 450
+      Interval: 600
       Target: Enemy
       Flag:
-        NoOverlap: true
         PathCheck: true
     Status: Freeze
   - Id: 90
@@ -4722,13 +4752,15 @@ Body:
     MaxLevel: 10
     Type: Weapon
     TargetType: Attack
+    DamageFlags:
+      IgnoreFlee: true
     Range: 1
     Hit: Multi_Hit
     HitCount: -8
     Element: Weapon
-    AfterCastActDelay: 2000
-    AfterCastWalkDelay: 2000
-    Duration2: 5000
+    ActiveInstance:
+      - Level: 10
+        Max: 5
     CastDelayFlags:
       IgnoreStatus: true
     Requires:
@@ -5144,13 +5176,13 @@ Body:
     Type: Weapon
     TargetType: Attack
     DamageFlags:
-      IgnoreAtkCard: true
+      IgnoreFlee: true
     Flags:
       IsQuest: true
-    Range: 1
+    Range: 9
     Hit: Single
     HitCount: 1
-    Element: Earth
+    Element: weapon
     Duration2: 30000
     Requires:
       SpCost: 9
@@ -5168,7 +5200,7 @@ Body:
       IgnoreKagehumi: true
     Hit: Single
     HitCount: 1
-    Knockback: 5
+    Knockback: 6
     Requires:
       SpCost: 7
   - Id: 151
@@ -6030,10 +6062,6 @@ Body:
     MaxLevel: 10
     Type: Weapon
     TargetType: Attack
-    DamageFlags:
-      IgnoreFlee: true
-    Flags:
-      AllowWhenHidden: true
     Range: -1
     Hit: Single
     HitCount: 1
@@ -6043,9 +6071,15 @@ Body:
         Plagiarism: true
         Reproduce: true
     AfterCastActDelay: 500
+    Duration1: 4500
+    Cooldown: 500
     Requires:
       SpCost: 16
     Status: Stun
+  - Id: 213
+    Name: RG_TUNNELDRIVE
+    Description: Stalk
+    MaxLevel: 5
   - Id: 213
     Name: RG_TUNNELDRIVE
     Description: Stalk
@@ -6334,20 +6368,20 @@ Body:
     MaxLevel: 5
     Type: Weapon
     TargetType: Ground
-    DamageFlags:
-      NoDamage: true
-      IgnoreAtkCard: true
     Flags:
       IgnoreAutoGuard: true
       IgnoreCicada: true
     Range: 9
-    Hit: Single
-    HitCount: 1
+    Hit: Multi_Hit
+    HitCount: 3
     Element: Fire
     CopyFlags:
       Skill:
         Plagiarism: true
         Reproduce: true
+    ActiveInstance:
+      - Level: 5
+        Max: 20
     CastTime: 1000
     Duration1:
       - Level: 1
@@ -6368,10 +6402,9 @@ Body:
     Unit:
       Id: Demonstration
       Range: 1
-      Interval: 1000
+      Interval: 600
       Target: Enemy
       Flag:
-        NoReiteration: true
         NoFootSet: true
   - Id: 230
     Name: AM_ACIDTERROR
@@ -6380,7 +6413,6 @@ Body:
     Type: Weapon
     TargetType: Attack
     DamageFlags:
-      IgnoreAtkCard: true
       IgnoreDefense: true
       IgnoreFlee: true
     Flags:
@@ -6405,7 +6437,7 @@ Body:
         Time: 12
       - Level: 5
         Time: 13
-    Duration2: 120000
+    Duration2: 1200
     Requires:
       SpCost: 15
       ItemCost:
@@ -6853,10 +6885,10 @@ Body:
         Reproduce: true
     CastDefenseReduction: 33
     CastTime: 3000
-    AfterCastActDelay: 1500
+    AfterCastActDelay: 1000
     AfterCastWalkDelay: 1000
     Duration1: 950
-    Duration2: 30000
+    Duration2: 25000
     Requires:
       SpCost:
         - Level: 1
@@ -6879,7 +6911,7 @@ Body:
           Amount: 93
         - Level: 10
           Amount: 100
-      HpRateCost: 20
+      HpRateCost: 10
     Unit:
       Id: Dummyskill
       Layout: -1
@@ -7031,6 +7063,10 @@ Body:
     Description: Summon Spirit Sphere
     MaxLevel: 5
     TargetType: Self
+    CastDelayFlags:
+      IGNOREDEX: true
+      IGNORESTATUS: true
+      IGNOREITEMBONUS: false
     DamageFlags:
       NoDamage: true
     Hit: Single
@@ -7150,16 +7186,6 @@ Body:
         Plagiarism: true
         Reproduce: true
     CastTime: 1000
-    AfterCastActDelay: 500
-    AfterCastWalkDelay:
-      - Level: 2
-        Time: 200
-      - Level: 3
-        Time: 400
-      - Level: 4
-        Time: 600
-      - Level: 5
-        Time: 800
     Requires:
       SpCost: 10
       SpiritSphereCost:
@@ -7303,18 +7329,8 @@ Body:
         Time: 2500
       - Level: 5
         Time: 2000
-    AfterCastActDelay:
-      - Level: 1
-        Time: 3000
-      - Level: 2
-        Time: 2500
-      - Level: 3
-        Time: 2000
-      - Level: 4
-        Time: 1500
-      - Level: 5
-        Time: 1000
-    Duration1: 300000
+    CastDelayFlags:
+      IgnoreStatus: true
     Requires:
       SpCost: 1
       Weapon:
@@ -7923,7 +7939,7 @@ Body:
       SpCost: 50
       ItemCost:
         - Item: Yellow_Gemstone
-          Amount: 2
+          Amount: 1
   - Id: 291
     Name: SA_MONOCELL
     Description: Monocell
@@ -9825,17 +9841,24 @@ Body:
     Description: Martyr's Reckoning
     MaxLevel: 5
     Type: Weapon
-    TargetType: Self
+    CopyFlags:
+      Skill:
+        Plagiarism: true
+        Reproduce: true
+    TargetType: Attack
+    RangeType: Weapon
     DamageFlags:
-      NoDamage: true
-      IgnoreDefense: true
       IgnoreFlee: true
+      IgnoreDefense: true
+    Flags:
+      IgnoreAutoGuard: true
+      IgnoreCicada: true
     Hit: Single
     HitCount: 1
-    AfterCastActDelay: 2000
+    Element: weapon
     Requires:
       SpCost: 100
-    Status: Sacrifice
+      HpRateCost: 15
   - Id: 369
     Name: PA_GOSPEL
     Description: Battle Chant
@@ -10145,34 +10168,38 @@ Body:
     MaxLevel: 10
     Type: Weapon
     TargetType: Attack
-    DamageFlags:
-      IgnoreAtkCard: true
     Range: 9
     Hit: Single
     HitCount: 1
     Element: Weapon
-    CastTime: 700
+    DamageFlags:
+      IgnoreFlee: true
+    CopyFlags:
+      Skill:
+        Plagiarism: true
+        Reproduce: true
+    CastTime: 0
     AfterCastActDelay:
       - Level: 1
-        Time: 1000
+        Time: 0
       - Level: 2
-        Time: 1200
+        Time: 0
       - Level: 3
-        Time: 1400
+        Time: 0
       - Level: 4
-        Time: 1600
+        Time: 0
       - Level: 5
-        Time: 1800
+        Time: 0
       - Level: 6
-        Time: 2000
+        Time: 0
       - Level: 7
-        Time: 2200
+        Time: 0
       - Level: 8
-        Time: 2400
+        Time: 0
       - Level: 9
-        Time: 2600
+        Time: 0
       - Level: 10
-        Time: 2800
+        Time: 0
     Requires:
       SpCost:
         - Level: 1
@@ -10585,30 +10612,10 @@ Body:
         Time: 3600
       - Level: 10
         Time: 3800
-    AfterCastActDelay:
-      - Level: 1
-        Time: 2800
-      - Level: 2
-        Time: 2800
-      - Level: 3
-        Time: 2800
-      - Level: 4
-        Time: 2800
-      - Level: 5
-        Time: 2800
-      - Level: 6
-        Time: 3000
-      - Level: 7
-        Time: 3000
-      - Level: 8
-        Time: 3000
-      - Level: 9
-        Time: 3000
-      - Level: 10
-        Time: 3000
-    AfterCastWalkDelay: 2000
-    CastDelayFlags:
-      IgnoreStatus: true
+    DamageFlags:
+      Splash: true
+      IgnoreFlee: true
+    AfterCastWalkDelay: 0
     Requires:
       SpCost:
         - Level: 1
@@ -10708,8 +10715,6 @@ Body:
     TargetType: Attack
     DamageFlags:
       IgnoreDefense: true
-    Flags:
-      TargetTrap: true
     Range: 4
     Hit: Multi_Hit
     HitCount: 5
@@ -10752,7 +10757,6 @@ Body:
       Weapon:
         1hSpear: true
         2hSpear: true
-    Status: Ankle
     CastCancel: false
   - Id: 398
     Name: LK_HEADCRUSH
@@ -10879,6 +10883,12 @@ Body:
     Hit: Single
     HitCount: 1
     CastTime: 2000
+    CastDelay: 0
+    AfterCastDelay: 0
+    StateDelay: 0
+    Cooldown: 0
+    CastDelayFlags:
+      IgnoreStatus: true
     Duration1: 600000
     Requires:
       SpCost: 20
@@ -10894,15 +10904,15 @@ Body:
     HitCount: 1
     AfterCastActDelay:
       - Level: 1
-        Time: 800
+        Time: 0
       - Level: 2
-        Time: 900
+        Time: 0
       - Level: 3
-        Time: 1000
+        Time: 0
       - Level: 4
-        Time: 1100
+        Time: 0
       - Level: 5
-        Time: 1200
+        Time: 0
     Duration1: 30000
     Requires:
       SpCost:
@@ -10994,16 +11004,14 @@ Body:
     TargetType: Self
     DamageFlags:
       Splash: true
-      IgnoreAtkCard: true
+      IgnoreFlee: true
     Flags:
       TargetTrap: true
-      IgnoreAutoGuard: true
-      IgnoreCicada: true
     Hit: Single
     HitCount: 1
     Element: Weapon
     SplashArea: 2
-    CastTime: 500
+    CastTime: 0
     AfterCastActDelay: 500
     Duration2:
       - Level: 1
@@ -12911,11 +12919,13 @@ Body:
     MaxLevel: 5
     Type: Weapon
     TargetType: Attack
-    Range: 4
+    DamageFlags:
+      IgnoreFlee: true
+    Range: 9
     Hit: Multi_Hit
     HitCount: 5
-    CastTime: 1000
-    AfterCastActDelay: 1000
+    CastTime: 800
+    AfterCastActDelay: 500
     Requires:
       SpCost:
         - Level: 1
@@ -12959,6 +12969,7 @@ Body:
           Amount: 55
         - Level: 5
           Amount: 60
+    CastCancel: false
     Status: DoubleCast
   - Id: 483
     Name: HW_GANBANTEIN
@@ -13056,8 +13067,6 @@ Body:
     MaxLevel: 10
     Type: Weapon
     TargetType: Attack
-    DamageFlags:
-      IgnoreAtkCard: true
     Flags:
       AllowOnMado: true
       IgnoreAutoGuard: true
@@ -13252,7 +13261,7 @@ Body:
     Hit: Single
     HitCount: 1
     CastTime: 1000
-    AfterCastActDelay: 3000
+    AfterCastActDelay: 1000
     Duration2: 30000
     Requires:
       SpCost: 40
@@ -13265,6 +13274,10 @@ Body:
     TargetType: Attack
     DamageFlags:
       IgnoreFlee: true
+    CopyFlags:
+      Skill:
+        Plagiarism: true
+        Reproduce: true
     Range: 9
     Hit: Multi_Hit
     HitCount:
@@ -13408,8 +13421,6 @@ Body:
     TargetType: Self
     DamageFlags:
       NoDamage: true
-    Flags:
-      IsSpirit: true
     Hit: Single
     HitCount: 1
     Duration1: 300000
@@ -13417,6 +13428,7 @@ Body:
       SpCost: 100
       Weapon:
         1hSword: true
+        Dagger: true
     Status: OneHand
   - Id: 496
     Name: AM_TWILIGHT1
@@ -16752,7 +16764,7 @@ Body:
       Skill:
         Plagiarism: true
         Reproduce: true
-    CastTime: 500
+    CastTime: 0
     Requires:
       SpCost: 40
   - Id: 1002
@@ -30801,7 +30813,7 @@ Body:
   - Id: 8019
     Name: MH_NEEDLE_OF_PARALYZE
     Description: Needle of Paralyze
-    MaxLevel: 5
+    MaxLevel: 2
     Type: Weapon
     TargetType: Attack
     Range: 5
@@ -30813,40 +30825,22 @@ Body:
         Time: 1000
       - Level: 2
         Time: 1100
-      - Level: 3
-        Time: 1200
-      - Level: 4
-        Time: 1300
-      - Level: 5
-        Time: 1400
     AfterCastActDelay: 2000
     Duration1:
       - Level: 1
         Time: 12000
       - Level: 2
         Time: 14000
-      - Level: 3
-        Time: 16000
-      - Level: 4
-        Time: 18000
-      - Level: 5
-        Time: 20000
     Requires:
       SpCost:
         - Level: 1
           Amount: 48
         - Level: 2
           Amount: 60
-        - Level: 3
-          Amount: 72
-        - Level: 4
-          Amount: 84
-        - Level: 5
-          Amount: 96
   - Id: 8020
     Name: MH_POISON_MIST
     Description: Poison Mist
-    MaxLevel: 5
+    MaxLevel: 1
     Type: Weapon
     TargetType: Ground
     Range: 5
@@ -30856,49 +30850,17 @@ Body:
     ActiveInstance: 1
     CastTime:
       - Level: 1
-        Time: 500
-      - Level: 2
-        Time: 700
-      - Level: 3
-        Time: 900
-      - Level: 4
-        Time: 1100
-      - Level: 5
-        Time: 1300
+        Time: 500     
     Duration1:
       - Level: 1
         Time: 12000
-      - Level: 2
-        Time: 14000
-      - Level: 3
-        Time: 16000
-      - Level: 4
-        Time: 18000
-      - Level: 5
-        Time: 20000
     Duration2:
       - Level: 1
         Time: 4000
-      - Level: 2
-        Time: 6000
-      - Level: 3
-        Time: 8000
-      - Level: 4
-        Time: 10000
-      - Level: 5
-        Time: 12000
     Requires:
       SpCost:
         - Level: 1
           Amount: 65
-        - Level: 2
-          Amount: 75
-        - Level: 3
-          Amount: 85
-        - Level: 4
-          Amount: 95
-        - Level: 5
-          Amount: 105
     Unit:
       Id: Poison_Mist
       Layout: 3
@@ -30910,7 +30872,7 @@ Body:
   - Id: 8021
     Name: MH_PAIN_KILLER
     Description: Pain Killer
-    MaxLevel: 5
+    MaxLevel: 10
     TargetType: Support
     DamageFlags:
       NoDamage: true
@@ -31029,7 +30991,7 @@ Body:
   - Id: 8024
     Name: MH_ERASER_CUTTER
     Description: Eraser Cutter
-    MaxLevel: 5
+    MaxLevel: 2
     Type: Magic
     TargetType: Attack
     Range: 7
@@ -31040,23 +31002,11 @@ Body:
         Element: Wind
       - Level: 2
         Element: Neutral
-      - Level: 3
-        Element: Wind
-      - Level: 4
-        Element: Neutral
-      - Level: 5
-        Element: Wind
     CastTime:
       - Level: 1
         Time: 1000
       - Level: 2
         Time: 1500
-      - Level: 3
-        Time: 2000
-      - Level: 4
-        Time: 2500
-      - Level: 5
-        Time: 3000
     AfterCastActDelay: 2000
     Requires:
       SpCost:
@@ -31064,16 +31014,10 @@ Body:
           Amount: 25
         - Level: 2
           Amount: 30
-        - Level: 3
-          Amount: 35
-        - Level: 4
-          Amount: 40
-        - Level: 5
-          Amount: 45
   - Id: 8025
     Name: MH_XENO_SLASHER
     Description: Xeno Slasher
-    MaxLevel: 5
+    MaxLevel: 2
     Type: Magic
     TargetType: Ground
     DamageFlags:
@@ -31086,34 +31030,16 @@ Body:
         Element: Wind
       - Level: 2
         Element: Neutral
-      - Level: 3
-        Element: Wind
-      - Level: 4
-        Element: Neutral
-      - Level: 5
-        Element: Wind
     SplashArea:
       - Level: 1
         Area: 2
       - Level: 2
         Area: 2
-      - Level: 3
-        Area: 3
-      - Level: 4
-        Area: 3
-      - Level: 5
-        Area: 4
     CastTime:
       - Level: 1
         Time: 1500
       - Level: 2
         Time: 2500
-      - Level: 3
-        Time: 3500
-      - Level: 4
-        Time: 4500
-      - Level: 5
-        Time: 5500
     AfterCastActDelay: 5000
     Duration1: 500
     Duration2: 120000
@@ -31123,12 +31049,6 @@ Body:
           Amount: 90
         - Level: 2
           Amount: 100
-        - Level: 3
-          Amount: 110
-        - Level: 4
-          Amount: 120
-        - Level: 5
-          Amount: 130
     Unit:
       Id: Dummyskill
       Range:
@@ -31136,12 +31056,6 @@ Body:
           Size: 2
         - Level: 2
           Size: 2
-        - Level: 3
-          Size: 3
-        - Level: 4
-          Size: 3
-        - Level: 5
-          Size: 4
       Interval: 1000
       Target: Enemy
       Flag:
@@ -31294,7 +31208,7 @@ Body:
   - Id: 8031
     Name: MH_STAHL_HORN
     Description: Steel Horn
-    MaxLevel: 5
+    MaxLevel: 2
     Type: Weapon
     TargetType: Attack
     Range:
@@ -31302,12 +31216,6 @@ Body:
         Size: 5
       - Level: 2
         Size: 6
-      - Level: 3
-        Size: 7
-      - Level: 4
-        Size: 8
-      - Level: 5
-        Size: 9
     Hit: Single
     HitCount: 1
     Knockback: 3
@@ -31316,10 +31224,6 @@ Body:
         Time: 800
       - Level: 2
         Time: 600
-      - Level: 3
-        Time: 400
-      - Level: 4
-        Time: 200
     Duration1: 5000
     Requires:
       SpCost:
@@ -31327,12 +31231,6 @@ Body:
           Amount: 40
         - Level: 2
           Amount: 45
-        - Level: 3
-          Amount: 50
-        - Level: 4
-          Amount: 55
-        - Level: 5
-          Amount: 60
   - Id: 8032
     Name: MH_GOLDENE_FERSE
     Description: Golden Heel
@@ -31419,7 +31317,7 @@ Body:
   - Id: 8034
     Name: MH_HEILIGE_STANGE
     Description: Holy Pole
-    MaxLevel: 5
+    MaxLevel: 2
     Type: Magic
     TargetType: Attack
     DamageFlags:
@@ -31433,23 +31331,11 @@ Body:
         Area: 1
       - Level: 2
         Area: 1
-      - Level: 3
-        Area: 1
-      - Level: 4
-        Area: 1
-      - Level: 5
-        Area: 2
     CastTime:
       - Level: 1
         Time: 200
       - Level: 2
         Time: 400
-      - Level: 3
-        Time: 600
-      - Level: 4
-        Time: 800
-      - Level: 5
-        Time: 1000
     AfterCastActDelay: 5000
     Requires:
       SpCost:
@@ -31457,12 +31343,6 @@ Body:
           Amount: 60
         - Level: 2
           Amount: 68
-        - Level: 3
-          Amount: 76
-        - Level: 4
-          Amount: 84
-        - Level: 5
-          Amount: 100
   - Id: 8035
     Name: MH_ANGRIFFS_MODUS
     Description: Attack Mode
@@ -31794,6 +31674,7 @@ Body:
           Amount: 44
         - Level: 5
           Amount: 52
+    Status: Pyroclastic
   - Id: 8043
     Name: MH_VOLCANIC_ASH
     Description: Volcanic Ash
@@ -33718,7 +33599,7 @@ Body:
   - Id: 10004
     Name: GD_EXTENSION
     Description: Guild Extension
-    MaxLevel: 10
+    MaxLevel: 7
     Flags:
       IsGuild: true
   - Id: 10005
@@ -33884,3 +33765,264 @@ Body:
       IsGuild: true
       IgnoreKagehumi: true
     Duration2: 300000
+  - Id: 10016
+    Name: GD_GUILD_STORAGE
+    Description: Guild Storage Expansion
+    MaxLevel: 5
+    Flags:
+      IsGuild: true
+  - Id: 8046
+    Name: MH_CLASSY_FLUTTER
+    Description: Classy Flutter
+    MaxLevel: 10
+    DamageFlags:
+      NoDamage: true
+  - Id: 8047
+    Name: MH_TWISTER_CUTTER
+    Description: Twister Cutter
+    MaxLevel: 2
+    Type: Magic
+    TargetType: Attack
+    DamageFlags:
+      IgnoreDefense: true
+    Range: 7
+    Element: Wind
+    Hit: Multi_Hit
+    HitCount: -2
+    CastTime: # !TODO: Confirm cast time
+      - Level: 1
+        Time: 600
+      - Level: 2
+        Time: 700
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 106
+        - Level: 2
+          Amount: 112
+  - Id: 8055
+    Name: MH_LICHT_GEHORN
+    Description: Licht Gehorn
+    MaxLevel: 10
+    DamageFlags:
+      NoDamage: true
+  - Id: 8056
+    Name: MH_GLANZEN_SPIES
+    Description: Glanzen Spies
+    MaxLevel: 2
+    Type: Weapon
+    TargetType: Attack
+    DamageFlags:
+      IgnoreDefense: true
+    Range: 3
+    Element: Holy
+    Hit: Single
+    HitCount: 1
+    FixedCastTime: 500
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 60
+        - Level: 2
+          Amount: 65        
+  - Id: 8052
+    Name: MH_POLISHING_NEEDLE
+    Description: Polishing Needle
+    MaxLevel: 10
+    DamageFlags:
+      NoDamage: true
+  - Id: 8053
+    Name: MH_TOXIN_OF_MANDARA
+    Description: Toxin Of Mandara
+    MaxLevel: 2
+    Type: Weapon
+    TargetType: Attack
+    DamageFlags:
+      IgnoreDefense: true
+      Splash: true
+    Range: 2
+    Hit: Single
+    HitCount: 1
+    Element: Neutral
+    CastTime:
+      - Level: 1
+        Time: 1000
+      - Level: 2
+        Time: 1000
+    Duration1:
+      - Level: 1
+        Time: 2500
+      - Level: 2
+        Time: 3000
+    FixedCastTime:
+      - Level: 1
+        Time: 500
+      - Level: 2
+        Time: 500
+        Time: 400
+    SplashArea:
+      - Level: 1
+        Area: 1
+      - Level: 2
+        Area: 1
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 60
+        - Level: 2
+          Amount: 65
+    Status: Toxin_of_Mandara   
+  - Id: 8044
+    Name: MH_BLAST_FORGE
+    Description: Blast Forge
+    MaxLevel: 5
+    Type: Weapon
+    TargetType: Ground
+    DamageFlags:
+      Splash: true
+    Range: 1
+    Hit: Single
+    HitCount: 1
+    Element: Fire
+    ActiveInstance: 1
+    CastTime:
+      - Level: 1
+        Time: 5000
+      - Level: 2
+        Time: 5000
+      - Level: 3
+        Time: 5000
+      - Level: 4
+        Time: 4500
+      - Level: 5
+        Time: 4500      
+    AfterCastActDelay: 1000
+    Duration1: 5000
+    FixedCastTime: 1000
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 52
+        - Level: 2
+          Amount: 59
+        - Level: 3
+          Amount: 66
+        - Level: 4
+          Amount: 73
+        - Level: 5
+          Amount: 80        
+    Unit:
+      Id: Lava_Slide
+      Layout:
+        - Level: 1
+          Size: 1
+        - Level: 2
+          Size: 1
+        - Level: 3
+          Size: 1
+        - Level: 4
+          Size: 1
+        - Level: 5
+          Size: 2
+      Interval: 1000
+      Target: Enemy
+      Flag:
+        NoReiteration: true
+        NoOverlap: true
+        PathCheck: true
+  - Id: 8049
+    Name: MH_BRUSHUP_CLAW
+    Description: Brushup Claw
+    MaxLevel: 10
+    DamageFlags:
+      NoDamage: true
+  - Id: 8050
+    Name: MH_BLAZING_AND_FURIOUS
+    Description: Blazing And Furious
+    MaxLevel: 3
+    Type: Weapon
+    TargetType: Support
+    DamageFlags:
+      NoDamage: true
+      IgnoreDefense: true
+      Splash: true
+    Range: 7
+    Hit: Multi_Hit
+    HitCount: 1
+    SplashArea:
+      - Level: 1
+        Area: 1
+      - Level: 2
+        Area: 1
+      - Level: 3
+        Area: 1
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 103
+        - Level: 2
+          Amount: 108
+        - Level: 3
+          Amount: 113
+      SpiritSphereCost: 1
+  - Id: 8059
+    Name: MH_BLAZING_LAVA
+    Description: Blazing Lava
+    MaxLevel: 10
+    DamageFlags:
+      NoDamage: true
+  - Id: 8201
+    Name: MS_BASH
+    Description: Bash
+    MaxLevel: 10
+    Type: Weapon
+    TargetType: Attack
+    Range: -1
+    Hit: Single
+    HitCount: 1
+    Element: Weapon
+    Requires:
+      SpCost:
+        - Level: 1
+          Amount: 8
+        - Level: 2
+          Amount: 8
+        - Level: 3
+          Amount: 8
+        - Level: 4
+          Amount: 8
+        - Level: 5
+          Amount: 8
+        - Level: 6
+          Amount: 15
+        - Level: 7
+          Amount: 15
+        - Level: 8
+          Amount: 15
+        - Level: 9
+          Amount: 15
+        - Level: 10
+          Amount: 15
+      Weapon:
+        Fist: true
+        Dagger: true
+        1hSword: true
+        2hSword: true
+        1hSpear: true
+        2hSpear: true
+        1hAxe: true
+        2hAxe: true
+        Mace: true
+        2hMace: true
+        Staff: true
+        Knuckle: true
+        Musical: true
+        Whip: true
+        Book: true
+        Katar: true
+        Revolver: true
+        Rifle: true
+        Gatling: true
+        Shotgun: true
+        Grenade: true
+        Huuma: true

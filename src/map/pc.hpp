@@ -64,7 +64,12 @@ class MapGuild;
 #define ATTENDANCE_DATE_VAR "#AttendanceDate"
 #define ATTENDANCE_COUNT_VAR "#AttendanceCounter"
 #define ACHIEVEMENTLEVEL "AchievementLevel"
-
+#ifndef GOLDPC_POINT_VAR
+	#define GOLDPC_POINT_VAR "Goldpc_Points"
+#endif
+#ifndef GOLDPC_SECONDS_VAR
+	#define GOLDPC_SECONDS_VAR "Goldpc_Seconds"
+#endif
 //Total number of classes (for data storage)
 #define CLASS_COUNT (JOB_MAX - JOB_NOVICE_HIGH + JOB_MAX_BASIC)
 
@@ -443,6 +448,7 @@ public:
 		bool pc_loaded; // Ensure inventory data and status data is loaded before we calculate player stats
 		bool keepshop; // Whether shop data should be removed when the player disconnects
 		bool mail_writing; // Whether the player is currently writing a mail in RODEX or not
+		bool homun_hide;
 		bool cashshop_open;
 		bool sale_open;
 		bool stylist_open;
@@ -473,6 +479,7 @@ public:
 		uint32 bonus_coma : 1;
 		uint32 no_mado_fuel : 1; // Disable Magic_Gear_Fuel consumption [Secret]
 		uint32 no_walk_delay : 1;
+		uint32 no_coma : 1; // Immune to Coma effect [custom]		
 	} special_state;
 	uint32 login_id1, login_id2;
 	uint64 class_;	//This is the internal job ID used by the map server to simplify comparisons/queries/etc. [Skotlex]
@@ -948,6 +955,8 @@ public:
 	s_macro_detect macro_detect;
 
 	std::vector<uint32> party_booking_requests;
+	
+	int goldpc_tid;
 };
 
 extern struct eri *pc_sc_display_ers; /// Player's SC display table
@@ -1771,5 +1780,6 @@ void pc_macro_reporter_process(map_session_data &sd, int32 reporter_account_id =
 #ifdef MAP_GENERATOR
 void pc_reputation_generate();
 #endif
+TIMER_FUNC(pc_goldpc_update);
 
 #endif /* PC_HPP */

@@ -1,0 +1,42 @@
+-	script	InstanceReturn	-1,{
+
+OnPCLoginEvent:
+	set .@lang, #langtype; // padrão do seu emulador (0 = EN / 8 = PT)
+
+	if (#last_instance_id > 0) {
+
+		// verifica se instância ainda existe
+		if (instance_id(IM_PARTY) == #last_instance_id) {
+
+			if (.@lang == 0) {
+				// ================= ENGLISH
+				mes "[Instance System]";
+				mes "You were disconnected during an instance.";
+				mes "Do you want to return?";
+				next;
+
+				if (select("Yes:No") == 1) {
+					warp #last_instance_map$, #last_instance_x, #last_instance_y;
+				}
+
+			} else {
+				// ================= PORTUGUÊS
+				mes "[Sistema de Instância]";
+				mes "Você foi desconectado durante uma instância.";
+				mes "Deseja retornar?";
+				next;
+
+				if (select("Sim:Não") == 1) {
+					warp #last_instance_map$, #last_instance_x, #last_instance_y;
+				}
+			}
+		}
+
+		// limpa sempre para evitar bug
+		set #last_instance_id, 0;
+		set #last_instance_map$, "";
+		set #last_instance_x, 150;
+		set #last_instance_y, 121;
+	}
+	end;
+}

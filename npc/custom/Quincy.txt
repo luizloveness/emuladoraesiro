@@ -1,0 +1,77 @@
+//=================================================
+// Quest: Quincy Bow
+// Author: Luiz
+//=================================================
+glast_01,200,352,4	script	Quincy Elder	4_EP16_GRANZ,{
+	// Verifica se o player tem o item 1745
+	if (countitem(1745) < 1) {
+		mes "[Quincy Elder]";
+		mes "Hmmm...";
+		mes "I can feel your spiritual pressure...";
+		next;
+		mes "[Quincy Elder]";
+		mes "You are a ^FF0000Shinigami^000000, aren't you?";
+		mes "The history of the Quincys is not meant to be shared with outsiders.";
+		next;
+		mes "[Quincy Elder]";
+		mes "Only a true ^0000FFQuincy^000000 may know the secrets of our past.";
+		close;
+	}
+
+	// Caso o player tenha o item 1745
+	cutin "ep16_kronecker_granz_heine",2;
+	mes "[Quincy Elder]";
+	mes "Many centuries ago, there was a clan of special humans...";
+	mes "They were known as the ^0000FFQuincys^000000.";
+	next;
+
+	mes "[Quincy Elder]";
+	mes "The Quincys had the ability to manipulate ^00FFFFReishi^000000, the spiritual energy,";
+	mes "to fight against the terrible Hollows.";
+	mes "They were created by ^FF0000Yhwach^000000, the son of the Soul King.";
+	next;
+
+	mes "[Quincy Elder]";
+	mes "However, their existence brought great conflicts...";
+	mes "The Shinigamis did not accept that they annihilated Hollows instead of purifying them.";
+	mes "This unbalanced the cycle of souls, and thus the Quincys were nearly exterminated.";
+	next;
+
+	mes "[Quincy Elder]";
+	mes "However, during the arc of the ^8800FFThousand-Year Blood War^000000, they re-emerged under Yhwach's leadership.";
+	mes "And their legendary weapon... the ^00FF00Quincy Bow^000000, became a symbol of their strength.";
+	next;
+
+	mes "[Quincy Elder]";
+	mes "If you wish to prove your worth and inherit the Quincy Bow, bring me the following items:";
+	mes " 1 - Falken Blitz";
+	mes " 10 - Rosary [1]";
+	mes " 50 - Emperium ";
+	mes " 1 -  Platinum Coin";
+	mes " 1 -  Alarm Mask";
+	next;
+
+	if (countitem(1745) < 1 || countitem(2626) < 10 || countitem(714) < 50 || countitem(677) < 1 || countitem(5086) < 1) {
+		mes "[Quincy Elder]";
+		mes "I see that you still don’t have all the required items.";
+		mes "Come back once you have gathered them.";
+		cutin "",255; // remove cutin
+		close;
+	}
+
+	// Remove itens
+	delitem 1745,1;
+	delitem 2626,10;
+	delitem 714,50;
+	delitem 677,1;
+	delitem 5086,1;
+
+	// Give Quincy Bow (ID 35012)
+	getitem 35012,1;
+
+	mes "[Quincy Elder]";
+	mes "Impressive... you gathered all the items!";
+	mes "Accept this ^00FF00Quincy Bow^000000 as proof of your determination.";
+	cutin "",255; // remove cutin
+	close;
+}

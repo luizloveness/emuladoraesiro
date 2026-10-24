@@ -1,6 +1,7 @@
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
+
 #ifndef LOGIN_HPP
 #define LOGIN_HPP
 
@@ -55,6 +56,10 @@ struct login_session_data {
 
 	uint8 client_hash[16];		///hash of client
 	int32 has_client_hash;		///client ha sent an hash
+
+	// LionShield - HWID preauth hint (0x5560 is advisory only)
+	char shield_hwid[65];		///< Last advisory HWID announced by the client
+	bool shield_verified;		///< Reserved for compatibility; real auth happens on map-server
 
 	int32 fd;				///socket of client
 

@@ -1,0 +1,89 @@
+//====================================================
+// PvP Kill Streak System
+//====================================================
+
+-	script	PvPKillStreak	-1,{
+
+OnPCLoginEvent:
+	@kill_streak = 0;
+	end;
+
+OnPCLogoutEvent:
+	@kill_streak = 0;
+	end;
+
+
+OnPCDieEvent:
+
+	// Só funciona em PvP, GvG/WoE ou Battleground
+	if (
+		!getmapflag(strcharinfo(3), mf_pvp) &&
+		!getmapflag(strcharinfo(3), mf_gvg) &&
+		!getmapflag(strcharinfo(3), mf_battleground)
+	)
+		end;
+
+	// Reset da sequência
+	@kill_streak = 0;
+
+	end;
+
+
+OnPCKillEvent:
+
+	// Só funciona em PvP, GvG/WoE ou Battleground
+	if (
+		!getmapflag(strcharinfo(3), mf_pvp) &&
+		!getmapflag(strcharinfo(3), mf_gvg) &&
+		!getmapflag(strcharinfo(3), mf_battleground)
+	)
+		end;
+
+	// Adiciona uma kill à sequência
+	@kill_streak++;
+
+	switch (@kill_streak) {
+
+		case 1:
+			soundeffect "First Blood.wav",0;
+			break;
+
+		case 2:
+			soundeffect "Double Kill.wav",0;
+			break;
+
+		case 3:
+			soundeffect "Triple Kill.wav",0;
+			break;
+
+		case 4:
+			soundeffect "Ultra Kill.wav",0;
+			break;
+
+		case 5:
+			soundeffect "Killing Spree.wav",0;
+			break;
+
+		case 7:
+			soundeffect "Mega Kill.wav",0;
+			break;
+
+		case 10:
+			soundeffect "Unstoppable.wav",0;
+			break;
+	}
+
+	if (@kill_streak >= 15) {
+
+		soundeffect "God Like.wav",0;
+
+		mapannounce strcharinfo(3),
+			"[PvP] "+strcharinfo(0)+
+			" está GODLIKE com "+
+			@kill_streak+
+			" eliminações consecutivas!",
+			bc_map|bc_yellow;
+	}
+
+	end;
+}

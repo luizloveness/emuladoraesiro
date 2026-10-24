@@ -1,0 +1,58 @@
+//===========================================================\\
+//          ____   __   _  _  __    ____   __   ____         //
+//         / ___) /  \ / )( \(  )  (  __) / _\ (_  _)        \\
+//         \___ \(  O )) \/ (/ (_/\ ) _) /    \  )(          //
+//         (____/ \__/ \____/\____/(____)\_/\_/ (__)         \\
+//                                                           //
+//================== www.souleat.com.br =====================\\
+//======================= by: Guru ==========================//
+//============ agora agradece e faz pix: :3 =================\\
+//===========================================================//
+prontera,144,189,0	script	Day Monster	835,{
+    end;
+
+    OnNPCKillEvent:
+        if (getmonsterinfo(killedrid, MOB_NAME) != .motd$) end;
+        .@party_id = getcharid(1);
+        .map$ = strcharinfo(3);
+        if (!.@party_id && rand(100) < .chance) {
+            BaseExp += .base_exp_bonus;
+            JobExp += .job_exp_bonus;
+            Zeny += .zeny;
+            for (.@i = 0; .@i < getarraysize(.items); .@i++) {
+                getitem .items[.@i], .item_quantities[.@i];
+            }
+        } else {
+            addrid(2, 0, .@party_id);
+            if (strcharinfo(3) == .map$ && Hp && rand(100) < .chance) {
+                BaseExp += .base_exp_bonus;
+                JobExp += .job_exp_bonus;
+                Zeny += .zeny;
+                for (.@i = 0; .@i < getarraysize(.items); .@i++) {
+                    getitem .items[.@i], .item_quantities[.@i];
+                }
+            }
+        }
+        end;
+
+    OnClock0000:
+        .motd$ = .mobs$[rand(getarraysize(.mobs$))];
+        delwaitingroom;
+        waitingroom "[MOTD] " + .motd$, 0;
+        announce "O monstro do dia mudou. O novo monstro é... " + .motd$, 0;
+        end;
+
+    OnInit:
+        .zeny = 100000; // Recompensa em zeny
+        .job_exp_bonus = 100000; // Bônus de experiência base
+        .base_exp_bonus = 100000; // Bônus de experiência de classe
+        setarray .items[0], 969, 607; // IDs dos itens de recompensa
+        setarray .item_quantities[0], 1, 1; // Quantidades dos itens
+        setarray .mobs$[0], "Mummy", "Banshee", "Necromancer", "Alice", "Aliza", "Vanberk", "Salamander", "Acidus", "Ferus", "Skeggiold", "Agav", "Knocker", "Orc Lady", "Ragged Zombie", "Rideword", "Tatacho","Frus"; // Nomes dos monstros
+        .chance = 10; // Chance de receber o bônus
+        .motd$ = .mobs$[rand(getarraysize(.mobs$))];
+        delwaitingroom;
+        waitingroom "[MOTD] " + .motd$, 0;
+        announce "O monstro do dia mudou. O novo monstro é... " + .motd$, 0;
+        end;
+}

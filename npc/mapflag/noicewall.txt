@@ -9,6 +9,9 @@
 //= 1.9 Renewal split. [Euphy]
 //============================================================
 
+
+guild_vs3	mapflag	noicewall
+amatsu	mapflag	noicewall
 //ayo_in01	mapflag	noicewall
 //ayo_in02	mapflag	noicewall
 //alberta_in	mapflag	noicewall
@@ -95,6 +98,7 @@
 //kh_vila	mapflag	noicewall
 //ve_in	mapflag	noicewall
 //ve_in02	mapflag	noicewall
+force_3-3	mapflag	noicewall
 
 //============================================================
 // WoE:FE Castles

@@ -1,0 +1,80 @@
+prontera,128,144,4	script	Cheffenia aesiRO	648,{
+
+	mes "[Cheffenia aesiRO]";
+	mes "Bem-vindo à Cheffenia.";
+	mes "";
+	mes "Pontos acumulados:";
+	mes "^00FF00"+#chefenia_points+"^000000";
+	next;
+
+	switch(select(
+		"Trocar Pontos:Sair")) {
+
+
+case 1:
+
+	while (1) {
+
+		mes "[Loja de Pontos]";
+		mes "Pontos disponíveis:";
+		mes "^00FF00"+#chefenia_points+"^000000";
+		next;
+
+switch(select(
+	"Advanced Weapons Box [1]:"
+	+"Token of Siegfried Box [10]:"
+	+"Poison Bottle Box [5]:"
+	+"Steamed Tongue Box [5]:"
+	+"Steamed Scorpion Box [5]:"
+	+"Dragon Breath Cocktail Box [5]:"
+	+"Hwergelmir's Tonic Box [5]:"
+	+"Nine Tail Dish Box [5]:"
+	+"Stew Of Immortality Box [5]:"
+	+"Roleta Coin [15]:"
+	+"Capacete de Ataduras Vermelhas [40]:"
+	+"Costume Avenger [40]:"
+	+"Cursed Knight's Shield [100]:"
+	+"Gaia's Shield [100]:"
+	+"Fotia Shield [100]:"
+	+"Sair")) {
+
+		case 1: .@item=12623; .@cost=1; break;
+		case 2: .@item=12922; .@cost=5; break;
+		case 3: .@item=13973; .@cost=5; break;
+		case 4: .@item=14159; .@cost=5; break;
+		case 5: .@item=14160; .@cost=5; break;
+		case 6: .@item=14161; .@cost=5; break;
+		case 7: .@item=14162; .@cost=5; break;
+		case 8: .@item=14163; .@cost=5; break;
+		case 9: .@item=14164; .@cost=5; break;
+		case 10: .@item=674; .@cost=15; break;
+		case 11: .@item=410103; .@cost=40; break;
+		case 12: .@item=410099; .@cost=40; break;
+		case 13: .@item=28942; .@cost=100; break;
+		case 14: .@item=28947; .@cost=100; break;
+		case 15: .@item=28955; .@cost=100; break;
+
+		default:
+			close;
+		}
+
+		if (#chefenia_points < .@cost) {
+			mes "[Loja de Pontos]";
+			mes "Você não possui pontos suficientes.";
+			close;
+		}
+
+		#chefenia_points -= .@cost;
+		getitem .@item,1;
+
+		mes "[Loja de Pontos]";
+		mes "Troca realizada com sucesso!";
+		mes "Pontos restantes: ^00FF00"+#chefenia_points+"^000000";
+		next;
+	}
+		
+
+	default:
+		close;
+	}
+}

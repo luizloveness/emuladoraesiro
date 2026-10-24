@@ -79,6 +79,9 @@
 //ra_temin	mapflag	noreturn
 //ve_in	mapflag	noreturn
 //ve_in02	mapflag	noreturn
+gef_dun03	mapflag	noreturn
+
+
 
 //============================================================
 // Job Quests
@@ -148,7 +151,7 @@ que_hugel	mapflag	noreturn
 //============================================================
 //guild_vs1	mapflag	noreturn
 //guild_vs2	mapflag	noreturn
-//guild_vs3	mapflag	noreturn
+guild_vs3	mapflag	noreturn
 //guild_vs4	mapflag	noreturn
 //guild_vs5	mapflag	noreturn
 
@@ -245,6 +248,7 @@ que_hugel	mapflag	noreturn
 //pvp_n_8-4	mapflag	noreturn
 //pvp_n_8-5	mapflag	noreturn
 //pvp_2vs2	mapflag	noreturn
+force_3-3	mapflag	noreturn
 
 //============================================================
 // Battlegrounds

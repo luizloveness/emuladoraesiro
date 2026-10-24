@@ -551,6 +551,7 @@ function	script	F_Tower_Monster	{
 		areamonster .@map$,352,9,362,45,"Cat o' Nine Tails",1307,15,.@label$;
 		areamonster .@map$,352,9,362,45,"Moonlight",1150,1,.@label$;
 		areamonster .@map$,352,9,362,45,"Nine Tail",1180,15,.@label$;
+		areamonster .@map$,352,9,362,45,"The Immortal Koshei",1890,1,.@label$;
 		break;
 	case 26:
 		areamonster .@map$,9,351,19,387,"Gibbet",1503,10,.@label$;
@@ -705,6 +706,7 @@ function	script	F_Tower_Monster	{
 		areamonster .@map$,352,9,362,45,"Anubis",1098,10,.@label$;
 		areamonster .@map$,352,9,362,45,"Marduk",1140,10,.@label$;
 		areamonster .@map$,352,9,362,45,"Matyr",1146,10,.@label$;
+		areamonster .@map$,352,9,362,45,"Lord of the Dead",1876,1,.@label$;
 		break;
 	case 51:
 		areamonster .@map$,9,351,19,387,"Mini Demon",1292,20,.@label$;
@@ -867,7 +869,7 @@ function	script	F_Tower_Monster	{
 		areamonster .@map$,267,9,277,45,"Venatu",1676,6,.@label$;
 		break;
 	case 75:
-		areamonster .@map$,352,9,362,45,"Baphomet",1039,1,.@label$;
+		areamonster .@map$,352,9,362,45,"Baphomet",1399,1,.@label$;
 		areamonster .@map$,352,9,362,45,"Dark Lord",1272,1,.@label$;
 		areamonster .@map$,352,9,362,45,"Baphomet Jr.",1101,20,.@label$;
 		areamonster .@map$,352,9,362,45,"Dark Illusion",1302,10,.@label$;
@@ -901,6 +903,7 @@ function	script	F_Tower_Monster	{
 	case 80:
 		areamonster .@map$,352,351,362,387,"Falling Bishop",1871,1,.@label$;
 		areamonster .@map$,352,351,362,387,"Necromancer",1870,15,.@label$;
+		areamonster .@map$,352,351,362,387,"Detarderous",1817,1,.@label$;
 		break;
 	case 81:
 		areamonster .@map$,9,267,19,303,"Mysteltainn",1203,20,.@label$;
@@ -1321,6 +1324,7 @@ OnEnable:
 
 OnTouch_:
 	getitem 6000,1; //Dark_Ashes
+	getitem 673,25;  //BronzeCoin
 	warp instance_mapname("2@tower"),52,354;
 	end;
 
@@ -1454,6 +1458,7 @@ OnEnable:
 
 OnTouch_:
 	getitem 6000,1; //Dark_Ashes
+	getitem 673,50;  //BronzeCoin
 	warp instance_mapname("3@tower"),52,354;
 	end;
 
@@ -1570,6 +1575,7 @@ OnEnable:
 
 OnTouch_:
 	getitem 6000,1; //Dark_Ashes
+	getitem 673,25;  //BronzeCoin
 	warp instance_mapname("4@tower"),52,354;
 	end;
 
@@ -1685,6 +1691,7 @@ OnEnable:
 
 OnTouch_:
 	getitem 6000,1; //Dark_Ashes
+	getitem 673,25;  //BronzeCoin
 	warp instance_mapname("5@tower"),101,72;
 	end;
 
@@ -2107,10 +2114,33 @@ OnTimer10500:
 	mapannounce .@map$,"You'll soon know. Mine is the face of death!",bc_map,"0x00ffcc";
 	stopnpctimer;
 	monster .@map$,156,147,"Nacht Sieger",1956,1,instance_npcname("#4th Beeper")+"::OnMyMobDead";
+
 	end;
 
+
+
 OnMyMobDead:
+
 	donpcevent instance_npcname("Lost Soul#102")+"::OnEnable";
+
+	.@map$ = instance_mapname("6@tower");
+
+	// Pega todos os jogadores dentro da instância
+	getmapusers .@map$;
+
+	for (.@i = 0; .@i < $@users; .@i++) {
+
+		attachrid $@useraid[.@i];
+
+		if (#dq_naght_active && !#dq_naght_kill) {
+			set #dq_naght_kill, 1;
+			dispbottom "^00FF00[Daily Quest] Naght Sieger defeated!^000000";
+			dispbottom "^00FF00Return to the Daily Quest Master.^000000";
+		}
+
+		detachrid;
+	}
+
 	end;
 }
 

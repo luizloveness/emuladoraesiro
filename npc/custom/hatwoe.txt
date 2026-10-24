@@ -1,0 +1,51 @@
+-	script	CheckWoEHat	-1,{
+
+end;
+
+OnPCLoadMapEvent:
+
+	// ========================================================
+	// CASTELO / WOE
+	// ========================================================
+	if (getmapflag(strcharinfo(3), mf_gvg_castle)) {
+
+		// Guarda somente uma vez
+		if (!@woe_hat_hidden) {
+
+			@woe_head_top    = getlook(LOOK_HEAD_TOP);
+			@woe_head_mid    = getlook(LOOK_HEAD_MID);
+			@woe_head_bottom = getlook(LOOK_HEAD_BOTTOM);
+			@woe_robe        = getlook(LOOK_ROBE);
+
+			@woe_hat_hidden = 1;
+		}
+
+		// Sempre esconde ao entrar
+		changelook LOOK_HEAD_TOP, 0;
+		changelook LOOK_HEAD_MID, 0;
+		changelook LOOK_HEAD_BOTTOM, 0;
+		changelook LOOK_ROBE, 0;
+
+		end;
+	}
+
+	// ========================================================
+	// FORA DO CASTELO
+	// ========================================================
+	if (@woe_hat_hidden) {
+
+		changelook LOOK_HEAD_TOP, @woe_head_top;
+		changelook LOOK_HEAD_MID, @woe_head_mid;
+		changelook LOOK_HEAD_BOTTOM, @woe_head_bottom;
+		changelook LOOK_ROBE, @woe_robe;
+
+		@woe_head_top = 0;
+		@woe_head_mid = 0;
+		@woe_head_bottom = 0;
+		@woe_robe = 0;
+
+		@woe_hat_hidden = 0;
+	}
+
+	end;
+}

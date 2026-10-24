@@ -1,0 +1,764 @@
+//=============================================
+//= Guild Package Points
+//===== By: Akinari
+//===== Adaptado para aesiRO
+//=============================================
+//
+// Sistema integrado ao WOE Controller.
+//
+// Pontos são gerados SOMENTE pelo WOE Controller:
+// - Segunda-feira às 00:00
+// - 1 castelo ocupado = +1 Guild Package Point
+//
+// Este NPC é responsável apenas por:
+// - Consultar pontos
+// - Comprar itens
+// - Administrar pontos via GM 99
+//
+// Campo utilizado:
+// guild.pack_point
+//
+// IMPORTANTE:
+// O campo pack_point deve existir previamente na tabela guild.
+// Este NPC NÃO executa ALTER TABLE.
+//=============================================
+
+
+//============================================================
+// NPC PRINCIPAL
+//============================================================
+
+prt_gld,160,83,4	script	Guild Points	420,{
+
+	//--------------------------------------------------------
+	// PAINEL ADMINISTRATIVO
+	//--------------------------------------------------------
+
+	if (getgmlevel() == 99) {
+
+		mes "What would you like to do?";
+
+		switch(select(
+			"Add/Remove Guild Pack Points",
+			"Use NPC",
+			"Nothing"
+		)) {
+
+//------------------------------------------------
+// ADMINISTRAR PONTOS
+//------------------------------------------------
+
+case 1:
+
+	//================================================
+	// INPUT GUILD ID
+	//================================================
+
+	mes "Enter the Guild ID you want to manage.";
+
+	input .@guild_id;
+
+	if (.@guild_id <= 0) {
+		mes "Please enter a valid Guild ID.";
+		close;
+	}
+
+	//================================================
+	// BUSCA DADOS DA GUILD
+	//================================================
+
+	query_sql
+		"SELECT `name`,`pack_point` FROM `guild` WHERE `guild_id` = "+
+		.@guild_id,
+		.@selected_name$,
+		.@selected_points;
+
+	//================================================
+	// VERIFICA SE A GUILD EXISTE
+	//================================================
+
+	if (.@selected_name$ == "") {
+		mes "That isn't a real guild.";
+		mes "Please input the ID of an existing guild.";
+		close;
+	}
+
+	//================================================
+	// GUARDA GUILD SELECIONADA
+	//================================================
+
+	set .@selected_guild_id,.@guild_id;
+	set .@selected_name$,.@selected_name$;
+	set .@selected_points,.@selected_points;
+
+	//================================================
+	// MOSTRA SALDO
+	//================================================
+
+	mes "^0000FF"+.@selected_name$+
+		"^000000 has ^FF0000"+
+		.@selected_points+
+		"^000000 points.";
+
+	//================================================
+	// ESCOLHE OPERAÇÃO
+	//================================================
+
+	set .@selection,
+		select(
+			"Give Points",
+			"Remove Points"
+		);
+
+	next;
+
+	//================================================
+	// QUANTIDADE
+	//================================================
+
+	mes "How many points would you like to "+
+		((.@selection == 1) ? "give to" : "remove from")+
+		" ^0000FF"+.@selected_name$+
+		"^000000?";
+
+	input .@give;
+
+	//================================================
+	// VALIDAÇÃO
+	//================================================
+
+	if (.@give <= 0) {
+
+		mes "Please enter a valid amount.";
+		close;
+	}
+
+	if (.@give > .MaxPoints) {
+
+		mes "This is too much to "+
+			((.@selection == 1) ? "give" : "remove")+
+			" at one time.";
+
+		mes "Maximum: ^FF0000"+
+			.MaxPoints+
+			"^000000 points.";
+
+		close;
+	}
+
+	//================================================
+	// ADICIONAR PONTOS
+	//================================================
+
+	if (.@selection == 1) {
+
+		mes "Give ^FF0000"+
+			.@give+
+			"^000000 points to ^0000FF"+
+			.@selected_name$+
+			"^000000?";
+
+		if (select("Yes","No") == 2)
+			close;
+
+		query_sql
+			"UPDATE `guild` SET `pack_point` = `pack_point` + "+
+			.@give+
+			" WHERE `guild_id` = "+
+			.@selected_guild_id;
+
+		mes "Points have been added to their guild account.";
+
+		if ($LogPoints)
+			logmes
+				"Has given "+
+				.@selected_name$+
+				" "+
+				.@give+
+				" Guild Pack Points";
+	}
+
+	//================================================
+	// REMOVER PONTOS
+	//================================================
+
+	else {
+
+		// Busca saldo atual novamente
+		query_sql
+			"SELECT `pack_point` FROM `guild` WHERE `guild_id` = "+
+			.@selected_guild_id,
+			.@current_points;
+
+		if (.@current_points < .@give) {
+
+			mes "You can't remove more points than the guild currently has.";
+
+			mes "Current balance: ^FF0000"+
+				.@current_points+
+				"^000000 points.";
+
+			close;
+		}
+
+		mes "So you want to take away ^FF0000"+
+			.@give+
+			"^000000 points from ^0000FF"+
+			.@selected_name$+
+			"^000000?";
+
+		if (select("Yes","No") == 2)
+			close;
+
+		query_sql
+			"UPDATE `guild` SET `pack_point` = `pack_point` - "+
+			.@give+
+			" WHERE `guild_id` = "+
+			.@selected_guild_id+
+			" AND `pack_point` >= "+
+			.@give;
+
+		mes "Points have been removed from their guild account.";
+
+		if ($LogPoints)
+			logmes
+				"Has removed "+
+				.@give+
+				" Guild Pack Points from "+
+				.@selected_name$;
+	}
+
+	close;
+
+
+			//------------------------------------------------
+			// USAR NPC NORMALMENTE
+			//------------------------------------------------
+
+			case 2:
+				break;
+
+
+			//------------------------------------------------
+			// SAIR
+			//------------------------------------------------
+
+			case 3:
+				close;
+		}
+	}
+
+
+	//--------------------------------------------------------
+	// VERIFICA SE POSSUI GUILD
+	//--------------------------------------------------------
+
+	if (!getcharid(2)) {
+
+		mes "You need to be a guild master for my services.";
+		close;
+	}
+
+
+	//--------------------------------------------------------
+	// CONSULTA SALDO ATUAL
+	//--------------------------------------------------------
+
+	query_sql
+		"SELECT `pack_point` FROM `guild` WHERE `guild_id` = "+getcharid(2),
+		@points;
+
+
+	//--------------------------------------------------------
+	// VERIFICA SE É GUILD MASTER
+	//--------------------------------------------------------
+
+	if (getguildmaster(getcharid(2)) == strcharinfo(0)) {
+
+		mes "Welcome Guild Master!";
+
+		mes "Your guild currently has ^FF0000"+
+			@points+
+			"^000000 Guild Package Points.";
+
+
+		//----------------------------------------------------
+		// MENU
+		//----------------------------------------------------
+
+		switch(select(
+			(.SpecialMenu || getgmlevel() == 99) ?
+				"Special Purchases" : "",
+			"Equipment Purchases",
+			"Card Purchases",
+			"Nothing"
+		)) {
+
+
+			//------------------------------------------------
+			// SPECIAL PURCHASES
+			//------------------------------------------------
+
+			case 1:
+
+				next;
+
+				mes "There are a couple of purchases you can make here.";
+
+				switch(select(
+					"Box of 5 Convex Mirrors - 1 Point",
+					"Bloody Branch - 1 Point",
+					"Bubble Gum - 1 Point"
+				)) {
+
+					case 1:
+
+						mes "Box of 5 Convex Mirrors will cost 1 point. Are you sure?";
+
+						if (select("Yes","No") == 2)
+							close;
+
+						callfunc "GPoints_Sell",13582,1;
+						break;
+
+
+					case 2:
+
+						mes "This Bloody Branch will cost 1 point. Are you sure?";
+
+						if (select("Yes","No") == 2)
+							close;
+
+						callfunc "GPoints_Sell",12103,1;
+						break;
+
+
+					case 3:
+
+						mes "Bubble Gum will cost 1 point. Are you sure?";
+
+						if (select("Yes","No") == 2)
+							close;
+
+						callfunc "GPoints_Sell",12210,1;
+						break;
+				}
+
+				break;
+
+
+			//------------------------------------------------
+			// EQUIPAMENTOS
+			//------------------------------------------------
+
+			case 2:
+
+				next;
+
+				mes "The equipment I have available is top-notch.";
+
+				set .@d,
+					((select(.equipmenu$) - 1) * 2) - 2;
+
+				callfunc
+					"GPoints_Sell",
+					.equipment[.@d],
+					.equipment[.@d + 1];
+
+				break;
+
+
+			//------------------------------------------------
+			// CARTAS
+			//------------------------------------------------
+
+			case 3:
+
+				next;
+
+				mes "All cards are sold at 2 Package Points a piece.";
+
+				set .@d,
+					((select(.cardmenu$) - 1) * 2) - 2;
+
+				callfunc
+					"GPoints_Sell",
+					.cards[.@d],
+					.cards[.@d + 1];
+
+				break;
+
+
+			//------------------------------------------------
+			// SAIR
+			//------------------------------------------------
+
+			case 4:
+				break;
+		}
+
+	}
+	else {
+
+		mes "Your guild has ^FF0000"+
+			@points+
+			"^000000 Guild Package Points.";
+
+		mes "You need to be a guild master for my services.";
+
+		close;
+	}
+
+
+	mes "Come again!";
+	close;
+
+
+//============================================================
+// CONFIGURAÇÃO
+//============================================================
+
+OnInit:
+
+	//--------------------------------------------------------
+	// CONFIGURAÇÕES
+	//--------------------------------------------------------
+
+	// Máximo de pontos que um GM 99 pode
+	// adicionar/remover por operação.
+	.MaxPoints = 50;
+
+	// Registrar operações no log.
+	// 1 = Sim
+	// 0 = Não
+	$LogPoints = 1;
+
+	// Quantidade de guilds por página
+	// no painel administrativo.
+	.GPerPage = 20;
+
+	// Menu especial.
+	// 1 = habilitado
+	// 0 = desabilitado
+	//
+	// GM 99 sempre consegue acessar.
+	.SpecialMenu = 0;
+
+	// Permite ao GM navegar pela lista de guilds.
+	//
+	// 1 = habilitado
+	// 0 = somente Guild ID
+	.GuildBrowse = 1;
+
+
+	//--------------------------------------------------------
+	// NÃO EXISTE ALTER TABLE AQUI
+	//--------------------------------------------------------
+	//
+	// O campo guild.pack_point deve existir previamente.
+	//
+	// Exemplo:
+	//
+	// ALTER TABLE `guild`
+	// ADD `pack_point` INT(10) UNSIGNED NOT NULL DEFAULT 0;
+	//
+	// NÃO colocar esse ALTER TABLE no NPC.
+	//--------------------------------------------------------
+
+
+	//--------------------------------------------------------
+	// EQUIPAMENTOS
+	//
+	// Formato:
+	// ItemID, Pontos
+	//--------------------------------------------------------
+
+	setarray .equipment[0],
+		5170,2,
+		2624,1,
+		2701,3,
+		2374,15,
+		2375,15,
+		2433,15,
+		2537,1,
+		2729,1,
+		2357,15,
+		2421,10,
+		2524,10,
+		2115,1,
+		35012,55,
+		35013,55,
+		1266,55,
+		1664,55,
+		1422,55,
+		13418,55,
+		1310,55,
+		1927,55,
+		1981,55,
+		6232,100,
+		6228,100,
+		2630,450;
+
+
+
+	//--------------------------------------------------------
+	// CARTAS
+	//
+	// Formato:
+	// CardID, Pontos
+	//--------------------------------------------------------
+
+	setarray .cards[0],
+		4105,2,
+		4058,2,
+		4064,2,
+		4079,2,
+		4141,2,
+		4216,2,
+		4226,5,
+		4222,5,
+		4185,5,
+		4407,200,
+		4357,350,
+		4361,400;
+
+		
+
+
+	//--------------------------------------------------------
+	// MONTA MENU DE EQUIPAMENTOS
+	//--------------------------------------------------------
+
+	for (
+		set .@i,0;
+		.@i < getarraysize(.equipment);
+		set .@i,.@i + 2
+	) {
+
+		set .equipmenu$,
+			.equipmenu$ +
+			":"+
+			getitemname(.equipment[.@i])+
+			" - "+
+			.equipment[.@i + 1]+
+			" Points";
+	}
+
+
+	//--------------------------------------------------------
+	// MONTA MENU DE CARTAS
+	//--------------------------------------------------------
+
+	for (
+		set .@i,0;
+		.@i < getarraysize(.cards);
+		set .@i,.@i + 2
+	) {
+
+		set .cardmenu$,
+			.cardmenu$ +
+			":"+
+			getitemname(.cards[.@i])+
+			" - "+
+			.cards[.@i + 1]+
+			" Points";
+	}
+
+	end;
+}
+
+
+//============================================================
+// FUNÇÃO DE VENDA
+//============================================================
+//
+// ARGUMENTO 0 = Item ID
+// ARGUMENTO 1 = Pontos por unidade
+//
+// Exemplo:
+//
+// callfunc "GPoints_Sell",13582,1;
+//
+//============================================================
+
+function	script	GPoints_Sell	{
+
+	//--------------------------------------------------------
+	// QUANTIDADE
+	//--------------------------------------------------------
+
+	mes "Input the amount of the item you want.";
+
+	input .@amount;
+
+
+	//--------------------------------------------------------
+	// VALIDA QUANTIDADE
+	//--------------------------------------------------------
+
+	if (.@amount <= 0) {
+
+		next;
+
+		mes "Please give me a number I can work with.";
+
+		close;
+	}
+
+
+	//--------------------------------------------------------
+	// CALCULA CUSTO
+	//--------------------------------------------------------
+
+	set .@cost,
+		.@amount * getarg(1);
+
+
+	//--------------------------------------------------------
+	// CONSULTA SALDO ATUAL
+	//
+	// IMPORTANTE:
+	// Não utilizamos mais @points recebido pelo menu.
+	//
+	// O banco é consultado novamente para garantir
+	// que o saldo utilizado na compra seja o atual.
+	//--------------------------------------------------------
+
+	query_sql
+		"SELECT `pack_point` FROM `guild` WHERE `guild_id` = "+getcharid(2),
+		.@points;
+
+
+	//--------------------------------------------------------
+	// VERIFICA SALDO
+	//--------------------------------------------------------
+
+	if (.@points < .@cost) {
+
+		next;
+
+		mes "Sorry, not enough Guild Package Points to buy this item.";
+
+		mes "You currently have ^FF0000"+
+			.@points+
+			"^000000 points.";
+
+		mes "This purchase requires ^FF0000"+
+			.@cost+
+			"^000000 points.";
+
+		close;
+	}
+
+
+	//--------------------------------------------------------
+	// CONFIRMA COMPRA
+	//--------------------------------------------------------
+
+	next;
+
+	mes "You are purchasing ^FF0000"+
+		.@amount+
+		"x "+
+		getitemname(getarg(0))+
+		"^000000.";
+
+	mes "Total cost: ^FF0000"+
+		.@cost+
+		" Guild Package Points^000000.";
+
+	mes "Your current balance is ^FF0000"+
+		.@points+
+		"^000000.";
+
+	mes "Proceed?";
+
+
+	if (select("Yes","No") == 2)
+		close;
+
+
+	//--------------------------------------------------------
+	// DESCONTA OS PONTOS
+	//
+	// A condição:
+	//
+	// pack_point >= custo
+	//
+	// impede que o saldo fique negativo.
+	//--------------------------------------------------------
+
+	query_sql
+		"UPDATE `guild` SET `pack_point` = `pack_point` - "+
+		.@cost+
+		" WHERE `guild_id` = "+
+		getcharid(2)+
+		" AND `pack_point` >= "+
+		.@cost;
+
+
+	//--------------------------------------------------------
+	// CONFERE SALDO APÓS A OPERAÇÃO
+	//--------------------------------------------------------
+
+	query_sql
+		"SELECT `pack_point` FROM `guild` WHERE `guild_id` = "+getcharid(2),
+		.@newpoints;
+
+
+	//--------------------------------------------------------
+	// VERIFICA SE A OPERAÇÃO FOI REALIZADA
+	//--------------------------------------------------------
+
+	if (.@newpoints >= .@points) {
+
+		next;
+
+		mes "There was a problem processing your Guild Package Points.";
+
+		mes "No points were deducted.";
+
+		close;
+	}
+
+
+	//--------------------------------------------------------
+	// ENTREGA ITEM
+	//--------------------------------------------------------
+
+	getitem getarg(0),.@amount;
+
+
+	//--------------------------------------------------------
+	// LOG
+	//--------------------------------------------------------
+
+	if ($LogPoints)
+		logmes
+			"Has purchased "+
+			.@amount+
+			" "+
+			getitemname(getarg(0))+
+			" for "+
+			.@cost+
+			" Guild Pack Points";
+
+
+	//--------------------------------------------------------
+	// MOSTRA NOVO SALDO
+	//--------------------------------------------------------
+
+	mes "Purchase completed!";
+
+	mes "You received ^FF0000"+
+		.@amount+
+		"x "+
+		getitemname(getarg(0))+
+		"^000000.";
+
+	mes "Your new point total is: ^FF0000"+
+		.@newpoints+
+		"^000000.";
+
+	return;
+}

@@ -51,6 +51,7 @@
 #include "pet.hpp"
 #include "quest.hpp"
 #include "script.hpp"
+#include "searchstore.hpp"
 #include "storage.hpp"
 #include "trade.hpp"
 #include "vending.hpp"
@@ -1965,12 +1966,12 @@ ACMD_FUNC(bodystyle)
 	nullpo_retr(-1, sd);
 
 	memset(atcmd_output, '\0', sizeof(atcmd_output));
-
+#if PACKETVER < 20231220
 	if ( (sd->class_ & JOBL_FOURTH) || !(sd->class_ & JOBL_THIRD) || (sd->class_ & MAPID_THIRDMASK) == MAPID_SUPER_NOVICE_E || (sd->class_ & MAPID_THIRDMASK) == MAPID_STAR_EMPEROR || (sd->class_ & MAPID_THIRDMASK) == MAPID_SOUL_REAPER) {
 		clif_displaymessage(fd, msg_txt(sd,740));	// This job has no alternate body styles.
 		return -1;
 	}
-
+#endif
 	if (!message || !*message || sscanf(message, "%d", &body_style) < 1) {
 		sprintf(atcmd_output, msg_txt(sd,739), MIN_BODY_STYLE, MAX_BODY_STYLE);		// Please enter a body style (usage: @bodystyle <body ID: %d-%d>).
 		clif_displaymessage(fd, atcmd_output);
@@ -2013,6 +2014,28 @@ ACMD_FUNC(dye)
 	}
 
 	return 0;
+}
+
+/*==========================================
+* @increase <numero>
+*------------------------------------------*/
+ACMD_FUNC(increase)
+{
+    int count = 0;
+    nullpo_retr(-1, sd);
+
+    if (!message || !*message || sscanf(message, "%11d", &count) < 1) {
+        clif_displaymessage(fd, "Use: @increase <valor>");
+        return -1;
+    }
+
+    setPlayerCount(count);
+
+    char output[128];
+    sprintf(output, "Contador extra ajustado em %+d. Total extra atual: %d.", count, getPlayerCount());
+    clif_displaymessage(fd, output);
+
+    return 0;
 }
 
 /*==========================================
@@ -2082,7 +2105,7 @@ ACMD_FUNC(go)
 		char map[MAP_NAME_LENGTH];
 		int32 x, y;
 	} data[] = {
-		{ MAP_PRONTERA,    156, 191 }, //  0=Prontera
+		{ MAP_PRONTERA,    155, 140 }, //  0=Prontera
 		{ MAP_MORROC,      156,  93 }, //  1=Morroc
 		{ MAP_GEFFEN,      119,  59 }, //  2=Geffen
 		{ MAP_PAYON,       162, 233 }, //  3=Payon
@@ -5383,7 +5406,8 @@ ACMD_FUNC(servertime)
 	memset(temp, '\0', sizeof(temp));
 
 	time(&time_server);  // get time in seconds since 1/1/1970
-	datetime = localtime(&time_server); // convert seconds in structure
+	time_server -= 3 * 60 * 60;
+	datetime = gmtime(&time_server); // convert seconds in structure
 	// like sprintf, but only for date/time (Sunday, November 02 2003 15:12:52)
 	strftime(temp, sizeof(temp)-1, msg_txt(sd,230), datetime); // Server time (normal time): %A, %B %d %Y %X.
 	clif_displaymessage(fd, temp);
@@ -11378,6 +11402,294 @@ ACMD_FUNC(macrochecker){
 
 	return 0;
 }
+/**
+ * Search vending stores with extended filters.
+ * @ws <item_id|name> [+refine] [[card_id]] [(opt_id val)]
+ */
+ACMD_FUNC(ws){
+	if( !battle_config.feature_search_stores ){
+		clif_displaymessage(fd, "Search store feature is disabled.");
+		return -1;
+	}
+
+	if( !battle_config.searchstore_extended_filter ){
+		clif_displaymessage(fd, "Extended search store feature is disabled.");
+		return -1;
+	}
+
+	if( pc_isdead(sd) ){
+		clif_displaymessage(fd, "Cannot search while dead.");
+		return -1;
+	}
+
+	if( sd->npc_id || sd->state.vending || sd->state.buyingstore || sd->state.trading || sd->state.storage_flag ){
+		clif_displaymessage(fd, "Cannot search in your current state.");
+		return -1;
+	}
+
+	if( !message || !*message ){
+		clif_displaymessage(fd, "Usage: @ws <item_id|name> [+refine] [[card_id]] [(opt_id val)]");
+		return -1;
+	}
+
+	// Clear previous filters
+	searchstore_filter_clear(*sd);
+
+	t_itemid item_id = 0;
+	char name_buf[ITEM_NAME_LENGTH] = "";
+	const char* p = message;
+
+	while( *p ){
+		// Skip whitespace
+		while( *p == ' ' ) p++;
+		if( !*p ) break;
+
+		// +N = refine filter
+		if( *p == '+' && p[1] >= '0' && p[1] <= '9' ){
+			p++;
+			sd->searchstore.filter.refine_min = (int8)atoi(p);
+			sd->searchstore.filter.active = true;
+			while( *p >= '0' && *p <= '9' ) p++;
+			continue;
+		}
+
+		// [N] = card filter
+		if( *p == '[' ){
+			p++;
+			t_itemid card_id = (t_itemid)strtoul(p, nullptr, 10);
+			while( *p && *p != ']' ) p++;
+			if( *p == ']' ) p++;
+
+			if( card_id > 0 ){
+				if( sd->searchstore.filter.card_filters.size() >= MAX_SLOTS ){
+					clif_displaymessage(fd, "Too many card filters (max " EXPAND_AND_QUOTE(MAX_SLOTS) ").");
+					searchstore_filter_clear(*sd);
+					return -1;
+				}
+				sd->searchstore.filter.card_filters.push_back(card_id);
+				sd->searchstore.filter.active = true;
+			}
+			continue;
+		}
+
+		// (N N) = option filter
+		if( *p == '(' ){
+			p++;
+			int16 opt_id = (int16)atoi(p);
+			while( *p && *p != ' ' && *p != ')' ) p++;
+			while( *p == ' ' ) p++;
+			int16 opt_val = (int16)atoi(p);
+			while( *p && *p != ')' ) p++;
+			if( *p == ')' ) p++;
+
+			if( opt_id > 0 ){
+				if( sd->searchstore.filter.option_filters.size() >= MAX_ITEM_RDM_OPT ){
+					clif_displaymessage(fd, "Too many option filters (max " EXPAND_AND_QUOTE(MAX_ITEM_RDM_OPT) ").");
+					searchstore_filter_clear(*sd);
+					return -1;
+				}
+				sd->searchstore.filter.option_filters.push_back(std::make_pair(opt_id, opt_val));
+				sd->searchstore.filter.active = true;
+			}
+			continue;
+		}
+
+		// Numeric = item_id, Text = name
+		if( *p >= '0' && *p <= '9' ){
+			item_id = (t_itemid)strtoul(p, nullptr, 10);
+			while( *p >= '0' && *p <= '9' ) p++;
+			continue;
+		}
+
+		// Text token = name filter (rest of string)
+		safestrncpy(name_buf, p, sizeof(name_buf));
+		// Trim trailing spaces
+		size_t len = strlen(name_buf);
+		while( len > 0 && name_buf[len-1] == ' ' ) name_buf[--len] = '\0';
+		break;
+	}
+
+	// Apply name filter
+	if( name_buf[0] != '\0' ){
+		if( strlen(name_buf) < (size_t)battle_config.searchstore_partial_name_min_length ){
+			sprintf(atcmd_output, "Name search requires at least %d characters.", battle_config.searchstore_partial_name_min_length);
+			clif_displaymessage(fd, atcmd_output);
+			searchstore_filter_clear(*sd);
+			return -1;
+		}
+		safestrncpy(sd->searchstore.filter.name_filter, name_buf, sizeof(sd->searchstore.filter.name_filter));
+		sd->searchstore.filter.active = true;
+	}
+
+	// Validate item_id if provided
+	if( item_id > 0 && !item_db.exists(item_id) ){
+		clif_displaymessage(fd, "Invalid item ID.");
+		searchstore_filter_clear(*sd);
+		return -1;
+	}
+
+	// Must have at least item_id or name_filter
+	if( item_id == 0 && name_buf[0] == '\0' ){
+		clif_displaymessage(fd, "Usage: @ws <item_id|name> [+refine] [[card_id]] [(opt_id val)]");
+		searchstore_filter_clear(*sd);
+		return -1;
+	}
+
+	// Close previous search store if open
+	if( sd->searchstore.open )
+		searchstore_close(*sd);
+
+	// Open search store
+	if( !searchstore_open(*sd, 10, SEARCHSTORE_EFFECT_REMOTE, 0) ){
+		clif_displaymessage(fd, "Failed to open search store.");
+		searchstore_filter_clear(*sd);
+		return -1;
+	}
+
+	// Build item list for query
+	struct PACKET_CZ_SEARCH_STORE_INFO_item itemlist[1] = {};
+	uint32 item_count = 0;
+
+	if( item_id > 0 ){
+		itemlist[0].itemId = item_id;
+		item_count = 1;
+	}
+
+	// Execute query
+	searchstore_query(*sd, SEARCHTYPE_VENDING, 0, MAX_ZENY, itemlist, item_count, nullptr, 0);
+
+	return 0;
+}
+
+/**
+ * Search buying stores with extended filters.
+ * @wb <item_id|name>
+ */
+ACMD_FUNC(wb){
+	if( !battle_config.feature_search_stores ){
+		clif_displaymessage(fd, "Search store feature is disabled.");
+		return -1;
+	}
+
+	if( !battle_config.searchstore_extended_filter ){
+		clif_displaymessage(fd, "Extended search store feature is disabled.");
+		return -1;
+	}
+
+	if( pc_isdead(sd) ){
+		clif_displaymessage(fd, "Cannot search while dead.");
+		return -1;
+	}
+
+	if( sd->npc_id || sd->state.vending || sd->state.buyingstore || sd->state.trading || sd->state.storage_flag ){
+		clif_displaymessage(fd, "Cannot search in your current state.");
+		return -1;
+	}
+
+	if( !message || !*message ){
+		clif_displaymessage(fd, "Usage: @wb <item_id|name>");
+		return -1;
+	}
+
+	// Clear previous filters
+	searchstore_filter_clear(*sd);
+
+	t_itemid item_id = 0;
+	char name_buf[ITEM_NAME_LENGTH] = "";
+	const char* p = message;
+
+	while( *p ){
+		// Skip whitespace
+		while( *p == ' ' ) p++;
+		if( !*p ) break;
+
+		// +N = refine (silently ignored for buying stores)
+		if( *p == '+' && p[1] >= '0' && p[1] <= '9' ){
+			p++;
+			while( *p >= '0' && *p <= '9' ) p++;
+			continue;
+		}
+
+		// [N] = card filter (not supported for buying stores)
+		if( *p == '[' ){
+			clif_displaymessage(fd, "Card filters are not supported for buying store search.");
+			searchstore_filter_clear(*sd);
+			return -1;
+		}
+
+		// (N N) = option filter (not supported for buying stores)
+		if( *p == '(' ){
+			clif_displaymessage(fd, "Option filters are not supported for buying store search.");
+			searchstore_filter_clear(*sd);
+			return -1;
+		}
+
+		// Numeric = item_id
+		if( *p >= '0' && *p <= '9' ){
+			item_id = (t_itemid)strtoul(p, nullptr, 10);
+			while( *p >= '0' && *p <= '9' ) p++;
+			continue;
+		}
+
+		// Text = name filter (rest of string)
+		safestrncpy(name_buf, p, sizeof(name_buf));
+		size_t len = strlen(name_buf);
+		while( len > 0 && name_buf[len-1] == ' ' ) name_buf[--len] = '\0';
+		break;
+	}
+
+	// Apply name filter
+	if( name_buf[0] != '\0' ){
+		if( strlen(name_buf) < (size_t)battle_config.searchstore_partial_name_min_length ){
+			sprintf(atcmd_output, "Name search requires at least %d characters.", battle_config.searchstore_partial_name_min_length);
+			clif_displaymessage(fd, atcmd_output);
+			searchstore_filter_clear(*sd);
+			return -1;
+		}
+		safestrncpy(sd->searchstore.filter.name_filter, name_buf, sizeof(sd->searchstore.filter.name_filter));
+		sd->searchstore.filter.active = true;
+	}
+
+	// Validate item_id
+	if( item_id > 0 && !item_db.exists(item_id) ){
+		clif_displaymessage(fd, "Invalid item ID.");
+		searchstore_filter_clear(*sd);
+		return -1;
+	}
+
+	// Must have item_id or name
+	if( item_id == 0 && name_buf[0] == '\0' ){
+		clif_displaymessage(fd, "Usage: @wb <item_id|name>");
+		searchstore_filter_clear(*sd);
+		return -1;
+	}
+
+	// Close previous search store if open
+	if( sd->searchstore.open )
+		searchstore_close(*sd);
+
+	// Open search store
+	if( !searchstore_open(*sd, 10, SEARCHSTORE_EFFECT_REMOTE, 0) ){
+		clif_displaymessage(fd, "Failed to open search store.");
+		searchstore_filter_clear(*sd);
+		return -1;
+	}
+
+	// Build item list
+	struct PACKET_CZ_SEARCH_STORE_INFO_item itemlist[1] = {};
+	uint32 item_count = 0;
+
+	if( item_id > 0 ){
+		itemlist[0].itemId = item_id;
+		item_count = 1;
+	}
+
+	// Execute query
+	searchstore_query(*sd, SEARCHTYPE_BUYING_STORE, 0, MAX_ZENY, itemlist, item_count, nullptr, 0);
+
+	return 0;
+}
+
 
 #include <custom/atcommand.inc>
 
@@ -11518,6 +11830,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(partysharelvl),
 		ACMD_DEF(mapinfo),
 		ACMD_DEF(dye),
+		ACMD_DEF(increase),
 		ACMD_DEF(hair_style),
 		ACMD_DEF(hair_color),
 		ACMD_DEF(stat_all),
@@ -11708,6 +12021,8 @@ void atcommand_basecommands(void) {
 		ACMD_DEFR(roulette, ATCMD_NOCONSOLE|ATCMD_NOAUTOTRADE),
 		ACMD_DEF(setcard),
 		ACMD_DEF(macrochecker),
+		ACMD_DEF2("ws", ws),
+		ACMD_DEF2("wb", wb),		
 	};
 	AtCommandInfo* atcommand;
 	int32 i;
@@ -11868,21 +12183,21 @@ bool is_atcommand(const int32 fd, map_session_data* sd, const char* message, int
 	if ( *message != atcommand_symbol && *message != charcommand_symbol )
 		return false;
 
-	// type value 0|2 = script|console invoked: bypass restrictions
-	if ( type == 1 || type == 3) {
-		//Commands are disabled on maps flagged as 'nocommand'
-		if ( pc_get_group_level(sd) < map_getmapflag(sd->m, MF_NOCOMMAND) ) {
-			clif_displaymessage(fd, msg_txt(sd,143)); // Commands are disabled on this map.
-			return false;
-		}
-	}
-
 	if (*message == charcommand_symbol)
 		is_atcommand = false;
 
 	if (is_atcommand) { // @command
 		sprintf(atcmd_msg, "%s", message);
 		ssd = sd;
+		// type value 0|2 = script|console invoked: bypass restrictions
+		if ( type == 1 || type == 3) {
+			//Commands are disabled on maps flagged as 'nocommand'
+			if ( pc_get_group_level(sd) < map_getmapflag(sd->m, MF_NOCOMMAND) ) {
+				clif_displaymessage(fd, msg_txt(sd,143)); // Commands are disabled on this map.
+				return false;
+			}
+		}		
+		
 	} else { // #command
 		char charname[NAME_LENGTH];
 		int32 n;
@@ -11891,13 +12206,20 @@ bool is_atcommand(const int32 fd, map_session_data* sd, const char* message, int
 		if ((n = sscanf(message, "%255s \"%23[^\"]\" %255[^\n]", command, charname, params)) < 2
 		 && (n = sscanf(message, "%255s %23s %255[^\n]", command, charname, params)) < 2
 		) {
-			if (pc_get_group_level(sd) == 0) {
-				if (n < 1)
-					return false; // No command found. Display as normal message.
+			if (n < 1)
+				return false; // No command found. Display as normal message.
 
-				info = get_atcommandinfo_byname(atcommand_alias_db.checkAlias(command + 1));
-				if (!info || info->char_groups[sd->group->index] == 0)  // If we can't use or doesn't exist: don't even display the command failed message
+			info = get_atcommandinfo_byname(atcommand_alias_db.checkAlias(command + 1));
+			if (!info || info->char_groups[sd->group->index] == 0)  // If we can't use or doesn't exist: don't even display the command failed message
+				return false;
+
+			// type value 0|2 = script|console invoked: bypass restrictions
+			if ( type == 1 || type == 3) {
+				//Commands are disabled on maps flagged as 'nocommand'
+				if ( pc_get_group_level(sd) < map_getmapflag(sd->m, MF_NOCOMMAND) ) {
+					clif_displaymessage(fd, msg_txt(sd,143)); // Commands are disabled on this map.	
 					return false;
+					}
 			}
 
 			sprintf(output, msg_txt(sd,1388), charcommand_symbol); // Charcommand failed (usage: %c<command> <char name> <parameters>).
@@ -11905,6 +12227,15 @@ bool is_atcommand(const int32 fd, map_session_data* sd, const char* message, int
 			return true;
 		}
 
+		// type value 0|2 = script|console invoked: bypass restrictions
+		if ( type == 1 || type == 3) {
+			//Commands are disabled on maps flagged as 'nocommand'
+			if ( pc_get_group_level(sd) < map_getmapflag(sd->m, MF_NOCOMMAND) ) {
+				clif_displaymessage(fd, msg_txt(sd,143)); // Commands are disabled on this map.
+				return false;
+			}
+		}				
+				
 		ssd = map_nick2sd(charname,true);
 		if (ssd == nullptr) {
 			sprintf(output, msg_txt(sd,1389), command); // %s failed. Player not found.

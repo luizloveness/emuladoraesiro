@@ -1,0 +1,14 @@
+prontera,97,168,5    script    ResetCastle    1_F_MARIA,{
+    mes "Qual castelo deseja resetar?";
+    select("Prontera 1","Aldebaran 1");
+    switch (@menu) {
+        case 1:
+            setcastledata "prtg_cas01",CD_GUILD_ID,0;
+            break;
+        case 2:
+            setcastledata "aldeg_cas01",CD_GUILD_ID,0;
+            break;
+    }
+    mes "Castelo resetado!";
+    close;
+}

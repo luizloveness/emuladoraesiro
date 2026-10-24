@@ -1,0 +1,20 @@
+-	script	DayNightController	-1,{
+OnInit:
+	// Quando o servidor inicia, ajusta o estado atual de acordo com a hora
+	if (gettime(3) >= 18 || gettime(3) < 6) {
+		night;
+	} else {
+		day;
+	}
+	end;
+
+// Todo dia às 06:00 -> Dia
+OnClock0600:
+	day;
+	end;
+
+// Todo dia às 18:00 -> Noite
+OnClock1800:
+	night;
+	end;
+}

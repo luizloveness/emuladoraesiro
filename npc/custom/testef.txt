@@ -1,0 +1,20 @@
+-	script	skillreset	-1,{
+
+OnPCLoginEvent:
+
+	if (JobLevel >= 89 && !resetinho) {
+
+		// Reseta todas as habilidades
+		resetskill;
+
+		// Remove todos os pontos livres atuais
+		atcommand "@skpoint -" + SkillPoint;
+
+		// Define exatamente 140 pontos
+		atcommand "@skpoint 140";
+
+		resetinho = 1;
+	}
+
+	end;
+}

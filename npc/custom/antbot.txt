@@ -1,0 +1,117 @@
+-	script	anti-bot2	-1,{
+OnPCLoginEvent:
+	set checkbot,0;
+	set @kill_count, 0; // zera o contador ao logar
+	if(botter >= 1) {
+		doevent "anti-bot::Oncheckb";
+	}
+	end;
+}
+
+-	script	anti-bot	-1,{
+OnNPCKillEvent:
+	setarray .@pvp_maps$[0],
+		"pvp_y_1-1","pvp_y_1-2","pvp_y_1-3","pvp_y_1-4","pvp_y_1-5",
+		"pvp_y_2-1","pvp_y_2-2","pvp_y_2-3","pvp_y_2-4","pvp_y_2-5",
+		"pvp_y_3-1","pvp_y_3-2","pvp_y_3-3","pvp_y_3-4","pvp_y_3-5",
+		"pvp_y_4-1","pvp_y_4-2","pvp_y_4-3","pvp_y_4-4","pvp_y_4-5",
+		"pvp_y_5-1","pvp_y_5-2","pvp_y_5-3","pvp_y_5-4","pvp_y_5-5",
+		"pvp_y_6-1","pvp_y_6-2","pvp_y_6-3","pvp_y_6-4","pvp_y_6-5",
+		"pvp_y_7-1","pvp_y_7-2","pvp_y_7-3","pvp_y_7-4","pvp_y_7-5",
+		"pvp_y_8-1","pvp_y_8-2","pvp_y_8-3","pvp_y_8-4","pvp_y_8-5",
+		"pvp_n_1-1","pvp_n_1-2","pvp_n_1-3","pvp_n_1-4","pvp_n_1-5",
+		"pvp_n_2-1","pvp_n_2-2","pvp_n_2-3","pvp_n_2-4","pvp_n_2-5",
+		"pvp_n_3-1","pvp_n_3-2","pvp_n_3-3","pvp_n_3-4","pvp_n_3-5",
+		"pvp_n_4-1","pvp_n_4-2","pvp_n_4-3","pvp_n_4-4","pvp_n_4-5",
+		"pvp_n_5-1","pvp_n_5-2","pvp_n_5-3","pvp_n_5-4","pvp_n_5-5",
+		"pvp_n_6-1","pvp_n_6-2","pvp_n_6-3","pvp_n_6-4","pvp_n_6-5",
+		"pvp_n_7-1","pvp_n_7-2","pvp_n_7-3","pvp_n_7-4","pvp_n_7-5",
+		"pvp_n_8-1","pvp_n_8-2","pvp_n_8-3","pvp_n_8-4","pvp_n_8-5",
+		"pvp_2vs2","1@gl_k";
+
+	if (inarray(.@pvp_maps$, strcharinfo(3)) != -1) end;
+
+	@kill_count++;
+
+	if(rand(100) < 75) end;
+
+	if(@kill_count >= rand(1400,1430)) {
+		set @kill_count, 0;
+		set checkbot, 0;
+		doevent "anti-bot::Oncheckb";
+	}
+	end;
+
+Oncheckb:
+	function GetString;
+
+	if (checkbot >= 1) end;
+
+	// Flags de controle
+	set checkbot, 1;
+	set botter, 1;
+
+	// Segurança máxima: aplicar proteção
+	sc_start SC_NOITEMUSE, 60000, 0;            // Impede uso de itens
+	sc_start SC_BASILICA, 60000, 1;             // Imunidade completa
+	sc_start SC_ASSUMPTIO, 60000, 5;
+	sc_start SC_SAFETYWALL, 60000, 1;
+
+	setoption OPTION_NO_DAMAGE, 1;              // Imune a monstros
+	sc_start SC_HIDING, 30000, 1; // Torna "invisível" sem desmontar ou remover carrinho
+
+	sleep2 3000;
+On2nd:
+	set .@String$, GetString(15, rand(3,7));
+	mes "You Have 3 Chance to Type the Red Text Correctly";
+	mes "If you failed - You will be jailed";
+	mes "Input the ^FF0000RED COLOUR^000000 part";
+	mes "^0000FF"+GetString(15, rand(5,10))+"^FF0000"+.@String$+"^0000FF"+GetString(15, rand(3,10))+"^000000";
+	input .@Input$;
+
+	if(.@Input$ != .@String$){
+		if(botter >= 3){
+			atcommand "@unjail "+strcharinfo(0);
+			sleep2 1000;
+			atcommand "@jailfor 10d "+strcharinfo(0);
+			announce "[Anti-BOT]: The user [" +strcharinfo(0)+ "] Has Been Jailed For 10 Days.",0,0xe80f0f;
+			set botter,0;
+			// ?? Libera uso de itens e dano novamente
+			sc_end SC_NOITEMUSE;
+			setoption OPTION_NO_DAMAGE, 0;
+			close;
+		}
+		mes "Wrong..";
+		set botter, botter + 1;
+		next;
+		goto On2nd;
+	}
+
+	// ? Sucesso: restaura jogador ao normal
+	set botter,0;
+	set checkbot,1;
+	sc_end SC_NOITEMUSE;
+	setoption OPTION_NO_DAMAGE, 0;
+
+	sc_end SC_BERSERK;
+	sc_end SC_FREEZE;
+	sc_end SC_HIDING;
+	sc_start SC_INCREASEAGI, 240000, 10;
+	heal -15,0;
+	sc_start SC_BLESSING, 240000, 10;
+	end;
+
+function GetString {
+	if(getarg(0) & 1)
+		setarray .@List$[getarraysize(.@List$)],"1","2","3","4","5","6","7","8","9";
+	if(getarg(0) & 2)
+		setarray .@List$[getarraysize(.@List$)],"A","B","C","D","E","F","G","H","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z";
+	if(getarg(0) & 4)
+		setarray .@List$[getarraysize(.@List$)],"a","b","c","d","e","f","g","h","i","j","k","m","n","o","p","q","r","s","t","u","v","w","x","y","z";
+
+	set .@Str$,"";
+	while(getstrlen(.@Str$) < getarg(1))
+		set .@Str$, .@Str$ + .@List$[rand(getarraysize(.@List$))];
+	return .@Str$;
+}
+}

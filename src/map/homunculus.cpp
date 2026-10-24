@@ -42,10 +42,10 @@ static struct s_homun_intimacy_grade intimacy_grades[] = {
 	{ /*"Hate with passion",*/   100 },
 	{ /*"Hate",             */   400 },
 	{ /*"Awkward",          */  1100 },
-	{ /*"Shy",              */ 10100 },
-	{ /*"Neutral",          */ 25100 },
-	{ /*"Cordial",          */ 75100 },
-	{ /*"Loyal",            */ 91100 },
+	{ /*"Shy",              */ 5100 },
+	{ /*"Neutral",          */ 7100 },
+	{ /*"Cordial",          */ 8100 },
+	{ /*"Loyal",            */ 10100 },
 };
 
 const std::string HomExpDatabase::getDefaultLocation() {

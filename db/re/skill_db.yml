@@ -7599,6 +7599,8 @@ Body:
       NoDamage: true
     Hit: Single
     Duration1: 180000
+    AfterCastActDelay: [0, 0, 0, 0, 0]
+    FixedCastTime: [0, 0, 0, 0, 0]
     Requires:
       SpCost: 15
       SpiritSphereCost: 5
@@ -7610,8 +7612,8 @@ Body:
     Type: Weapon
     TargetType: Attack
     DamageFlags:
+      IgnoreDefense: true
       IgnoreFlee: true
-      SimpleDefense: true
     Flags:
       TargetTrap: true
     Range: -2
@@ -7623,38 +7625,19 @@ Body:
         Reproduce: true
     CastTime:
       - Level: 1
-        Time: 2000
+        Time: 4000
       - Level: 2
-        Time: 1750
+        Time: 3500
       - Level: 3
-        Time: 1500
-      - Level: 4
-        Time: 1250
-      - Level: 5
-        Time: 1000
-    AfterCastActDelay:
-      - Level: 1
         Time: 3000
-      - Level: 2
+      - Level: 4
         Time: 2500
-      - Level: 3
-        Time: 2000
-      - Level: 4
-        Time: 1500
       - Level: 5
-        Time: 1000
-    Duration1: 3000
-    FixedCastTime:
-      - Level: 1
         Time: 2000
-      - Level: 2
-        Time: 1750
-      - Level: 3
-        Time: 1500
-      - Level: 4
-        Time: 1250
-      - Level: 5
-        Time: 1000
+    CastDelayFlags:
+      IgnoreStatus: true
+    AfterCastActDelay: [0, 0, 0, 0, 0]
+    FixedCastTime: [0, 0, 0, 0, 0]
     Requires:
       SpCost: 1
       Weapon:
@@ -11127,19 +11110,22 @@ Body:
         - Level: 5
           Amount: 70
     Status: Curse
-  - Id: 401
+    
+    - Id: 401
     Name: CH_SOULCOLLECT
     Description: Zen
     MaxLevel: 1
     TargetType: Self
     DamageFlags:
-      NoDamage: true
+        NoDamage: true
     Hit: Single
     HitCount: 1
     Duration1: 600000
-    FixedCastTime: 1000
+    CastTime: [1000]
+    AfterCastActDelay: [0]
     Requires:
-      SpCost: 20
+    SpCost: 20
+
   - Id: 402
     Name: PF_MINDBREAKER
     Description: Mind Breaker

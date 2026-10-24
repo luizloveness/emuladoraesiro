@@ -1,0 +1,883 @@
+//============================================================
+// NPC: Daily Quest Master
+// Type: 100% Account-based daily quest
+//============================================================
+prontera,184,146,2	script	Daily Quest Master	671,{
+
+
+	if (!getcharid(2)) {
+		mes "You must be in a guild.";
+		close;
+	}
+
+	if (getcastledata("prtg_cas01",1) != getcharid(2) && getcastledata("payg_cas04",1) != getcharid(2)&& getcastledata("prtg_cas03",1) != getcharid(2)) {
+		mes "Only members of a castle owning guild can use this NPC.";
+		close;
+	}
+
+
+	mes "[Daily Quest Master]";
+	mes "Hello adventurer!";
+	mes "I have daily quests for your account.";
+	next;
+
+	switch(select(
+	"Kill 10 Players (PvP)"
+	+":Defeat Naght Sieger"
+	+":Hunt LHZ Monsters (Random)"
+	+":Hunt Acidus"
+        +":Hunt Salamander"
+        +":Hunt Siroma"
+        +":Hunt Frus"
+	+":Collect 100 Old Purple Box"
+	+":Convert 40 Bronze Coins"
+	+":Collect 100 Flame Hearts"
+	+":Check Progress"
+	+":Exit")) {
+
+//============================================================
+// QUEST 1 — KILL 10 PLAYERS (ACCOUNT BASED)
+//============================================================
+case 1:
+
+	// Já completou hoje
+	if (#dq_day_kill == gettime(DT_DAYOFYEAR)) {
+		mes "Your ACCOUNT already completed this quest today.";
+		close;
+	}
+
+	// Garante valor correto
+	if (#dq_kill_goal != 10)
+		set #dq_kill_goal, 10;
+
+	// INICIAR QUEST
+	if (!#dq_kill_active) {
+		mes "Quest started!";
+		mes " ";
+		mes "Objective:";
+		mes "Kill ^FF000010 players^000000 in PvP.";
+		mes " ";
+		mes "Reward:";
+		mes "^00FF0020x Aesir Coin^000000";
+
+		set #dq_kill_active, 1;
+		set #dq_kill_count, 0; // RESET AO INICIAR
+
+		close;
+	}
+
+	// ENTREGAR QUEST
+	if (#dq_kill_count >= #dq_kill_goal) {
+		mes "Excellent!";
+		mes "Your account killed 10 players!";
+		getitem 671, 20;
+
+		set #dq_kill_active, 0;
+		set #dq_kill_count, 0; // RESET AO ENTREGAR
+		set #dq_day_kill, gettime(DT_DAYOFYEAR);
+
+		mes "Reward received!";
+		close;
+	}
+
+	// EM PROGRESSO
+	mes "Quest still in progress.";
+	mes "Kills: " + #dq_kill_count + "/" + #dq_kill_goal;
+	close;
+
+end;
+//============================================================
+// QUEST 2 — DEFEAT NAGHT SIEGER (ACCOUNT BASED - WEEKLY)
+//============================================================
+case 2:
+
+	// 7 days cooldown (604800 seconds)
+	if (gettimetick(2) < #dq_week_naght) {
+		.@timeleft = #dq_week_naght - gettimetick(2);
+		.@days = .@timeleft / 86400;
+
+		mes "This is a WEEKLY quest.";
+		mes "You already completed it.";
+		mes "Time remaining: ^FF0000" + .@days + " day(s)^000000.";
+		close;
+	}
+
+	if (!#dq_naght_active) {
+		mes "Quest started:";
+		mes " ";
+		mes "Objective:";
+		mes "Defeat ^FF0000Naght Sieger^000000.";
+		mes " ";
+		mes "Reward:";
+		mes "^00FF0050x Aesir Coin^000000";
+		set #dq_naght_active, 1;
+		set #dq_naght_kill, 0;
+		close;
+	}
+
+	if (#dq_naght_active && #dq_naght_kill >= 1) {
+		mes "Excellent!";
+		mes "Your account defeated Naght Sieger!";
+		getitem 671, 50;
+
+		set #dq_naght_active, 0;
+
+		// NEXT AVAILABLE TIME = NOW + 7 DAYS
+		set #dq_week_naght, gettimetick(2) + 604800;
+
+		mes "Reward received!";
+		close;
+	} 
+	else {
+		mes "Naght Sieger is still alive.";
+		close;
+	}
+	end;
+
+//============================================================
+// QUEST 3 â€” LHZ_DUN03 RANDOM MONSTER (ACCOUNT BASED)
+//============================================================
+	case 3:
+
+		if (#dq_day_lhz == gettime(DT_DAYOFYEAR)) {
+			mes "Your ACCOUNT already completed this quest today.";
+			close;
+		}
+
+		if (!#dq_lhz_active) {
+
+			mes "Today's mission:";
+			mes " ";
+
+			setarray .@monsters[0],1637,1638,1639,1635,1634,1636;
+			setarray .@names$[0],
+				"Margaretha Sorin",
+				"Cecil Damon",
+				"Kathryne Keyron",
+				"Eremes Guile",
+				"Seyren Windsor",
+				"Harword Alteisen";
+
+			set .@rand, rand(0,5);
+
+			set #dq_lhz_target, .@monsters[.@rand];
+			set #dq_lhz_name$, .@names$[.@rand];
+
+			set #dq_lhz_goal, 150;
+			set #dq_lhz_count, 0;
+			set #dq_lhz_active, 1;
+
+			mes "Objective:";
+			mes "Hunt: ^00FF00"+#dq_lhz_name$+"^000000";
+			mes "Map: ^FFFF00lhz_dun03^000000";
+			mes "Amount: ^FF0000150 monsters^000000";
+			mes " ";
+			mes "Reward:";
+			mes "^00FF0010x Aesir Coin^000000";
+			close;
+		}
+
+		if (#dq_lhz_active && #dq_lhz_count >= #dq_lhz_goal) {
+			mes "Excellent!";
+			mes "You completed the hunting mission!";
+			getitem 671, 10;
+
+			set #dq_lhz_active, 0;
+			set #dq_day_lhz, gettime(DT_DAYOFYEAR);
+			mes "Reward received!";
+			close;
+		} 
+		else {
+			mes "Quest in progress:";
+			mes "Target: "+getmonsterinfo(#dq_lhz_target,MOB_NAME);
+			mes "Progress: "+#dq_lhz_count+"/"+#dq_lhz_goal;
+			close;
+		}
+		end;
+
+//============================================================
+// QUEST 4 — ABYSS LAKE RANDOM MONSTER (ACCOUNT BASED)
+//============================================================
+    case 4:
+
+        if (#dq_day_Abyss == gettime(DT_DAYOFYEAR)) {
+            mes "Your ACCOUNT already completed this quest today.";
+            close;
+        }
+
+        if (!#dq_Abyss_active) {
+
+            mes "Today's mission:";
+            mes " ";
+
+            // Abyss Lake monsters
+            setarray .@monsters[0],1713,1714,1717,1716;
+            setarray .@names$[0],
+                "Acidus Gold",    // 1713
+                "Ferus Red",      // 1714
+                "Ferus Green",    // 1717
+                "Acidus Blue";    // 1716
+
+            // 0~3 because we have 4 monsters
+            set .@rand, rand(0,3);
+
+            set #dq_Abyss_target, .@monsters[.@rand];
+            set #dq_Abyss_name$, .@names$[.@rand];
+
+            set #dq_Abyss_goal, 150;
+            set #dq_Abyss_count, 0;
+            set #dq_Abyss_active, 1;
+
+            mes "Objective:";
+            mes "Hunt: ^00FF00"+#dq_Abyss_name$+"^000000";
+            mes "Map: ^FFFF00abyss_02, abyss_03^000000";
+            mes "Amount: ^FF0000 150 monsters^000000";
+            mes " ";
+            mes "Reward:";
+            mes "^00FF0010x Aesir Coin^000000";
+            close;
+        }
+
+        if (#dq_Abyss_active && #dq_Abyss_count >= #dq_Abyss_goal) {
+            mes "Excellent!";
+            mes "You completed the hunting mission!";
+            getitem 671, 10;
+
+            set #dq_Abyss_active, 0;
+            set #dq_day_Abyss, gettime(DT_DAYOFYEAR);
+
+            mes "Reward received!";
+            close;
+        } 
+        else {
+            mes "Quest in progress:";
+            mes "Target: " + getmonsterinfo(#dq_Abyss_target, MOB_NAME);
+            mes "Progress: " + #dq_Abyss_count + "/" + #dq_Abyss_goal;
+            close;
+        }
+        break;
+
+//============================================================
+// QUEST 5 — HUNT SALAMANDER (ACCOUNT BASED, DAILY)
+//============================================================
+    case 5:
+
+        if (#dq_day_salamander == gettime(DT_DAYOFYEAR)) {
+            mes "Your ACCOUNT already completed this quest today.";
+            close;
+        }
+
+        if (!#dq_salamander_active) {
+
+            mes "Today's mission:";
+            mes " ";
+            mes "Objective:";
+            mes "Hunt: ^FF6600Salamander^000000";
+            mes "Map: ^FFFF00thor_v03 / thor_v02^000000";
+            mes "Amount: ^FF0000200 monsters^000000";
+            mes " ";
+            mes "Reward:";
+            mes "^00FF0010x Aesir Coin^000000";
+
+            set #dq_salamander_target, 1831;
+            set #dq_salamander_goal,   200;
+            set #dq_salamander_count,  0;
+            set #dq_salamander_active, 1;
+
+            close;
+        }
+
+        if (#dq_salamander_active && #dq_salamander_count >= #dq_salamander_goal) {
+
+            mes "Excellent!";
+            mes "You completed the Salamander hunt!";
+            getitem 671, 10;
+
+            set #dq_salamander_active, 0;
+            set #dq_day_salamander, gettime(DT_DAYOFYEAR);
+
+            mes "Reward received!";
+            close;
+
+        } else {
+
+            mes "Quest in progress:";
+            mes "Target: Salamander";
+            mes "Progress: " + #dq_salamander_count + "/" + #dq_salamander_goal;
+            close;
+
+        }
+
+        break;
+
+//============================================================
+// QUEST 6 — HUNT SIROMA (ACCOUNT BASED, DAILY)
+//============================================================
+    case 6:
+
+        if (#dq_day_siroma == gettime(DT_DAYOFYEAR)) {
+            mes "Your ACCOUNT already completed this quest today.";
+            close;
+        }
+
+        if (!#dq_siroma_active) {
+
+            mes "Today's mission:";
+            mes " ";
+            mes "Objective:";
+            mes "Hunt: ^FF6600Siroma^000000";
+            mes "Map: ^FFFF00ice_dun01 / ice_dun02^000000";
+            mes "Amount: ^FF0000150 monsters^000000";
+            mes " ";
+            mes "Reward:";
+            mes "^00FF0010x Aesir Coin^000000";
+
+            set #dq_siroma_target, 1776;
+            set #dq_siroma_goal,   150;
+            set #dq_siroma_count,  0;
+            set #dq_siroma_active, 1;
+
+            close;
+        }
+
+        if (#dq_siroma_active && #dq_siroma_count >= #dq_siroma_goal) {
+
+            mes "Excellent!";
+            mes "You completed the Siroma hunt!";
+            getitem 671, 10;
+
+            set #dq_siroma_active, 0;
+            set #dq_day_siroma, gettime(DT_DAYOFYEAR);
+
+            mes "Reward received!";
+            close;
+
+        } else {
+
+            mes "Quest in progress:";
+            mes "Target: Siroma";
+            mes "Progress: " + #dq_siroma_count + "/" + #dq_siroma_goal;
+            close;
+
+        }
+
+        break;
+//============================================================
+// QUEST 7 — HUNT Frus (ACCOUNT BASED, DAILY)
+//============================================================
+    case 7:
+
+        if (#dq_day_frus == gettime(DT_DAYOFYEAR)) {
+            mes "Your ACCOUNT already completed this quest today.";
+            close;
+        }
+
+        if (!#dq_frus_active) {
+
+            mes "Today's mission:";
+            mes " ";
+            mes "Objective:";
+            mes "Hunt: ^FF6600Frus^000000";
+            mes "Map: ^FFFF00Odin_tem01 / Odin_tem02 / Odin_tem03^000000";
+            mes "Amount: ^FF0000150 monsters^000000";
+            mes " ";
+            mes "Reward:";
+            mes "^00FF0010x Aesir Coin^000000";
+
+            set #dq_frus_target, 1753;
+            set #dq_frus_goal,   150;
+            set #dq_frus_count,  0;
+            set #dq_frus_active, 1;
+
+            close;
+        }
+
+        if (#dq_frus_active && #dq_frus_count >= #dq_frus_goal) {
+
+            mes "Excellent!";
+            mes "You completed the Frus hunt!";
+            getitem 671, 10;
+
+            set #dq_frus_active, 0;
+            set #dq_day_frus, gettime(DT_DAYOFYEAR);
+
+            mes "Reward received!";
+            close;
+
+        } else {
+
+            mes "Quest in progress:";
+            mes "Target: Frus";
+            mes "Progress: " + #dq_frus_count + "/" + #dq_frus_goal;
+            close;
+
+        }
+
+        break;
+
+//============================================================
+// QUEST 8 — DELIVER 100 Old purple box (ACCOUNT BASED, DAILY)
+//============================================================
+case 8:
+
+	// Já completou hoje
+	if (#dq_day_skull == gettime(DT_DAYOFYEAR)) {
+		mes "Your ACCOUNT already completed this quest today.";
+		close;
+	}
+
+	// Iniciar quest
+	if (!#dq_skull_active) {
+
+		mes "[Daily Quest Master]";
+		mes "Today's collection quest:";
+		mes " ";
+		mes "Objective:";
+		mes "Deliver ^FF0000100x Old Purple Box^000000.";
+		mes " ";
+		mes "Reward:";
+		mes "^00FF0015x Aesiro Coin^000000";
+
+		set #dq_skull_goal, 100;
+		set #dq_skull_active, 1;
+
+		next;
+		mes "[Daily Quest Master]";
+		mes "Quest started!";
+		mes "Collect 100 Old Purple Box and return here.";
+		close;
+	}
+
+	// Verifica quantidade
+	.@amount = countitem(617);
+
+	if (.@amount < #dq_skull_goal) {
+		mes "[Daily Quest Master]";
+		mes "You don't have enough Old Purple Box.";
+		mes " ";
+		mes "Required: ^FF0000100^000000";
+		mes "You have: ^FFFF00" + .@amount + "^000000";
+		mes " ";
+		mes "Progress: " + .@amount + "/" + #dq_skull_goal;
+		close;
+	}
+
+	// Entrega
+	delitem 617, #dq_skull_goal;
+	getitem 671, 15;
+
+	set #dq_skull_active, 0;
+	set #dq_day_skull, gettime(DT_DAYOFYEAR);
+
+	mes "[Daily Quest Master]";
+	mes "Excellent!";
+	mes "You delivered 100 Old Purple Box.";
+	mes " ";
+	mes "Reward:";
+	mes "^00FF0015x Aesiro Coin^000000";
+	mes " ";
+	mes "Reward received!";
+	close;
+
+
+//============================================================
+// QUEST 9 — CONVERT BRONZE COINS (ACCOUNT BASED, DAILY)
+//============================================================
+case 9:
+
+	// Já completou hoje
+	if (#dq_day_bronze == gettime(DT_DAYOFYEAR)) {
+		mes "Your ACCOUNT already completed this quest today.";
+		close;
+	}
+
+	// Iniciar quest
+	if (!#dq_bronze_active) {
+
+		mes "[Daily Quest Master]";
+		mes "Today's conversion quest:";
+		mes " ";
+		mes "Objective:";
+		mes "Deliver ^CD7F3240x Bronze Coin^000000.";
+		mes " ";
+		mes "Reward:";
+		mes "^00FF0020x Aesiro Coin^000000";
+
+		set #dq_bronze_goal, 40;
+		set #dq_bronze_active, 1;
+
+		next;
+		mes "[Daily Quest Master]";
+		mes "Quest started!";
+		mes "Bring me 40 Bronze Coins.";
+		close;
+	}
+
+	// Verifica quantidade
+	.@amount = countitem(673);
+
+	if (.@amount < #dq_bronze_goal) {
+		mes "[Daily Quest Master]";
+		mes "You don't have enough Bronze Coins.";
+		mes " ";
+		mes "Required: ^FF000040^000000";
+		mes "You have: ^FFFF00" + .@amount + "^000000";
+		mes " ";
+		mes "Progress: " + .@amount + "/" + #dq_bronze_goal;
+		close;
+	}
+
+	// Entrega
+	delitem 673, #dq_bronze_goal;
+	getitem 671, 20;
+
+	set #dq_bronze_active, 0;
+	set #dq_day_bronze, gettime(DT_DAYOFYEAR);
+
+	mes "[Daily Quest Master]";
+	mes "Excellent!";
+	mes "You delivered 40 Bronze Coins.";
+	mes " ";
+	mes "The Bronze Coins have been converted!";
+	mes " ";
+	mes "Reward:";
+	mes "^00FF0020x Aesiro Coin^000000";
+	mes " ";
+	mes "Reward received!";
+	close;
+
+
+//============================================================
+// QUEST 10 — COLLECT 100 FLAME HEART (ACCOUNT BASED, DAILY)
+//============================================================
+case 10:
+
+	// Já completou hoje
+	if (#dq_day_flameheart == gettime(DT_DAYOFYEAR)) {
+		mes "Your ACCOUNT already completed this quest today.";
+		close;
+	}
+
+	// Iniciar quest
+	if (!#dq_flameheart_active) {
+
+		mes "[Daily Quest Master]";
+		mes "Today's collection quest:";
+		mes " ";
+		mes "Objective:";
+		mes "Deliver ^FF4500100x Flame Heart^000000.";
+		mes " ";
+		mes "Reward:";
+		mes "^00FF0015x Aesiro Coin^000000";
+
+		set #dq_flameheart_goal, 100;
+		set #dq_flameheart_active, 1;
+
+		next;
+		mes "[Daily Quest Master]";
+		mes "Quest started!";
+		mes "Collect 100 Flame Hearts and return here.";
+		close;
+	}
+
+	// Verifica quantidade
+	.@amount = countitem(994);
+
+	if (.@amount < #dq_flameheart_goal) {
+		mes "[Daily Quest Master]";
+		mes "You don't have enough Flame Hearts.";
+		mes " ";
+		mes "Required: ^FF0000100^000000";
+		mes "You have: ^FFFF00" + .@amount + "^000000";
+		mes " ";
+		mes "Progress: " + .@amount + "/" + #dq_flameheart_goal;
+		close;
+	}
+
+	// Entrega
+	delitem 994, #dq_flameheart_goal;
+	getitem 671, 15;
+
+	set #dq_flameheart_active, 0;
+	set #dq_day_flameheart, gettime(DT_DAYOFYEAR);
+
+	mes "[Daily Quest Master]";
+	mes "Excellent!";
+	mes "You delivered 100 Flame Hearts.";
+	mes " ";
+	mes "Reward:";
+	mes "^00FF0015x Aesiro Coin^000000";
+	mes " ";
+	mes "Reward received!";
+	close;
+
+//============================================================
+// CHECK PROGRESS (ACCOUNT BASED)
+//============================================================
+case 11:
+
+	if (!#dq_kill_active
+		&& !#dq_naght_active
+		&& !#dq_lhz_active
+		&& !#dq_Abyss_active
+		&& !#dq_salamander_active
+		&& !#dq_siroma_active
+		&& !#dq_frus_active
+		&& !#dq_skull_active
+		&& !#dq_bronze_active
+		&& !#dq_flameheart_active) {
+
+		mes "Your account doesn't have any active quests.";
+		close;
+	}
+
+	mes "[^0000FFACCOUNT DAILY PROGRESS^000000]";
+	mes " ";
+
+	if (#dq_kill_goal != 10)
+		set #dq_kill_goal, 10;
+
+	if (#dq_kill_active)
+		mes "PvP Kills: ^00FF00" + #dq_kill_count + "^000000 / " + #dq_kill_goal;
+	else
+		mes "PvP Quest: ^FF0000Not active^000000";
+
+	if (#dq_naght_active)
+		mes "Naght Sieger: ^00FF00" + #dq_naght_kill + "^000000 / 1";
+	else
+		mes "Naght Quest: ^FF0000Not active^000000";
+
+	if (#dq_lhz_active) {
+		mes " ";
+		mes "LHZ Target: ^00FF00"+getmonsterinfo(#dq_lhz_target,MOB_NAME)+"^000000";
+		mes "Progress: ^00FF00"+#dq_lhz_count+"^000000 / "+#dq_lhz_goal;
+	}
+	else
+		mes "LHZ Quest: ^FF0000Not active^000000";
+
+	if (#dq_Abyss_active) {
+		mes " ";
+		mes "Abyss Target: ^00FF00"+getmonsterinfo(#dq_Abyss_target,MOB_NAME)+"^000000";
+		mes "Progress: ^00FF00"+#dq_Abyss_count+"^000000 / "+#dq_Abyss_goal;
+	}
+	else
+		mes "Abyss Lake Quest: ^FF0000Not active^000000";
+
+	if (#dq_salamander_active) {
+		mes " ";
+		mes "Salamander Target: ^FF6600Salamander^000000";
+		mes "Progress: ^00FF00" + #dq_salamander_count + "^000000 / " + #dq_salamander_goal;
+	}
+	else
+		mes "Salamander Quest: ^FF0000Not active^000000";
+
+	if (#dq_siroma_active) {
+		mes " ";
+		mes "Siroma Target: ^FF6600Siroma^000000";
+		mes "Progress: ^00FF00" + #dq_siroma_count + "^000000 / " + #dq_siroma_goal;
+	}
+	else
+		mes "Siroma Quest: ^FF0000Not active^000000";
+
+	if (#dq_frus_active) {
+		mes " ";
+		mes "Frus Target: ^FF6600Frus^000000";
+		mes "Progress: ^00FF00" + #dq_frus_count + "^000000 / " + #dq_frus_goal;
+	}
+	else
+		mes "Frus Quest: ^FF0000Not active^000000";
+
+	if (#dq_skull_active) {
+		mes " ";
+		mes "Skull Quest: ^00FF00" + countitem(617) + "^000000 / " + #dq_skull_goal;
+	}
+	else
+		mes "Skull Quest: ^FF0000Not active^000000";
+
+	if (#dq_bronze_active) {
+		mes " ";
+		mes "Bronze Coin Quest: ^00FF00" + countitem(673) + "^000000 / " + #dq_bronze_goal;
+	}
+	else
+		mes "Bronze Coin Quest: ^FF0000Not active^000000";
+
+	if (#dq_flameheart_active) {
+		mes " ";
+		mes "Flame Heart Quest: ^00FF00" + countitem(994) + "^000000 / " + #dq_flameheart_goal;
+	}
+	else
+		mes "Flame Heart Quest: ^FF0000Not active^000000";
+
+	close;
+
+
+//============================================================
+// EXIT
+//============================================================
+case 12:
+	mes "See you next time!";
+	close;
+}
+
+//============================================================
+// EVENT: PVP KILL COUNTER
+//============================================================
+OnPCKillEvent:
+	if (#dq_kill_active) {
+		set #dq_kill_count, #dq_kill_count + 1;
+
+		dispbottom "^7777FF[Daily Quest] PvP Kills: " 
+		+ #dq_kill_count + "/" + #dq_kill_goal + "^000000";
+
+		if (#dq_kill_count >= #dq_kill_goal)
+			dispbottom "^00FF00[Daily Quest] Completed! Return to the NPC.^000000";
+	}
+	end;
+
+
+//============================================================
+// EVENT: NAGHT SIEGER KILL (PARA TODOS DA PARTY)
+//============================================================
+OnNPCKillEvent:
+
+    // Se o monstro morto NÃO é o Naght Sieger, sai
+    if (killedrid != 1956) goto L_LHZCheck;
+
+    // Obtém ID da party
+    .@party_id = getcharid(1);
+    if (!.@party_id) { // Jogador não está em party
+        if (#dq_naght_active) {
+            set #dq_naght_kill, 1;
+            dispbottom "^00FF00[Daily Quest] Naght Sieger defeated!^000000";
+        }
+        end;
+    }
+
+    // Pega membros da party
+    getpartymember .@party_id, 1; // Conta
+    getpartymember .@party_id, 2; // GID
+    getpartymember .@party_id, 0; // Names
+
+    // Marca a quest para todos os membros
+    for (.@i = 0; .@i < $@partymembercount; .@i++) {
+
+        // Verifica se o jogador existe no mapa
+        if (!isloggedin($@partymemberaid[.@i])) continue;
+
+        attachrid($@partymemberaid[.@i]);
+
+        // Apenas quem tem a quest ativa recebe
+        if (#dq_naght_active && #dq_naght_kill == 0) {
+            set #dq_naght_kill, 1;
+            dispbottom "^00FF00[Daily Quest] Naght Sieger defeated!^000000";
+            dispbottom "^00FF00Return to the NPC.^000000";
+        }
+
+        detachrid;
+    }
+
+    end;
+
+//============================================================
+// LHZ CHECK (continuação do seu script original)
+//============================================================
+L_LHZCheck:
+    if (#dq_lhz_active && killedrid == #dq_lhz_target) {
+
+        if (strcharinfo(3) != "lhz_dun03") goto A_AbyssCheck;
+
+        set #dq_lhz_count, #dq_lhz_count + 1;
+
+        dispbottom "^FFFF00[LHZ Daily] " + getmonsterinfo(#dq_lhz_target, MOB_NAME) + ": " +
+                   #dq_lhz_count + "/" + #dq_lhz_goal + "^000000";
+
+        if (#dq_lhz_count >= #dq_lhz_goal)
+            dispbottom "^00FF00[LHZ Daily] Completed! Return to the NPC.^000000";
+    }
+
+    goto A_AbyssCheck;
+
+
+//============================================================
+// abyss CHECK (safe, no end; inside)
+//============================================================
+A_AbyssCheck:
+    if (#dq_Abyss_active && killedrid == #dq_Abyss_target) {
+
+        .@map$ = strcharinfo(3);
+        if (.@map$ != "abyss_01" && .@map$ != "abyss_02" && .@map$ != "abyss_03")
+            goto S_SalamanderCheck;
+
+        set #dq_Abyss_count, #dq_Abyss_count + 1;
+
+        dispbottom "^FFFF00[Abyss Daily] " + getmonsterinfo(#dq_Abyss_target, MOB_NAME) + ": " +
+                   #dq_Abyss_count + "/" + #dq_Abyss_goal + "^000000";
+
+        if (#dq_Abyss_count >= #dq_Abyss_goal)
+            dispbottom "^00FF00[Abyss Daily] Completed! Return to the NPC.^000000";
+    }
+
+    goto S_SalamanderCheck;
+
+
+//============================================================
+// Salamander CHECK (thor_v02 / thor_v03)
+//============================================================
+S_SalamanderCheck:
+    if (#dq_salamander_active && killedrid == 1831) {
+
+        .@map$ = strcharinfo(3);
+        if (.@map$ != "thor_v02" && .@map$ != "thor_v03")
+            goto S_siromaCheck;
+
+        set #dq_salamander_count, #dq_salamander_count + 1;
+
+        dispbottom "^FF6600[Salamander Daily] Salamander: " +
+                   #dq_salamander_count + "/" + #dq_salamander_goal + "^000000";
+
+        if (#dq_salamander_count >= #dq_salamander_goal)
+            dispbottom "^00FF00[Salamander Daily] Completed! Return to the NPC.^000000";
+    }
+
+    goto S_siromaCheck;
+
+
+//============================================================
+// Siroma CHECK (ice_dun01 / ice_dun02)
+//============================================================
+S_siromaCheck:
+    if (#dq_siroma_active && killedrid == 1776) {
+
+        .@map$ = strcharinfo(3);
+        if (.@map$ != "ice_dun01" && .@map$ != "ice_dun02") end;
+
+        set #dq_siroma_count, #dq_siroma_count + 1;
+
+        dispbottom "^FF6600[Siroma Daily] Siroma: " +
+                   #dq_siroma_count + "/" + #dq_siroma_goal + "^000000";
+
+        if (#dq_siroma_count >= #dq_siroma_goal)
+            dispbottom "^00FF00[Siroma Daily] Completed! Return to the NPC.^000000";
+    }
+
+
+//============================================================
+// frus CHECK (odin_tem01 / odin_tem02 / odin_tem03)
+//============================================================
+S_frusCheck:
+    if (#dq_frus_active && killedrid == 1753) {
+
+        .@map$ = strcharinfo(3);
+        if (.@map$ != "odin_tem01" && .@map$ != "odin_tem02" && .@map$ != "odin_tem03") end;
+
+        set #dq_frus_count, #dq_frus_count + 1;
+
+        dispbottom "^FF6600[Frus Daily] Frus: " +
+                   #dq_frus_count + "/" + #dq_frus_goal + "^000000";
+
+        if (#dq_frus_count >= #dq_frus_goal)
+            dispbottom "^00FF00[Frus Daily] Completed! Return to the NPC.^000000";
+    }
+
+    end;
+}

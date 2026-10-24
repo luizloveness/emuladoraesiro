@@ -1,0 +1,42 @@
+//==========================================================//
+// .______     ___   ____    __    ____  __  ___			//
+// |   _  \   / _ \  \   \  /  \  /   / |  |/  /			//
+// |  |_)  | | | | |  \   \/    \/   /  |  '  /				//
+// |   ___/  | | | |   \            /   |    <				//
+// |  |      | |_| |    \    /\    /    |  .  \				//
+// | _|       \___/      \__/  \__/     |__|\__\			//
+//                         P0wk Script's                    //
+//                                                          //
+// 1.0 Criação do nps de Avisos Globais     		        //
+//                                                          //
+// Venda ou alteração proibida sem a devida permissão       //
+//                                                          //
+// Discord: P0wk                                            //
+//==========================================================//
+-	script	Avisos Global	-1,{
+	
+OnInit:
+	setarray .mensagens$[0],
+		"[aesiRO] Não se esqueça de conferir o Login Diário!",
+		"[aesiRO] Lembre-se de se equipar bem antes de sair!",
+		"[aesiRO] Não se esqueça de conferir a Loja de Presença!",
+		"[aesiRO] Dê o seu melhor e enfrente os desafios!",
+		"[aesiRO] Alianças fortes são a chave para o sucesso!",
+		"[aesiRO] Chame seus amigos, participe dos Battlegrounds e se equipe!",
+		"[aesiRO] Explore o mundo e descubra tesouros escondidos!",
+		"[aesiRO] Realize Instâncias, obtenha Bronze Coins e troque por equipamentos.",
+		"[aesiRO] Acesse a Wiki e tire suas dúvidas sobre quests e instâncias customizadas.",
+		"[aesiRO] Você é VIP? Use o comando @encantar para encantar sua arma com elementos e facilitar suas batalhas!",
+		"[aesiRO] Você é VIP? Use o comando @buffsvip para receber buffs em qualquer lugar!",
+		"[aesiRO] Doe e ajude o servidor a continuar online! (@doar)";
+
+		initnpctimer;
+		end;
+
+	OnTimer2000000:
+		announce(.mensagens$[rand(0, getarraysize(.mensagens$) - 1)], bc_all);
+
+		stopnpctimer;
+		initnpctimer;
+		end;
+}

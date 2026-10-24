@@ -95,6 +95,8 @@ ve_in	mapflag	nobranch
 ve_in02	mapflag	nobranch
 thor_camp	mapflag	nobranch
 cave	mapflag	nobranch
+force_3-3	mapflag	nobranch
+
 
 //============================================================
 // Airport
@@ -178,6 +180,7 @@ que_san04	mapflag	nobranch
 que_thor	mapflag	nobranch
 que_ba	mapflag	nobranch
 que_sign01	mapflag	nobranch
+gef_dun03	mapflag	nobranch
 
 //============================================================
 // WoE:FE Castles

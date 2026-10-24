@@ -1,0 +1,33 @@
+prontera,161,143,5	script	VIP doorman	109,{
+	mes "[VIP Concierge]";
+	if (getgroupid() < 5) {
+		mes "Sorry, this area is restricted to VIP players only.";
+		close;
+	}
+	mes "Welcome, noble VIP player!";
+	mes "Do you want to enter the VIP Lounge?";
+	next;
+	switch(select("Yes:No")) {
+		case 1:
+			mes "Have a good time in the VIP Lounge!";
+			close2;
+			warp "que_qsch05",132,124;
+			end;
+		case 2:
+			mes "It's okay. I'll be here if you change your mind.";
+			close;
+	}
+
+}
+
+morocc.gat,150,86,6	duplicate(VIP doorman)	VIP doorman#h1-3	109
+geffen.gat,128,62,6	duplicate(VIP doorman)	VIP doorman#h1-4	109
+payon.gat,162,225,6	duplicate(VIP doorman)	VIP doorman#h1-5	109
+alberta.gat,39,240,6	duplicate(VIP doorman)	VIP doorman#h1-6	109
+izlude.gat,119,101,6	duplicate(VIP doorman)	VIP doorman#h1-7	109
+aldebaran.gat,161,117,6	duplicate(VIP doorman)	VIP doorman#h1-8	109
+xmas.gat,154,126,6	duplicate(VIP doorman)	VIP doorman#h1-9	109
+comodo.gat,189,166,6	duplicate(VIP doorman)	VIP doorman#h1-10	109
+yuno.gat,141,186,6	duplicate(VIP doorman)	VIP doorman#h1-11	109
+gonryun.gat,167,114,6	duplicate(VIP doorman)	VIP doorman#h1-12	109
+hugel.gat,102,144,6	duplicate(VIP doorman)	VIP doorman#h1-13	109

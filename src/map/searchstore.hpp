@@ -5,6 +5,7 @@
 #define SEARCHSTORE_HPP
 
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include <common/cbasetypes.hpp>
@@ -67,6 +68,14 @@ struct s_search_store_search {
 	uint32 max_price;
 };
 
+struct s_search_store_filter {
+	int8 refine_min;                                     // -1 = disabled
+	std::vector<t_itemid> card_filters;                  // empty = disabled, AND logic
+	std::vector<std::pair<int16, int16>> option_filters;  // empty = disabled, (option_id, min_value) AND logic
+	char name_filter[ITEM_NAME_LENGTH];                  // empty string = disabled
+	bool active;                                         // true if any filter is set
+};
+
 struct s_search_store_info_item {
 	int32 store_id;
 	uint32 account_id;
@@ -77,6 +86,7 @@ struct s_search_store_info_item {
 	t_itemid card[MAX_SLOTS];
 	unsigned char refine;
 	uint8 enchantgrade;
+	struct s_item_randomoption option[MAX_ITEM_RDM_OPT]; // random options for display
 };
 
 struct s_search_store_info {
@@ -89,6 +99,7 @@ struct s_search_store_info {
 	e_searchstore_searchtype type;
 	int16 mapid;
 	bool open;
+	struct s_search_store_filter filter; // extended search filters	
 };
 
 bool searchstore_open(map_session_data& sd, uint16 uses, e_searchstore_effecttype effect, int16 mapid);
@@ -100,5 +111,7 @@ void searchstore_close(map_session_data& sd);
 void searchstore_click(map_session_data& sd, uint32 account_id, int32 store_id, t_itemid nameid);
 bool searchstore_queryremote(map_session_data& sd, uint32 account_id);
 void searchstore_clearremote(map_session_data& sd);
+void searchstore_filter_clear(map_session_data& sd);
+bool searchstore_filter_check(const struct s_search_store_filter& filter, const struct item& it, t_itemid nameid);
 
 #endif /* SEARCHSTORE_HPP */

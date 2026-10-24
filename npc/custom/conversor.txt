@@ -1,0 +1,61 @@
+//==========================================================
+// NPC - Elemental Converter Creation (English)
+//==========================================================
+que_qsch05,143,132,4	script	Elemental Converter 	679,{
+
+	mes "[Converter Master]";
+	mes "I can craft Elemental Converters for you.";
+	mes "You must bring:";
+	mes "- 1 Element Stone";
+	mes "- 1 Scroll";
+	mes "Which Elemental Converter do you want to craft?";
+	next;
+
+	switch(select("^FF0000Fire^000000:^0000FFWater^000000:^00FF00Wind^000000:^8B4513Earth^000000:Cancel")) {
+	case 1:
+		callsub S_Make,990,7433,12114,"Fire";
+		break;
+	case 2:
+		callsub S_Make,991,7433,12115,"Water";
+		break;
+	case 3:
+		callsub S_Make,992,7433,12117,"Wind";
+		break;
+	case 4:
+		callsub S_Make,993,7433,12116,"Earth";
+		break;
+	case 5:
+		mes "[Converter Master]";
+		mes "Alright, come back any time.";
+		close;
+	}
+
+end;
+
+S_Make:
+	// arguments:
+	// getarg(0) = element stone
+	// getarg(1) = base scroll
+	// getarg(2) = final converter
+	// getarg(3) = element name
+
+	if (countitem(getarg(0)) < 1) {
+		mes "[Converter Master]";
+		mes "You don't have the "+getarg(3)+" Element Stone.";
+		close;
+	}
+
+	if (countitem(getarg(1)) < 1) {
+		mes "[Converter Master]";
+		mes "You don't have the Base Scroll (7433).";
+		close;
+	}
+
+	delitem getarg(0),1;
+	delitem getarg(1),1;
+	getitem getarg(2),1;
+
+	mes "[Converter Master]";
+	mes "Done! Here is your "+getarg(3)+" Elemental Converter!";
+	close;
+}

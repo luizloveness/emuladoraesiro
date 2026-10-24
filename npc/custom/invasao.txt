@@ -1,0 +1,226 @@
+-	script	MVP_Invasion	-1,{
+
+OnInit:
+
+	// ================================
+	// MVPs disponíveis para invasão
+	// ================================
+	setarray .mvp_id[0],
+		1399,	// Baphomet
+		1817,	// Detale
+		1708,	// Thanatos
+		1876,	// Lord of Death
+		1873,	// Beelzebub
+		1891,	// Valkyrie Shadow
+		1890,	// Gorynych
+		2202;	// Kraken
+
+	setarray .mvp_name$[0],
+		"Baphomet",
+		"Detale",
+		"Thanatos",
+		"Lord of Death",
+		"Beelzebub",
+		"Valkyrie Shadow",
+		"Gorynych",
+		"Kraken";
+
+	// ================================
+	// Mapas disponíveis
+	// ================================
+	setarray .maps$[0],
+		"prontera",
+		"geffen",
+		"morocc",
+		"aldebaran",
+		"alberta";
+
+	// Quantidade de MVPs
+	set .amount,1;
+
+	// ================================
+	// Ranking Top 5
+	// ================================
+	setarray .top_name$[0],"","","","","";
+	setarray .top_kills[0],0,0,0,0,0;
+
+	// ================================
+	// Comando manual
+	// ================================
+	bindatcmd "mvpstart",strnpcinfo(0)+"::OnStart",99,99;
+
+	end;
+
+
+// ================================
+// HORÁRIOS DA INVASÃO
+// ================================
+
+OnClock0000:
+OnClock0200:
+OnClock0900:
+OnClock1100:
+OnClock1500:
+OnClock1800:
+OnClock2000:
+OnClock2200:
+
+	donpcevent strnpcinfo(0)+"::OnStart";
+	end;
+
+
+// ================================
+// INICIAR INVASÃO
+// ================================
+
+OnStart:
+
+	// ================================
+	// Sorteia o MVP
+	// ================================
+	set .@rand_mvp,rand(getarraysize(.mvp_id));
+
+	set .@mvp_id,.mvp_id[.@rand_mvp];
+	set .@mvp_name$,.mvp_name$[.@rand_mvp];
+
+	// ================================
+	// Sorteia o mapa
+	// ================================
+	set .@rand_map,rand(getarraysize(.maps$));
+	set .@map$,.maps$[.@rand_map];
+
+	// ================================
+	// Invoca o MVP
+	// ================================
+	monster .@map$,0,0,
+		.@mvp_name$,
+		.@mvp_id,
+		.amount,
+		strnpcinfo(0)+"::OnKill";
+
+	// ================================
+	// Aviso da invasão
+	// ================================
+	announce "[INVASÃO MVP]",bc_all;
+	announce "O temível "+.@mvp_name$+" invadiu "+.@map$+"! Defenda a cidade e conquiste recompensas!",bc_all;
+
+	end;
+
+
+// ================================
+// MVP DERROTADO
+// ================================
+
+OnKill:
+
+	// ================================
+	// Identifica quem matou
+	// ================================
+	set .@killer_id,killerrid;
+
+	if (!.@killer_id)
+		end;
+
+	// ================================
+	// Anexa o jogador
+	// ================================
+	if (!attachrid(.@killer_id))
+		end;
+
+	// ================================
+	// CHAR ID REAL
+	// ================================
+	set .@char_id,getcharid(0);
+	set .@killer$,strcharinfo(0);
+	set .@map$,strcharinfo(3);
+
+	if (!.@char_id)
+		end;
+
+	// ================================
+	// Pontos
+	// ================================
+	set #MVP_POINTS,#MVP_POINTS + 1;
+	set #MVP_KILLS,#MVP_KILLS + 1;
+
+	// ================================
+	// Ranking MySQL
+	// ================================
+	query_sql("INSERT INTO mvp_invasion_ranking (char_id, name, kills, last_kill) VALUES ("+.@char_id+", '"+escape_sql(.@killer$)+"', 1, NOW()) ON DUPLICATE KEY UPDATE name = '"+escape_sql(.@killer$)+"', kills = kills + 1, last_kill = NOW()");
+
+	// ================================
+	// Mensagem pessoal
+	// ================================
+	dispbottom "Você ganhou 1 Ponto MVP! Total: "+#MVP_POINTS;
+
+	// ================================
+	// Aviso global
+	// ================================
+	announce .@killer$+" derrotou o MVP em "+.@map$+"!",bc_all;
+	announce "A paz retornou e os heróis de Midgard triunfaram!",bc_all;
+
+	end;
+
+
+// ================================
+// RANKING
+// ================================
+
+OnUpdateRank:
+
+	set .@name$,strcharinfo(0);
+	set .@kills,#MVP_KILLS;
+
+	for(set .@i,0;.@i < 5;set .@i,.@i + 1){
+
+		if(.@kills > .top_kills[.@i]){
+
+			// Move posições abaixo
+			for(set .@j,4;.@j > .@i;set .@j,.@j - 1){
+
+				set .top_kills[.@j],
+					.top_kills[.@j - 1];
+
+				set .top_name$[.@j],
+					.top_name$[.@j - 1];
+			}
+
+			// Insere novo jogador
+			set .top_kills[.@i],.@kills;
+			set .top_name$[.@i],.@name$;
+
+			break;
+		}
+	}
+
+	end;
+
+
+// ================================
+// RESET MENSAL
+// ================================
+
+OnMonthlyReset:
+
+	if(gettime(DT_DAYOFMONTH) == 1){
+
+		announce "[RANKING MVP MENSAL]",bc_all;
+
+		if(.top_kills[0] > 0){
+
+			announce "Campeão: "+.top_name$[0]+" com "+.top_kills[0]+" MVPs derrotados!",bc_all;
+		}
+
+		announce "O ranking foi resetado! Uma nova disputa começou!",bc_all;
+
+		// Limpa ranking
+		for(set .@i,0;.@i < 5;set .@i,.@i + 1){
+
+			set .top_kills[.@i],0;
+			set .top_name$[.@i],"";
+		}
+	}
+
+	end;
+
+}

@@ -6055,9 +6055,9 @@ int32 npc_reload(void) {
 			for( int16 j = 0; j < MAX_MOB_LIST_PER_MAP; j++ ){
 				struct map_data *mapdata = map_getmapdata(i);
 
-				if (mapdata->moblist[j] != nullptr) {
+				if (mapdata->moblist[j] != NULL) {
 					aFree(mapdata->moblist[j]);
-					mapdata->moblist[j] = nullptr;
+					mapdata->moblist[j] = NULL; 
 				}
 				if( mapdata->mob_delete_timer != INVALID_TIMER )
 				{ // Mobs were removed anyway,so delete the timer [Inkfish]

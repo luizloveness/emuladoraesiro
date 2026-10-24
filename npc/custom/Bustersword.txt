@@ -1,0 +1,201 @@
+// ========================
+// NPC 1 - Quest Start
+// ========================
+moc_fild11,187,212,4	script	Barret Wallace	10326,{
+
+	cutin "bio_harword06",2; // Show image
+
+	if (quest_stage < 1) {
+		mes "[Barret Wallace]";
+		mes "Listen up, kid...";
+		mes "There is a tale about a legendary sword...";
+		next;
+
+		mes "[Barret Wallace]";
+		mes "The ^FF0000Buster Sword^000000.";
+		mes "A massive blade once wielded by a hero named ^0000FFCloud^000000.";
+		next;
+
+		mes "[Barret Wallace]";
+		mes "They say it carries the spirit of battles fought against destiny itself.";
+		mes "Only the brave can hope to forge such a weapon again.";
+		next;
+
+		mes "[Barret Wallace]";
+		mes "If you truly seek this sword, go to ^8800FFGeffen^000000.";
+		mes "There you will find someone who can guide you further.";
+		next;
+
+		mes "[Barret Wallace]";
+		mes "Prove to me you’ve got the guts, and maybe you’ll stand a chance.";
+		set quest_stage,1;
+		cutin "",255;
+		close;
+	} else {
+		mes "[Barret Wallace]";
+		mes "I already told you... head to Geffen!";
+		cutin "",255;
+		close;
+	}
+}
+
+
+// ========================
+// NPC 2 - Quest Middle (Fixed)
+// ========================
+gef_fild09,222,222,4	script	Old Historian	10327,{
+
+	cutin "bio_sorin03",2; // Show image
+
+	// Item check first
+	if (quest_stage == 1 && countitem(7110) >= 10) {
+		delitem 7110,10; // Remove 10 Broken Swords
+		mes "[Old Historian]";
+		mes "So... you actually brought them.";
+		next;
+
+		mes "[Old Historian]";
+		mes "Good. Then listen closely...";
+		mes "The Buster Sword was more than steel and edge.";
+		next;
+
+		mes "[Old Historian]";
+		mes "Its durability was unmatched...";
+		mes "Its force overwhelming...";
+		mes "But only a knight of true worth could wield it without falling.";
+		next;
+
+		mes "[Old Historian]";
+		mes "Now, if you want to continue this journey...";
+		mes "Go to ^0000FFProntera^000000.";
+		mes "There, another keeper of knowledge will be waiting.";
+		set quest_stage,2;
+		cutin "",255; // Remove image
+		close;
+	}
+
+	// Main dialog based on stage
+	if (quest_stage == 1) {
+		mes "[Old Historian]";
+		mes "Ah... so Barret sent you, eh?";
+		mes "Then you must want to hear the tale of the ^FF0000Buster Sword^000000.";
+		next;
+
+		mes "[Old Historian]";
+		mes "Legends say it was not only a weapon, but a symbol...";
+		mes "A blade that carved destiny itself.";
+		next;
+
+		mes "[Old Historian]";
+		mes "But if you truly wish to hear more...";
+		mes "Bring me ^FF000010 Broken Swords^000000.";
+		cutin "",255;
+		close;
+
+	} else if (quest_stage == 2) {
+		mes "[Old Historian]";
+		mes "Go now... to Prontera.";
+		mes "The last guardian of this tale awaits you there.";
+		cutin "",255;
+		close;
+
+	} else if (quest_stage > 2) {
+		mes "[Old Historian]";
+		mes "You already know everything I had to share.";
+		cutin "",255;
+		close;
+
+	} else {
+		mes "[Old Historian]";
+		mes "Hmm? I don’t know you... seek Barret first.";
+		cutin "",255;
+		close;
+	}
+
+	end;
+}
+
+// ========================
+// NPC 3 - Final Quest
+// ========================
+prt_gld,176,113,4	script	Master Blacksmith	10320,{
+
+	cutin "bio_harword01",2; // Show NPC image
+
+	// Can only talk to this NPC if stage 2 is completed
+	if (quest_stage < 2) {
+		mes "[Master Blacksmith]";
+		mes "You are not ready yet. Seek those who came before me.";
+		close2;
+		cutin "",255;
+		end;
+	}
+
+	// Charge 2kk Zeny to start
+	if (quest_stage == 2) {
+		if (Zeny < 2000000) {
+			mes "[Master Blacksmith]";
+			mes "Hmph! Forging a legend is not cheap...";
+			mes "Come back when you have at least ^FF00002,000,000 Zeny^000000.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		set Zeny, Zeny - 2000000;
+		mes "[Master Blacksmith]";
+		mes "Very well... I see determination in your eyes.";
+		mes "The ^FF0000Buster Sword^000000 is not made of steel alone...";
+		mes "But also of sacrifice and courage.";
+		next;
+		set quest_stage,3;
+	}
+
+	// Main menu
+	mes "[Master Blacksmith]";
+	mes "So, what would you like to do?";
+	next;
+	switch(select("View required items:Forge the Buster Sword:Cancel")) {
+		case 1:
+			mes "[Master Blacksmith]";
+			mes "To create the ^FF0000Buster Sword^000000, you will need:";
+			mes "- 1 Executioner [0]";
+			mes "- 300 Broken Swords";
+			mes "- 50 Bloody Edge ";
+			mes "- 1 Platinum Coin ";
+			mes "- 1 Violet Fear ";
+			close2;
+			cutin "",255;
+			end;
+
+		case 2:
+			// Check if player has all items
+			if (countitem(1169) < 1 || countitem(7110) < 300 || countitem(7024) < 50 || countitem(677) < 1) {
+				mes "[Master Blacksmith]";
+				mes "You don't have all the required materials yet.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			// Remove the items
+			delitem 1169,1;
+			delitem 7110,300;
+			delitem 7024,50;
+			delitem 677,1;
+			delitem 1185,1;
+			getitem 35013,1;
+			mes "[Master Blacksmith]";
+			mes "Incredible... The forge is complete!";
+			mes "The ^FF0000Buster Sword^000000 is now yours!";
+			set quest_stage,4;
+			close2;
+			cutin "",255;
+			end;
+
+		case 3:
+			mes "[Master Blacksmith]";
+			mes "Very well, come back when you are ready.";
+			close2;
+			cutin "",255;
+			end;
+	}
+}

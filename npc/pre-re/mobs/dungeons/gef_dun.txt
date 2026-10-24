@@ -64,35 +64,47 @@ gef_dun02,185,83,3,3	monster	Shining Plant	1083,1,1800000,900000
 //==================================================
 // gef_dun03 - Geffenia (Event Map)
 //==================================================
-gef_dun03,0,0	monster	Hellion Revenant	1626,1,600000,300000
-gef_dun03,0,0	monster	Wraith	1192,8,60000,30000
-gef_dun03,0,0	monster	Wraith Dead	1291,2,60000,30000
-gef_dun03,0,0	monster	Wind Ghost	1263,3,60000,30000
-gef_dun03,0,0	monster	Shining Plant	1083,3,1800000,900000
-gef_dun03,0,0	monster	White Plant	1082,10,180000,90000
+//gef_dun03,0,0	monster	Hellion Revenant	1626,1,600000,300000
+//gef_dun03,0,0	monster	Wraith	1192,8,60000,30000
+//gef_dun03,0,0	monster	Wraith Dead	1291,2,60000,30000
+//gef_dun03,0,0	monster	Wind Ghost	1263,3,60000,30000
+//gef_dun03,0,0	monster	Shining Plant	1083,3,1800000,900000
+//gef_dun03,0,0	monster	White Plant	1082,10,180000,90000
 
 //==================================================
 // Old Event Spawn in case you want to use them
 //==================================================
-//gef_dun03,0,0	monster	Baphomet	1039,1,7200000,7200000
-//gef_dun03,0,0	monster	Doppelganger	1046,1,7200000,7200000
-//gef_dun03,0,0	monster	Deviruchi	1109,8
-//gef_dun03,0,0	monster	Joker	1131,5,300000,100000
-//gef_dun03,0,0	monster	Khalitzburg	1132,2
-//gef_dun03,0,0	monster	Knight of Abyss	1219,2,300000
-//gef_dun03,0,0	monster	Gryphon	1259,1,7200000,3600000
-//gef_dun03,0,0	monster	Blood Knight	1268,2,300000
-//gef_dun03,0,0	monster	Dark Lord	1272,1,7200000,7200000
-//gef_dun03,0,0	monster	Alice	1275,3
-//gef_dun03,0,0	monster	Chimera	1283,1,7200000,7200000
-//gef_dun03,0,0	monster	Mini Demon	1292,2,300000
-//gef_dun03,0,0	monster	Dark Illusion	1302,2,300000
-//gef_dun03,0,0	monster	Apocalypse	1365,2,300000
-//gef_dun03,0,0	monster	Succubus	1370,10
-//gef_dun03,0,0	monster	Fake Angel	1371,8
-//gef_dun03,0,0	monster	Lord of Death	1373,1,7200000,7200000
-//gef_dun03,0,0	monster	Incubus	1374,10
-//gef_dun03,0,0	monster	Nightmare Terror	1379,3
-//gef_dun03,0,0	monster	Violy	1390,10
-//gef_dun03,0,0	monster	Shining Plant	1083,3,1800000,900000
-//gef_dun03,0,0	monster	White Plant	1082,10,180000,90000
+gef_dun03,0,0	monster	Baphomet	1039,1,7200000,7200000
+gef_dun03,0,0	monster	Doppelganger	1046,1,7200000,7200000
+gef_dun03,0,0	monster	Deviruchi	1109,8
+gef_dun03,0,0	monster	Joker	1131,5,300000,100000
+gef_dun03,0,0	monster	Khalitzburg	1132,2
+gef_dun03,0,0	monster	Knight of Abyss	1219,2,300000
+gef_dun03,0,0	monster	Gryphon	1259,1,7200000,3600000
+gef_dun03,0,0	monster	Blood Knight	1268,2,300000
+gef_dun03,0,0	monster	Dark Lord	1272,1,7200000,7200000
+gef_dun03,0,0	monster	Alice	1275,40
+gef_dun03,0,0	monster	Chimera	1283,1,7200000,7200000
+gef_dun03,0,0	monster	Mini Demon	1292,2,300000
+gef_dun03,0,0	monster	Dark Illusion	1302,2,300000
+gef_dun03,0,0	monster	Apocalypse	1365,2,300000
+gef_dun03,0,0	monster	Succubus	1370,10
+gef_dun03,0,0	monster	Fake Angel	1371,8
+gef_dun03,0,0	monster	Lord of Death	1373,1,7200000,7200000
+gef_dun03,0,0	monster	Incubus	1374,10
+gef_dun03,0,0	monster	Nightmare Terror	1379,3
+gef_dun03,0,0	monster	Violy	1390,10
+gef_dun03,0,0	monster	Shining Plant	1083,3,1800000,900000
+gef_dun03,0,0	monster	White Plant	1082,10,180000,90000
+//gef_dun03,0,0	monster	Baphomet	1399,4,7200000,7200000
+//gef_dun03,0,0	monster	Detale	1817,5,900000,900000
+//gef_dun03,0,0	monster	Thanatos	1708,4,900000,900000
+//gef_dun03,0,0	monster	Lord of Death	1876,5
+//gef_dun03,0,0	monster	Beelzebub	1873,3,900000,900000
+//gef_dun03,0,0	monster	Valkyrie Shadow	1891,2,900000,900000
+//gef_dun03,0,0	monster	Gorynych	1890,5,900000,900000
+//gef_dun03,0,0	monster	Kraken	2202,2
+//gef_dun03,0,0	monster	High Priest Margaretha	1649,1
+//gef_dun03,0,0	monster	Sniper Cecil	1650,1
+//gef_dun03,0,0	monster	High Wizard Kathryne	1651,1
+//gef_dun03,0,0	monster	Lord Knight Seyren	1646,1

@@ -1,0 +1,493 @@
+// ============================================================
+// aesiRO - CENTRAL DE MISSÕES
+// NPC 03
+// ============================================================
+//
+// QUEST 01 - HOD
+//
+// Requisitos:
+// 100x Moedas Archangeling
+// 5x Tintura Roxa - ID 981
+//
+// Recompensa:
+// 1x HOD - ID 3064
+//
+// QUEST 02 - BYAKUGAN
+//
+// Requisitos:
+// 100x Moedas Archangeling
+// 5x Tintura Roxa - ID 981
+// 200x Felpas - ID 914
+//
+// Recompensa:
+// 1x Byakugan - ID A DEFINIR
+// QUEST 03 - Dragon Helm
+//
+// Requisitos:
+// 100x Moedas Archangeling
+// 5x Tintura Roxa - ID 981
+// 200x Felpas - ID 914
+//
+// Recompensa:
+// 1x Byakugan - ID A DEFINIR
+//
+// ============================================================
+
+prontera,155,207,4	script	Archangeling	1388,{
+
+	mes "[Archangeling]";
+	mes "Ora, ora... um aventureiro!";
+	mes "Você tem cara de quem está procurando";
+	mes "problemas... digo, ^00FF00missões^000000!";
+	next;
+
+	mes "[Archangeling]";
+	mes "Eu sou responsável por reunir";
+	mes "algumas das missões mais interessantes";
+	mes "de todo o reino.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Se você estiver procurando um desafio,";
+	mes "talvez eu tenha algo para você.";
+	next;
+
+	switch(select(
+		"Quero uma missão!",
+		"Ver minha missão atual",
+		"Sair"
+	)) {
+
+		case 1:
+			goto L_QUEST_MENU;
+
+		case 2:
+			goto L_STATUS;
+
+		case 3:
+			mes "[Archangeling]";
+			mes "Volte quando estiver preparado.";
+			mes "Sempre existe uma nova missão esperando";
+			mes "por algum aventureiro corajoso.";
+			close;
+	}
+
+
+// ============================================================
+// MENU DE QUESTS
+// ============================================================
+
+L_QUEST_MENU:
+
+	mes "[Archangeling]";
+	mes "Muito bem!";
+	mes "Vamos ver o que tenho disponível...";
+	next;
+
+	switch(select(
+		"HOD",
+		"Byakugan",
+		"Dragon Helm",
+		"Voltar"
+	)) {
+
+		case 1:
+			goto L_QUEST_HOD;
+
+		case 2:
+			goto L_QUEST_BYAKUGAN;
+
+		case 3:
+			goto L_QUEST_Dragon_Helm;
+
+		case 4:
+			goto L_END;
+	}
+
+
+// ============================================================
+// QUEST 01 - HOD
+// ============================================================
+
+L_QUEST_HOD:
+
+	mes "[Archangeling]";
+	mes "Então você escolheu esta missão...";
+	mes "Interessante.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Preciso de alguns materiais especiais";
+	mes "para preparar um equipamento bastante raro.";
+	next;
+
+	mes "[Archangeling]";
+	mes "^800080Requisitos da missão:^000000";
+	mes " ";
+	mes "• ^FFD700100x Moeda Archangeling^000000";
+	mes " ";
+	mes "• ^8000805x Tintura Roxa^000000";
+	next;
+
+	mes "[Archangeling]";
+	mes "Traga todos os materiais para mim";
+	mes "e eu cuidarei do restante.";
+	next;
+
+	// ========================================================
+	// VERIFICAÇÃO DOS MATERIAIS
+	// ========================================================
+
+	if (countitem(3091) < 100 || countitem(981) < 5) {
+
+		mes "[Archangeling]";
+		mes "Hmmm...";
+		mes "Parece que ainda falta alguma coisa.";
+		next;
+
+		mes "[Archangeling]";
+		mes "Você precisa trazer:";
+		mes " ";
+		mes "^FFD700100x Moeda Archangeling^000000";
+		mes "^8000805x Tintura Roxa^000000";
+		next;
+
+		mes "[Archangeling]";
+		mes "Volte quando estiver com tudo.";
+		close;
+	}
+
+	// ========================================================
+	// CONFIRMAÇÃO
+	// ========================================================
+
+	mes "[Archangeling]";
+	mes "OHOHOHO!";
+	mes "Você conseguiu reunir tudo!";
+	next;
+
+	mes "[Archangeling]";
+	mes "Essas moedas...";
+	mes "e essas tinturas...";
+	next;
+
+	mes "[Archangeling]";
+	mes "Perfeito!";
+	mes "Exatamente o que eu precisava.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Agora fique parado aí.";
+	mes "Vou preparar seu equipamento.";
+	next;
+
+	// ========================================================
+	// REMOVE OS MATERIAIS
+	// ========================================================
+
+	delitem 3091,100;
+	delitem 981,5;
+
+	// ========================================================
+	// ENTREGA DA RECOMPENSA
+	// ========================================================
+
+	getitem 3064,1;
+
+	mes "[Archangeling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Archangeling]";
+	mes "Você recebeu:";
+	mes " ";
+	mes "^0000FF1x HOD^000000";
+	next;
+
+	mes "[Archangeling]";
+	mes "Cuide bem desse equipamento.";
+	mes "Você acabou de provar que";
+	mes "é capaz de cumprir uma missão de verdade!";
+	next;
+
+	mes "[Archangeling]";
+	mes "HAHAHAHA!";
+	mes "Volte quando quiser encarar";
+	mes "uma nova missão!";
+	close;
+
+
+// ============================================================
+// QUEST 02 - BYAKUGAN
+// ============================================================
+
+L_QUEST_BYAKUGAN:
+
+	mes "[Archangeling]";
+	mes "Então você escolheu esta missão...";
+	mes "Interessante.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Preciso de alguns materiais especiais";
+	mes "para preparar um equipamento bastante raro.";
+	next;
+
+	mes "[Archangeling]";
+	mes "^800080Requisitos da missão:^000000";
+	mes " ";
+	mes "• ^FFD700100x Moeda Archangeling^000000";
+	mes " ";
+	mes "• ^8000805x Tintura Roxa^000000";
+	mes " ";
+	mes "• ^800080200x Felpas^000000";
+	next;
+
+	mes "[Archangeling]";
+	mes "Traga todos os materiais para mim";
+	mes "e eu cuidarei do restante.";
+	next;
+
+	// ========================================================
+	// VERIFICAÇÃO DOS MATERIAIS
+	// ========================================================
+
+	if (countitem(3091) < 100 || countitem(981) < 5 || countitem(914) < 200) {
+
+		mes "[Archangeling]";
+		mes "Hmmm...";
+		mes "Parece que ainda falta alguma coisa.";
+		next;
+
+		mes "[Archangeling]";
+		mes "Você precisa trazer:";
+		mes " ";
+		mes "^FFD700100x Moeda Archangeling^000000";
+		mes "^8000805x Tintura Roxa^000000";
+		mes "^800080200x Felpas^000000";
+		next;
+
+		mes "[Archangeling]";
+		mes "Volte quando estiver com tudo.";
+		close;
+	}
+
+	// ========================================================
+	// CONFIRMAÇÃO
+	// ========================================================
+
+	mes "[Archangeling]";
+	mes "OHOHOHO!";
+	mes "Você conseguiu reunir tudo!";
+	next;
+
+	mes "[Archangeling]";
+	mes "Essas moedas...";
+	mes "e essas tinturas...";
+	next;
+
+	mes "[Archangeling]";
+	mes "Perfeito!";
+	mes "Exatamente o que eu precisava.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Agora fique parado aí.";
+	mes "Vou preparar seu equipamento.";
+	next;
+
+	// ========================================================
+	// REMOVE OS MATERIAIS
+	// ========================================================
+
+	delitem 3091,100;
+	delitem 981,5;
+	delitem 914,200;
+
+	// ========================================================
+	// ENTREGA DA RECOMPENSA
+	// ========================================================
+	//
+	// ATENÇÃO:
+	// Substitua 3064 pelo ID correto do BYAKUGAN.
+	//
+	// ========================================================
+
+	getitem 3056,1;
+
+	mes "[Archangeling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Archangeling]";
+	mes "Você recebeu:";
+	mes " ";
+	mes "^0000FF1x Byakugan^000000";
+	next;
+
+	mes "[Archangeling]";
+	mes "Cuide bem desse equipamento.";
+	mes "Você acabou de provar que";
+	mes "é capaz de cumprir uma missão de verdade!";
+	next;
+
+	mes "[Archangeling]";
+	mes "HAHAHAHA!";
+	mes "Volte quando quiser encarar";
+	mes "uma nova missão!";
+	close;
+
+// ============================================================
+// QUEST 03 - Dragon Helm
+// ============================================================
+
+L_QUEST_Dragon_Helm:
+
+	mes "[Archangeling]";
+	mes "Então você escolheu esta missão...";
+	mes "Interessante.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Preciso de alguns materiais especiais";
+	mes "para preparar um equipamento bastante raro.";
+	next;
+
+	mes "[Archangeling]";
+	mes "^800080Requisitos da missão:^000000";
+	mes " ";
+	mes "• ^FFD700100x Moeda Archangeling^000000";
+	mes " ";
+	mes "• ^8000805x Tintura Azul^000000";
+	mes " ";
+	mes "• ^800080300x Escamas de Dragão^000000";
+	next;
+
+	mes "[Archangeling]";
+	mes "Traga todos os materiais para mim";
+	mes "e eu cuidarei do restante.";
+	next;
+
+	// ========================================================
+	// VERIFICAÇÃO DOS MATERIAIS
+	// ========================================================
+
+	if (countitem(3091) < 100 || countitem(978) < 5 || countitem(1036) < 300) {
+
+		mes "[Archangeling]";
+		mes "Hmmm...";
+		mes "Parece que ainda falta alguma coisa.";
+		next;
+
+		mes "[Archangeling]";
+		mes "Você precisa trazer:";
+		mes " ";
+		mes "^FFD700100x Moeda Archangeling^000000";
+		mes "^8000805x Tintura Azul^000000";
+		mes "^800080200x Escamas de Dragão^000000";
+		next;
+
+		mes "[Archangeling]";
+		mes "Volte quando estiver com tudo.";
+		close;
+	}
+
+	// ========================================================
+	// CONFIRMAÇÃO
+	// ========================================================
+
+	mes "[Archangeling]";
+	mes "OHOHOHO!";
+	mes "Você conseguiu reunir tudo!";
+	next;
+
+	mes "[Archangeling]";
+	mes "Essas moedas...";
+	mes "e essas tinturas...";
+	next;
+
+	mes "[Archangeling]";
+	mes "Perfeito!";
+	mes "Exatamente o que eu precisava.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Agora fique parado aí.";
+	mes "Vou preparar seu equipamento.";
+	next;
+
+	// ========================================================
+	// REMOVE OS MATERIAIS
+	// ========================================================
+
+	delitem 3091,100;
+	delitem 978,5;
+	delitem 1036,300;
+
+	// ========================================================
+	// ENTREGA DA RECOMPENSA
+	// ========================================================
+	//
+	// ATENÇÃO:
+	// Substitua 3064 pelo ID correto do BYAKUGAN.
+	//
+	// ========================================================
+
+	getitem 3059,1;
+
+	mes "[Archangeling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Archangeling]";
+	mes "Você recebeu:";
+	mes " ";
+	mes "^0000FF1x Dragon Helm^000000";
+	next;
+
+	mes "[Archangeling]";
+	mes "Cuide bem desse equipamento.";
+	mes "Você acabou de provar que";
+	mes "é capaz de cumprir uma missão de verdade!";
+	next;
+
+	mes "[Archangeling]";
+	mes "HAHAHAHA!";
+	mes "Volte quando quiser encarar";
+	mes "uma nova missão!";
+	close;
+// ============================================================
+// STATUS
+// ============================================================
+
+L_STATUS:
+
+	mes "[Archangeling]";
+	mes "Por enquanto, você não possui";
+	mes "nenhuma missão registrada.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Mas não se preocupe...";
+	mes "isso pode mudar muito em breve.";
+	next;
+
+	mes "[Archangeling]";
+	mes "Tenho várias ideias guardadas";
+	mes "para aventureiros como você.";
+	close;
+
+
+// ============================================================
+// SAÍDA
+// ============================================================
+
+L_END:
+
+	mes "[Archangeling]";
+	mes "Tudo bem.";
+	mes "Volte quando quiser aceitar";
+	mes "um novo desafio.";
+	close;
+}
+

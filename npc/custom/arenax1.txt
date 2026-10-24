@@ -1,0 +1,1608 @@
+// ============================================================
+// aesiRO - ARENA X1
+// NPC + MATCHMAKING + RANKING + MORTE + PREMIAÇÃO
+// ============================================================
+//
+// Classes permitidas:
+//
+// 4001 - Novice High
+// 4008 - Lord Knight
+// 4009 - High Priest
+// 4010 - High Wizard
+// 4011 - Whitesmith
+// 4012 - Sniper
+// 4013 - Assassin Cross
+// 4015 - Paladin
+// 4016 - Champion
+// 4017 - Professor
+// 4018 - Stalker
+// 4019 - Creator
+// 4020 - Clown
+// 4021 - Gypsy
+//
+// Arena:
+// force_3-3
+//
+// Player 1: 72,179
+// Player 2: 127,179
+//
+// Vitória: +2
+// Derrota: -1
+// Mínimo: 0
+//
+// Premiação mensal:
+// 1º colocado de cada classe
+// Item: 31818
+// Entrega: no próximo login
+// Duração: 29 dias
+//
+// ============================================================
+
+
+// ============================================================
+// NPC VISÍVEL
+// ============================================================
+
+prontera,137,126,4	script	Arena 1vs1	404,{
+
+	.@arena_map$ = "force_3-3";
+
+	.@arena_x1 = 72;
+	.@arena_y1 = 179;
+
+	.@arena_x2 = 127;
+	.@arena_y2 = 179;
+
+	// --------------------------------------------------------
+	// DADOS DO PLAYER
+	// --------------------------------------------------------
+
+	.@char_id = getcharid(0);
+	.@account_id = getcharid(3);
+	.@name$ = strcharinfo(0);
+
+	.@season$ = gettimestr("%Y%m",21);
+
+	// --------------------------------------------------------
+	// PEGAR CLASSE DO BANCO
+	// --------------------------------------------------------
+
+	.@class_id = 0;
+
+	query_sql(
+		"SELECT class "+
+		"FROM `char` "+
+		"WHERE char_id = "+.@char_id+
+		" LIMIT 1",
+		.@class_id
+	);
+
+	// --------------------------------------------------------
+	// NOME DA CLASSE
+	// --------------------------------------------------------
+
+	.@class_name$ = "";
+
+	switch (.@class_id) {
+
+		case 4001:
+			.@class_name$ = "Novice High";
+			break;
+
+		case 4008:
+			.@class_name$ = "Lord Knight";
+			break;
+
+		case 4009:
+			.@class_name$ = "High Priest";
+			break;
+
+		case 4010:
+			.@class_name$ = "High Wizard";
+			break;
+
+		case 4011:
+			.@class_name$ = "Whitesmith";
+			break;
+
+		case 4012:
+			.@class_name$ = "Sniper";
+			break;
+
+		case 4013:
+			.@class_name$ = "Assassin Cross";
+			break;
+
+		case 4015:
+			.@class_name$ = "Paladin";
+			break;
+
+		case 4016:
+			.@class_name$ = "Champion";
+			break;
+
+		case 4017:
+			.@class_name$ = "Professor";
+			break;
+
+		case 4018:
+			.@class_name$ = "Stalker";
+			break;
+
+		case 4019:
+			.@class_name$ = "Creator";
+			break;
+
+		case 4020:
+			.@class_name$ = "Clown";
+			break;
+
+		case 4021:
+			.@class_name$ = "Gypsy";
+			break;
+	}
+
+	// ========================================================
+	// MENU
+	// ========================================================
+
+	.@menu = select(
+		"Cadastrar no Evento 1 vs 1",
+		"Consultar Ranking",
+		"Premiar Campeões da Temporada",
+		"Sair"
+	);
+
+	// ========================================================
+	// CADASTRAR
+	// ========================================================
+
+	if (.@menu == 1) {
+
+		// ----------------------------------------------------
+		// CLASSE PERMITIDA
+		// ----------------------------------------------------
+
+		.@allowed = 0;
+
+		switch (.@class_id) {
+
+			case 4001:
+			case 4008:
+			case 4009:
+			case 4010:
+			case 4011:
+			case 4012:
+			case 4013:
+			case 4015:
+			case 4016:
+			case 4017:
+			case 4018:
+			case 4019:
+			case 4020:
+			case 4021:
+				.@allowed = 1;
+				break;
+		}
+
+		if (!.@allowed) {
+
+			mes "[Arena 1vs1]";
+			mes "Sua classe não participa";
+			mes "da Arena 1vs1.";
+			close;
+		}
+
+		// ----------------------------------------------------
+		// JÁ ESTÁ NA FILA?
+		// ----------------------------------------------------
+
+		.@queue_count = 0;
+
+		query_sql(
+			"SELECT COUNT(*) "+
+			"FROM x1_arena_queue "+
+			"WHERE char_id = "+.@char_id,
+			.@queue_count
+		);
+
+		if (.@queue_count > 0) {
+
+			mes "[Arena 1vs1]";
+			mes "Você já está procurando";
+			mes "um adversário.";
+			mes "";
+			mes "Classe: ^00AAFF"+
+				.@class_name$+
+				"^000000";
+
+			close;
+		}
+
+		// ----------------------------------------------------
+		// JÁ ESTÁ EM PARTIDA?
+		// ----------------------------------------------------
+
+		.@match_count = 0;
+
+		query_sql(
+			"SELECT COUNT(*) "+
+			"FROM x1_arena_matches "+
+			"WHERE status = 'active' "+
+			"AND (char_id_1 = "+.@char_id+
+			" OR char_id_2 = "+.@char_id+")",
+			.@match_count
+		);
+
+		if (.@match_count > 0) {
+
+			mes "[Arena 1vs1]";
+			mes "Você já está participando";
+			mes "de uma batalha.";
+
+			close;
+		}
+
+		// ----------------------------------------------------
+		// LOCAL ORIGINAL
+		// ----------------------------------------------------
+
+		.@original_map$ = strcharinfo(3);
+
+		getmapxy(
+			.@original_map$,
+			.@original_x,
+			.@original_y,
+			BL_PC
+		);
+
+		// ====================================================
+		// PROCURAR ADVERSÁRIO
+		// ====================================================
+
+		.@enemy_char_id = 0;
+		.@enemy_account_id = 0;
+		.@enemy_name$ = "";
+		.@enemy_class_id = 0;
+		.@enemy_map$ = "";
+		.@enemy_x = 0;
+		.@enemy_y = 0;
+
+		query_sql(
+			"SELECT char_id,account_id,name,class_id,map,x,y "+
+			"FROM x1_arena_queue "+
+			"WHERE class_id = "+.@class_id+
+			" AND char_id <> "+.@char_id+
+			" ORDER BY joined_at ASC "+
+			"LIMIT 1",
+			.@enemy_char_id,
+			.@enemy_account_id,
+			.@enemy_name$,
+			.@enemy_class_id,
+			.@enemy_map$,
+			.@enemy_x,
+			.@enemy_y
+		);
+
+		// ====================================================
+		// NÃO ENCONTROU
+		// ====================================================
+
+		if (.@enemy_char_id <= 0) {
+
+			query_sql(
+				"INSERT INTO x1_arena_queue "+
+				"(char_id,account_id,name,class_id,map,x,y,joined_at) "+
+				"VALUES ("+
+				.@char_id+","+
+				.@account_id+",'"+
+				escape_sql(.@name$)+"',"+
+				.@class_id+",'"+
+				escape_sql(.@original_map$)+"',"+
+				.@original_x+","+
+				.@original_y+","+
+				"NOW())"
+			);
+
+			announce
+				"[Arena 1vs1] Player "+.@name$+
+				" ["+.@class_name$+
+				"] está procurando uma batalha na Arena 1vs1!",
+				bc_all;
+
+			mes "[Arena 1vs1]";
+			mes "Você entrou na fila!";
+			mes "";
+			mes "Classe: ^00AAFF"+
+				.@class_name$+
+				"^000000";
+			mes "";
+			mes "Aguarde um jogador da";
+			mes "mesma classe.";
+
+			close;
+		}
+
+		// ====================================================
+		// ADVERSÁRIO ENCONTRADO
+		// ====================================================
+
+		.@my_rid = getcharid(3);
+
+		// ----------------------------------------------------
+		// CONECTAR NO ADVERSÁRIO
+		// ----------------------------------------------------
+
+		if (!attachrid(.@enemy_account_id)) {
+
+			query_sql(
+				"DELETE FROM x1_arena_queue "+
+				"WHERE char_id = "+.@enemy_char_id
+			);
+
+			if (!attachrid(.@my_rid))
+				end;
+
+			mes "[Arena 1vs1]";
+			mes "O jogador encontrado";
+			mes "não está mais disponível.";
+			mes "";
+			mes "Tente novamente.";
+
+			close;
+		}
+
+		// ----------------------------------------------------
+		// GARANTIR QUE É O CHAR CORRETO
+		// ----------------------------------------------------
+
+		if (getcharid(0) != .@enemy_char_id) {
+
+			if (!attachrid(.@my_rid))
+				end;
+
+			mes "[Arena 1vs1]";
+			mes "O jogador encontrado";
+			mes "não está mais disponível.";
+			mes "";
+			mes "Tente novamente.";
+
+			close;
+		}
+
+		// ----------------------------------------------------
+		// REMOVER ADVERSÁRIO DA FILA
+		// ----------------------------------------------------
+
+		query_sql(
+			"DELETE FROM x1_arena_queue "+
+			"WHERE char_id = "+.@enemy_char_id
+		);
+
+		// ====================================================
+		// CRIAR MATCH
+		// ====================================================
+
+		query_sql(
+			"INSERT INTO x1_arena_matches "+
+			"(char_id_1,char_id_2,class_id,map,x1,y1,x2,y2,status) "+
+			"VALUES ("+
+			.@char_id+","+
+			.@enemy_char_id+","+
+			.@class_id+",'"+
+			escape_sql(.@arena_map$)+"',"+
+			.@arena_x1+","+
+			.@arena_y1+","+
+			.@arena_x2+","+
+			.@arena_y2+","+
+			"'active')"
+		);
+
+		.@match_id = 0;
+
+		query_sql(
+			"SELECT LAST_INSERT_ID()",
+			.@match_id
+		);
+
+		// ----------------------------------------------------
+		// SE FALHOU AO CRIAR
+		// ----------------------------------------------------
+
+		if (.@match_id <= 0) {
+
+			query_sql(
+				"INSERT INTO x1_arena_queue "+
+				"(char_id,account_id,name,class_id,map,x,y,joined_at) "+
+				"VALUES ("+
+				.@enemy_char_id+","+
+				.@enemy_account_id+",'"+
+				escape_sql(.@enemy_name$)+"',"+
+				.@class_id+",'"+
+				escape_sql(.@enemy_map$)+"',"+
+				.@enemy_x+","+
+				.@enemy_y+","+
+				"NOW())"
+			);
+
+			if (!attachrid(.@my_rid))
+				end;
+
+			mes "[Arena 1vs1]";
+			mes "Não foi possível criar";
+			mes "a partida.";
+			mes "";
+			mes "Tente novamente.";
+
+			close;
+		}
+
+		// ====================================================
+		// ANÚNCIO
+		// ====================================================
+
+		announce
+			"[Arena 1vs1] Batalha encontrada!",
+			bc_all;
+
+		announce
+			"[Arena 1vs1] "+
+			.@name$+
+			" ["+
+			.@class_name$+
+			"] VS "+
+			.@enemy_name$+
+			" ["+
+			.@class_name$+
+			"]!",
+			bc_all;
+
+		// ====================================================
+		// PLAYER 2
+		// ====================================================
+
+		dispbottom
+			"[Arena 1vs1] Adversário encontrado!";
+
+		dispbottom
+			"[Arena 1vs1] Você lutará contra "+
+			.@name$+"!";
+
+		dispbottom
+			"[Arena 1vs1] Prepare-se!";
+
+		warp
+			.@arena_map$,
+			.@arena_x2,
+			.@arena_y2;
+
+		sc_start
+			SC_STUN,
+			10000,
+			0;
+
+		// ====================================================
+		// VOLTAR PLAYER 1
+		// ====================================================
+
+		if (!attachrid(.@my_rid))
+			end;
+
+		dispbottom
+			"[Arena 1vs1] Adversário encontrado!";
+
+		dispbottom
+			"[Arena 1vs1] Você lutará contra "+
+			.@enemy_name$+"!";
+
+		dispbottom
+			"[Arena 1vs1] Prepare-se!";
+
+		warp
+			.@arena_map$,
+			.@arena_x1,
+			.@arena_y1;
+
+		sc_start
+			SC_STUN,
+			10000,
+			0;
+
+		// ====================================================
+		// AVISOS
+		// ====================================================
+
+		sleep 1000;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] BATALHA 1x1!",
+			bc_map,
+			0x3399FF;
+
+		sleep 1000;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] "+
+			.@name$+
+			" VS "+
+			.@enemy_name$+"!",
+			bc_map,
+			0x3399FF;
+
+		sleep 1000;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] Vitória: +2 pontos",
+			bc_map,
+			0x3399FF;
+
+		sleep 1000;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] Derrota: -1 ponto",
+			bc_map,
+			0x3399FF;
+
+		sleep 1000;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] Lute limpo!",
+			bc_map,
+			0x3399FF;
+
+		sleep 2000;
+
+		// ====================================================
+		// COUNTDOWN
+		// ====================================================
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] A batalha começa em 7 segundos!",
+			bc_map,
+			0x3399FF;
+
+		sleep 3000;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] 4...",
+			bc_map,
+			0x3399FF;
+
+		sleep 2000;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] 2...",
+			bc_map,
+			0x3399FF;
+
+		sleep 1000;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] 1...",
+			bc_map,
+			0x3399FF;
+
+		sleep 1000;
+
+		if (!attachrid(.@my_rid))
+			end;
+
+		sc_end SC_STUN;
+
+		mapannounce
+			.@arena_map$,
+			"[Arena 1vs1] COMECEM!",
+			bc_map,
+			0x3399FF;
+
+		end;
+	}
+
+
+	// ========================================================
+	// RANKING
+	// ========================================================
+
+	if (.@menu == 2) {
+
+		.@ranking_choice = select(
+			"Novice High",
+			"Lord Knight",
+			"High Priest",
+			"High Wizard",
+			"Whitesmith",
+			"Sniper",
+			"Assassin Cross",
+			"Paladin",
+			"Champion",
+			"Professor",
+			"Stalker",
+			"Creator",
+			"Clown",
+			"Gypsy",
+			"Voltar"
+		);
+
+		if (.@ranking_choice == 15)
+			close;
+
+		switch (.@ranking_choice) {
+
+			case 1:
+				.@ranking_class_id = 4001;
+				.@ranking_class_name$ = "Novice High";
+				break;
+
+			case 2:
+				.@ranking_class_id = 4008;
+				.@ranking_class_name$ = "Lord Knight";
+				break;
+
+			case 3:
+				.@ranking_class_id = 4009;
+				.@ranking_class_name$ = "High Priest";
+				break;
+
+			case 4:
+				.@ranking_class_id = 4010;
+				.@ranking_class_name$ = "High Wizard";
+				break;
+
+			case 5:
+				.@ranking_class_id = 4011;
+				.@ranking_class_name$ = "Whitesmith";
+				break;
+
+			case 6:
+				.@ranking_class_id = 4012;
+				.@ranking_class_name$ = "Sniper";
+				break;
+
+			case 7:
+				.@ranking_class_id = 4013;
+				.@ranking_class_name$ = "Assassin Cross";
+				break;
+
+			case 8:
+				.@ranking_class_id = 4015;
+				.@ranking_class_name$ = "Paladin";
+				break;
+
+			case 9:
+				.@ranking_class_id = 4016;
+				.@ranking_class_name$ = "Champion";
+				break;
+
+			case 10:
+				.@ranking_class_id = 4017;
+				.@ranking_class_name$ = "Professor";
+				break;
+
+			case 11:
+				.@ranking_class_id = 4018;
+				.@ranking_class_name$ = "Stalker";
+				break;
+
+			case 12:
+				.@ranking_class_id = 4019;
+				.@ranking_class_name$ = "Creator";
+				break;
+
+			case 13:
+				.@ranking_class_id = 4020;
+				.@ranking_class_name$ = "Clown";
+				break;
+
+			case 14:
+				.@ranking_class_id = 4021;
+				.@ranking_class_name$ = "Gypsy";
+				break;
+		}
+
+		mes "[Arena 1vs1]";
+		mes "^00AAFFRanking "+
+			.@ranking_class_name$+
+			"^000000";
+		mes "";
+		mes "Temporada: ^00AAFF"+
+			.@season$+
+			"^000000";
+		mes "";
+
+		.@rank_count = query_sql(
+			"SELECT name,points "+
+			"FROM x1_arena_ranking "+
+			"WHERE class_id = "+
+			.@ranking_class_id+
+			" AND season = '"+
+			.@season$+
+			"' "+
+			"ORDER BY points DESC,name ASC "+
+			"LIMIT 10",
+			.@rank_name$,
+			.@rank_points
+		);
+
+		if (.@rank_count <= 0) {
+
+			mes "^777777Nenhum jogador possui";
+			mes "pontuação nesta temporada.^000000";
+
+			close;
+		}
+
+		for (.@i = 0; .@i < .@rank_count; .@i++) {
+
+			.@pos = .@i + 1;
+
+			if (.@pos == 1)
+				.@pos_text$ = "1º";
+			else if (.@pos == 2)
+				.@pos_text$ = "2º";
+			else if (.@pos == 3)
+				.@pos_text$ = "3º";
+			else
+				.@pos_text$ = .@pos+"º";
+
+			mes .@pos_text$+
+				" ^00AAFF"+
+				.@rank_name$[.@i]+
+				"^000000 - "+
+				.@rank_points[.@i]+
+				" pontos";
+		}
+
+		.@my_points = -1;
+
+		query_sql(
+			"SELECT points "+
+			"FROM x1_arena_ranking "+
+			"WHERE char_id = "+.@char_id+
+			" AND class_id = "+.@ranking_class_id+
+			" AND season = '"+.@season$+"' "+
+			"LIMIT 1",
+			.@my_points
+		);
+
+		if (.@my_points >= 0) {
+
+			.@my_position = 0;
+
+			query_sql(
+				"SELECT COUNT(*) + 1 "+
+				"FROM x1_arena_ranking "+
+				"WHERE class_id = "+.@ranking_class_id+
+				" AND season = '"+.@season$+"' "+
+				"AND points > "+.@my_points,
+				.@my_position
+			);
+
+			mes "";
+			mes "------------------------------";
+			mes "^00AAFFSua posição:^000000 "+
+				.@my_position+
+				"º";
+			mes "^00AAFFSeus pontos:^000000 "+
+				.@my_points;
+		}
+
+		close;
+	}
+
+
+	// ========================================================
+	// PREMIAÇÃO DOS CAMPEÕES
+	// ========================================================
+
+	if (.@menu == 3) {
+
+		if (getgmlevel() < 99) {
+
+			mes "[Arena 1vs1]";
+			mes "Apenas o administrador pode";
+			mes "realizar a premiação da temporada.";
+
+			close;
+		}
+
+		mes "[Arena 1vs1]";
+		mes "^00AAFFPREMIAÇÃO MENSAL^000000";
+		mes "";
+		mes "Temporada atual:";
+		mes "^00AAFF"+.@season$+"^000000";
+		mes "";
+		mes "Serão premiados os primeiros";
+		mes "colocados de cada classe.";
+		mes "";
+		mes "Recompensa:";
+		mes "^00AAFFCostume Top Player^000000";
+		mes "Item: ^00AAFF31818^000000";
+		mes "Entrega: ^00AAFFNo próximo login^000000";
+		mes "Duração: ^00AAFF29 dias^000000";
+		mes "";
+		mes "^777777A premiação será registrada";
+		mes "e entregue automaticamente";
+		mes "quando o campeão entrar no servidor.^000000";
+		mes "";
+
+		if (select("Confirmar premiação","Cancelar") == 2) {
+
+			mes "[Arena 1vs1]";
+			mes "Premiação cancelada.";
+
+			close;
+		}
+
+		// ----------------------------------------------------
+		// LISTA DE CLASSES
+		// ----------------------------------------------------
+
+		.@class_count = 14;
+
+		setarray .@class_id_list[0],
+			4001,
+			4008,
+			4009,
+			4010,
+			4011,
+			4012,
+			4013,
+			4015,
+			4016,
+			4017,
+			4018,
+			4019,
+			4020,
+			4021;
+
+		setarray .@class_name_list$[0],
+			"Novice High",
+			"Lord Knight",
+			"High Priest",
+			"High Wizard",
+			"Whitesmith",
+			"Sniper",
+			"Assassin Cross",
+			"Paladin",
+			"Champion",
+			"Professor",
+			"Stalker",
+			"Creator",
+			"Clown",
+			"Gypsy";
+
+		// ----------------------------------------------------
+		// CONTADORES
+		// ----------------------------------------------------
+
+		.@premiados = 0;
+		.@sem_jogador = 0;
+		.@ja_premiados = 0;
+
+		// ----------------------------------------------------
+		// PROCESSAR CADA CLASSE
+		// ----------------------------------------------------
+
+		for (.@i = 0; .@i < .@class_count; .@i++) {
+
+			.@reward_class_id = .@class_id_list[.@i];
+			.@reward_class_name$ = .@class_name_list$[.@i];
+
+			// ------------------------------------------------
+			// VERIFICAR SE JÁ EXISTE PREMIAÇÃO
+			// ------------------------------------------------
+
+			.@reward_exists = 0;
+
+			query_sql(
+				"SELECT COUNT(*) "+
+				"FROM x1_arena_rewards "+
+				"WHERE season = '"+.@season$+"' "+
+				"AND class_id = "+.@reward_class_id,
+				.@reward_exists
+			);
+
+			if (.@reward_exists > 0) {
+
+				.@ja_premiados++;
+
+				continue;
+			}
+
+			// ------------------------------------------------
+			// PEGAR PRIMEIRO DO RANKING
+			// ------------------------------------------------
+
+			.@winner_id = 0;
+			.@winner_account_id = 0;
+			.@winner_name$ = "";
+			.@winner_points = 0;
+
+			query_sql(
+				"SELECT char_id,account_id,name,points "+
+				"FROM x1_arena_ranking "+
+				"WHERE class_id = "+.@reward_class_id+
+				" AND season = '"+.@season$+"' "+
+				"ORDER BY points DESC,name ASC "+
+				"LIMIT 1",
+				.@winner_id,
+				.@winner_account_id,
+				.@winner_name$,
+				.@winner_points
+			);
+
+			// ------------------------------------------------
+			// NENHUM JOGADOR
+			// ------------------------------------------------
+
+			if (.@winner_id <= 0) {
+
+				.@sem_jogador++;
+
+				announce
+					"[Arena 1vs1] A classe "+
+					.@reward_class_name$+
+					" não possui jogadores no ranking desta temporada.",
+					bc_all;
+
+				continue;
+			}
+
+			// ------------------------------------------------
+			// REGISTRAR PREMIAÇÃO PENDENTE
+			// ------------------------------------------------
+			//
+			// NÃO entrega o item neste momento.
+			//
+			// O item será entregue somente quando o
+			// personagem campeão entrar no servidor.
+			//
+			// status = 0 -> aguardando entrega
+			// status = 1 -> entregue
+			// status = 2 -> expirado
+			//
+			// ------------------------------------------------
+
+			query_sql(
+				"INSERT INTO x1_arena_rewards "+
+				"(season,class_id,char_id,account_id,name,points,item_id,duration_days,status,rewarded_at) "+
+				"VALUES ("+
+				"'"+.@season$+"',"+
+				.@reward_class_id+","+
+				.@winner_id+","+
+				.@winner_account_id+",'"+
+				escape_sql(.@winner_name$)+"',"+
+				.@winner_points+","+
+				"31818,"+
+				"29,"+
+				"0,"+
+				"NOW())"
+			);
+
+			// ------------------------------------------------
+			// CONFIRMAR REGISTRO
+			// ------------------------------------------------
+
+			.@reward_id = 0;
+
+			query_sql(
+				"SELECT reward_id "+
+				"FROM x1_arena_rewards "+
+				"WHERE season = '"+.@season$+"' "+
+				"AND class_id = "+.@reward_class_id+
+				" AND char_id = "+.@winner_id+
+				" AND status = 0 "+
+				"ORDER BY reward_id DESC "+
+				"LIMIT 1",
+				.@reward_id
+			);
+
+			if (.@reward_id <= 0)
+				continue;
+
+			// ------------------------------------------------
+			// CONTABILIZAR
+			// ------------------------------------------------
+
+			.@premiados++;
+
+			// ------------------------------------------------
+			// ANÚNCIO
+			// ------------------------------------------------
+
+			announce
+				"[Arena 1vs1] CAMPEÃO "+
+				.@reward_class_name$+
+				": "+
+				.@winner_name$+
+				" com "+
+				.@winner_points+
+				" pontos! "+
+				"O Costume Top Player será entregue "+
+				"automaticamente no próximo login.",
+				bc_all;
+		}
+
+		// ====================================================
+		// RESULTADO
+		// ====================================================
+
+		mes "[Arena 1vs1]";
+		mes "^00AAFFPREMIAÇÃO REGISTRADA!^000000";
+		mes "";
+		mes "Temporada: ^00AAFF"+
+			.@season$+
+			"^000000";
+		mes "";
+		mes "Prêmios registrados: ^00AAFF"+
+			.@premiados+
+			"^000000";
+		mes "Classes sem jogadores: ^777777"+
+			.@sem_jogador+
+			"^000000";
+		mes "Já processados: ^777777"+
+			.@ja_premiados+
+			"^000000";
+		mes "";
+		mes "Item: ^00AAFF31818^000000";
+		mes "Entrega: ^00AAFFNo próximo login^000000";
+		mes "Duração: ^00AAFF29 dias^000000";
+		mes "";
+		mes "^777777O item não é entregue neste momento.^000000";
+		mes "^777777A duração começa somente no login.^000000";
+
+		close;
+	}
+
+
+	// ========================================================
+	// SAIR
+	// ========================================================
+
+	close;
+}
+
+
+// ============================================================
+// SCRIPT INVISÍVEL - MORTE
+// ============================================================
+
+-	script	X1_Arena_Death	-1,{
+
+OnPCDieEvent:
+
+	.@char_id = getcharid(0);
+	.@account_id = getcharid(3);
+	.@name$ = strcharinfo(0);
+
+	if (.@char_id <= 0)
+		end;
+
+	// ========================================================
+	// LOCALIZAR PARTIDA ATIVA
+	// ========================================================
+
+	.@match_id = 0;
+	.@char_id_1 = 0;
+	.@char_id_2 = 0;
+	.@class_id = 0;
+
+	query_sql(
+		"SELECT match_id,char_id_1,char_id_2,class_id "+
+		"FROM x1_arena_matches "+
+		"WHERE status = 'active' "+
+		"AND (char_id_1 = "+.@char_id+
+		" OR char_id_2 = "+.@char_id+") "+
+		"LIMIT 1",
+		.@match_id,
+		.@char_id_1,
+		.@char_id_2,
+		.@class_id
+	);
+
+	if (.@match_id <= 0)
+		end;
+
+	// ========================================================
+	// IDENTIFICAR VENCEDOR
+	// ========================================================
+
+	if (.@char_id == .@char_id_1) {
+
+		.@winner_id = .@char_id_2;
+		.@loser_id = .@char_id;
+
+	} else {
+
+		.@winner_id = .@char_id_1;
+		.@loser_id = .@char_id;
+	}
+
+	// ========================================================
+	// PROTEÇÃO CONTRA DUPLA MORTE
+	// ========================================================
+
+	query_sql(
+		"UPDATE x1_arena_matches "+
+		"SET status = 'finished', "+
+		"winner_id = "+.@winner_id+", "+
+		"loser_id = "+.@loser_id+", "+
+		"finished_at = NOW() "+
+		"WHERE match_id = "+.@match_id+
+		" AND status = 'active'"
+	);
+
+	// ========================================================
+	// CONFIRMAR PROCESSAMENTO
+	// ========================================================
+
+	.@processed = 0;
+
+	query_sql(
+		"SELECT COUNT(*) "+
+		"FROM x1_arena_matches "+
+		"WHERE match_id = "+.@match_id+
+		" AND status = 'finished' "+
+		" AND loser_id = "+.@loser_id,
+		.@processed
+	);
+
+	if (.@processed <= 0)
+		end;
+
+	// ========================================================
+	// DADOS DO VENCEDOR
+	// ========================================================
+
+	.@winner_account_id = 0;
+	.@winner_name$ = "";
+	.@winner_class_id = 0;
+
+	query_sql(
+		"SELECT account_id,name,class "+
+		"FROM `char` "+
+		"WHERE char_id = "+.@winner_id+
+		" LIMIT 1",
+		.@winner_account_id,
+		.@winner_name$,
+		.@winner_class_id
+	);
+
+	if (.@class_id <= 0)
+		.@class_id = .@winner_class_id;
+
+	.@season$ = gettimestr("%Y%m",21);
+
+	// ========================================================
+	// RANKING VENCEDOR
+	// ========================================================
+
+	.@winner_exists = 0;
+
+	query_sql(
+		"SELECT COUNT(*) "+
+		"FROM x1_arena_ranking "+
+		"WHERE char_id = "+.@winner_id+
+		" AND season = '"+.@season$+"'",
+		.@winner_exists
+	);
+
+	if (.@winner_exists > 0) {
+
+		query_sql(
+			"UPDATE x1_arena_ranking "+
+			"SET points = points + 2, "+
+			"name = '"+escape_sql(.@winner_name$)+"', "+
+			"account_id = "+.@winner_account_id+", "+
+			"class_id = "+.@class_id+
+			" WHERE char_id = "+.@winner_id+
+			" AND season = '"+.@season$+"'"
+		);
+
+	} else {
+
+		query_sql(
+			"INSERT INTO x1_arena_ranking "+
+			"(account_id,char_id,name,class_id,points,season) "+
+			"VALUES ("+
+			.@winner_account_id+","+
+			.@winner_id+",'"+
+			escape_sql(.@winner_name$)+"',"+
+			.@class_id+
+			",2,'"+
+			.@season$+"')"
+		);
+	}
+
+	// ========================================================
+	// DADOS DO DERROTADO
+	// ========================================================
+
+	.@loser_account_id = 0;
+	.@loser_name$ = "";
+	.@loser_class_id = 0;
+
+	query_sql(
+		"SELECT account_id,name,class "+
+		"FROM `char` "+
+		"WHERE char_id = "+.@loser_id+
+		" LIMIT 1",
+		.@loser_account_id,
+		.@loser_name$,
+		.@loser_class_id
+	);
+
+	// ========================================================
+	// RANKING DERROTADO
+	// ========================================================
+
+	.@loser_exists = 0;
+
+	query_sql(
+		"SELECT COUNT(*) "+
+		"FROM x1_arena_ranking "+
+		"WHERE char_id = "+.@loser_id+
+		" AND season = '"+.@season$+"'",
+		.@loser_exists
+	);
+
+	if (.@loser_exists > 0) {
+
+		query_sql(
+			"UPDATE x1_arena_ranking "+
+			"SET points = GREATEST(points - 1,0), "+
+			"name = '"+escape_sql(.@loser_name$)+"', "+
+			"account_id = "+.@loser_account_id+", "+
+			"class_id = "+.@class_id+
+			" WHERE char_id = "+.@loser_id+
+			" AND season = '"+.@season$+"'"
+		);
+
+	} else {
+
+		query_sql(
+			"INSERT INTO x1_arena_ranking "+
+			"(account_id,char_id,name,class_id,points,season) "+
+			"VALUES ("+
+			.@loser_account_id+","+
+			.@loser_id+",'"+
+			escape_sql(.@loser_name$)+"',"+
+			.@class_id+
+			",0,'"+
+			.@season$+"')"
+		);
+	}
+
+	// ========================================================
+	// ANÚNCIO
+	// ========================================================
+
+	announce
+		"[Arena 1vs1] "+
+		.@loser_name$+
+		" foi derrotado na Arena 1vs1!",
+		bc_all;
+
+	// ========================================================
+	// DERROTADO
+	// ========================================================
+
+	dispbottom
+		"[Arena 1vs1] Você perdeu a batalha!";
+
+	dispbottom
+		"[Arena 1vs1] -1 ponto no ranking.";
+
+	dispbottom
+		"[Arena 1vs1] Você será retirado da Arena.";
+
+	warp
+		"prontera",
+		155,
+		180;
+
+	// ========================================================
+	// ESPERAR VENCEDOR
+	// ========================================================
+
+	sleep 5000;
+
+	// ========================================================
+	// CONECTAR VENCEDOR
+	// ========================================================
+
+	if (.@winner_account_id <= 0)
+		end;
+
+	if (!attachrid(.@winner_account_id))
+		end;
+
+	// --------------------------------------------------------
+	// SEGURANÇA
+	// --------------------------------------------------------
+
+	if (strcharinfo(3) != "force_3-3")
+		end;
+
+	// ========================================================
+	// VENCEDOR
+	// ========================================================
+
+	dispbottom
+		"[Arena 1vs1] Você venceu a batalha!";
+
+	dispbottom
+		"[Arena 1vs1] +2 pontos no ranking.";
+
+	dispbottom
+		"[Arena 1vs1] Retornando para Prontera...";
+
+	warp
+		"prontera",
+		155,
+		180;
+
+	end;
+}
+
+
+// ============================================================
+// LIMPEZA DA FILA AO DESCONECTAR
+// ============================================================
+
+-	script	X1_Arena_Queue_Cleanup	-1,{
+
+OnPCLogoutEvent:
+
+	.@char_id = getcharid(0);
+
+	if (.@char_id <= 0)
+		end;
+
+	query_sql(
+		"DELETE FROM x1_arena_queue "+
+		"WHERE char_id = "+.@char_id
+	);
+
+	end;
+}
+
+
+// ============================================================
+// VERIFICAÇÃO E ENTREGA DA PREMIAÇÃO NO LOGIN
+// ============================================================
+//
+// O prêmio NÃO é entregue quando o GM realiza a premiação.
+//
+// Registro:
+//
+// status = 0 -> prêmio pendente
+//
+// No login do campeão:
+//
+// 1. Localiza a premiação pelo char_id.
+// 2. Verifica o peso.
+// 3. Entrega o item 31818.
+// 4. Altera status para 1.
+// 5. Os 29 dias começam neste momento.
+//
+// ============================================================
+
+-	script	X1_Arena_Reward_Check	-1,{
+
+OnPCLoginEvent:
+
+	.@char_id = getcharid(0);
+
+	if (.@char_id <= 0)
+		end;
+
+	// ========================================================
+	// LOCALIZAR PREMIAÇÃO PENDENTE
+	// ========================================================
+
+	.@reward_id = 0;
+	.@class_id = 0;
+	.@item_id = 0;
+	.@duration_days = 0;
+	.@points = 0;
+	.@season$ = "";
+
+	query_sql(
+		"SELECT reward_id,class_id,item_id,duration_days,points,season "+
+		"FROM x1_arena_rewards "+
+		"WHERE char_id = "+.@char_id+
+		" AND status = 0 "+
+		"ORDER BY reward_id ASC "+
+		"LIMIT 1",
+		.@reward_id,
+		.@class_id,
+		.@item_id,
+		.@duration_days,
+		.@points,
+		.@season$
+	);
+
+	// ========================================================
+	// NÃO POSSUI PREMIAÇÃO
+	// ========================================================
+
+	if (.@reward_id <= 0)
+		end;
+
+	// ========================================================
+	// GARANTIR ITEM VÁLIDO
+	// ========================================================
+
+	if (.@item_id <= 0)
+		.@item_id = 31818;
+
+	if (.@duration_days <= 0)
+		.@duration_days = 29;
+
+	// ========================================================
+	// VERIFICAR PESO
+	// ========================================================
+
+	if (!checkweight(.@item_id,1)) {
+
+		dispbottom
+			"[Arena 1vs1] Você possui uma premiação mensal pendente.";
+
+		dispbottom
+			"[Arena 1vs1] Libere espaço/peso no inventário e reconecte.";
+
+		end;
+	}
+
+	// ========================================================
+	// NOME DA CLASSE
+	// ========================================================
+
+	.@class_name$ = "";
+
+	switch (.@class_id) {
+
+		case 4001:
+			.@class_name$ = "Novice High";
+			break;
+
+		case 4008:
+			.@class_name$ = "Lord Knight";
+			break;
+
+		case 4009:
+			.@class_name$ = "High Priest";
+			break;
+
+		case 4010:
+			.@class_name$ = "High Wizard";
+			break;
+
+		case 4011:
+			.@class_name$ = "Whitesmith";
+			break;
+
+		case 4012:
+			.@class_name$ = "Sniper";
+			break;
+
+		case 4013:
+			.@class_name$ = "Assassin Cross";
+			break;
+
+		case 4015:
+			.@class_name$ = "Paladin";
+			break;
+
+		case 4016:
+			.@class_name$ = "Champion";
+			break;
+
+		case 4017:
+			.@class_name$ = "Professor";
+			break;
+
+		case 4018:
+			.@class_name$ = "Stalker";
+			break;
+
+		case 4019:
+			.@class_name$ = "Creator";
+			break;
+
+		case 4020:
+			.@class_name$ = "Clown";
+			break;
+
+		case 4021:
+			.@class_name$ = "Gypsy";
+			break;
+
+		default:
+			.@class_name$ = "Classe desconhecida";
+			break;
+	}
+
+	// ========================================================
+	// ENTREGA
+	// ========================================================
+
+	.@duration_seconds = .@duration_days * 86400;
+
+	rentitem
+		.@item_id,
+		.@duration_seconds;
+
+	// ========================================================
+	// CONFIRMAR ENTREGA
+	// ========================================================
+
+	query_sql(
+		"UPDATE x1_arena_rewards "+
+		"SET status = 1, rewarded_at = NOW() "+
+		"WHERE reward_id = "+.@reward_id+
+		" AND char_id = "+.@char_id+
+		" AND status = 0"
+	);
+
+	// ========================================================
+	// MENSAGENS PARA O CAMPEÃO
+	// ========================================================
+
+	dispbottom
+		"================================================";
+
+	dispbottom
+		"[Arena 1vs1] PARABÉNS!";
+
+	dispbottom
+		"[Arena 1vs1] Você foi o campeão mensal da classe "+
+		.@class_name$+"!";
+
+	dispbottom
+		"[Arena 1vs1] Você recebeu o Costume Top Player.";
+
+	dispbottom
+		"[Arena 1vs1] Item: 31818";
+
+	dispbottom
+		"[Arena 1vs1] Duração: "+
+		.@duration_days+
+		" dias.";
+
+	dispbottom
+		"[Arena 1vs1] Temporada: "+
+		.@season$;
+
+	dispbottom
+		"================================================";
+
+	// ========================================================
+	// ANÚNCIO GLOBAL
+	// ========================================================
+
+	.@winner_name$ = strcharinfo(0);
+
+	announce
+		"[Arena 1vs1] CAMPEÃO "+
+		.@class_name$+
+		": "+
+		.@winner_name$+
+		" entrou no servidor e recebeu o Costume Top Player por "+
+		.@duration_days+
+		" dias!",
+		bc_all;
+
+	end;
+}
+

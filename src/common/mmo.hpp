@@ -65,11 +65,11 @@
 * Max value tested was 265 */
 #ifndef MAX_CHARS
 	#if PACKETVER >= 20180124
-		#define MAX_CHARS 15
+		#define MAX_CHARS 36
 	#elif PACKETVER >= 20100413
-		#define MAX_CHARS 12
+		#define MAX_CHARS 16
 	#else
-		#define MAX_CHARS 9
+		#define MAX_CHARS 12
 	#endif
 #endif
 
@@ -77,7 +77,7 @@ typedef uint32 t_itemid;
 
 /** Number of slots carded equipment can have. Never set to less than 4 as they are also used to keep the data of forged items/equipment. [Skotlex]
 * Note: The client seems unable to receive data for more than 4 slots due to all related packets having a fixed size. */
-#define MAX_SLOTS 4
+#define MAX_SLOTS 10
 #define MAX_AMOUNT 30000 ////Max amount of a single stacked item
 #define MAX_ZENY INT_MAX ///Max zeny
 #define MAX_BANK_ZENY SINT32_MAX ///Max zeny in Bank
@@ -97,14 +97,14 @@ typedef uint32 t_itemid;
 #define MAX_STORAGE 600 ///Max number of storage slots a player can have
 #define MAX_GUILD_STORAGE 600 ///Max number of storage slots a guild
 #define MAX_PARTY 12 ///Max party member
-#define MAX_GUILD 16+10*6	///Increased max guild members +6 per 1 extension levels [Lupus]
+#define MAX_GUILD 12	///Increased max guild members +6 per 1 extension levels [Lupus]
 #define MAX_GUILDPOSITION 20	///Increased max guild positions to accomodate for all members [Valaris] (removed) [PoW]
 #define MAX_GUILDEXPULSION 32 ///Max Guild expulsion
 #define MAX_GUILDALLIANCE 16 ///Max Guild alliance
 #ifdef RENEWAL
 #define MAX_GUILDSKILL	20 ///Max Guild skills
 #else
-#define MAX_GUILDSKILL	15 ///Max Guild skills
+#define MAX_GUILDSKILL	20 ///Max Guild skills
 #endif
 #define MAX_GUILDLEVEL 50 ///Max Guild level
 #define MAX_GUARDIANS 8	///Local max per castle. If this value is increased, need to add more fields on MySQL `guild_castle` table [Skotlex]
@@ -612,6 +612,7 @@ struct mmo_charstatus {
 #endif
 	bool show_equip, disable_call;
 	bool disable_partyinvite;
+	bool disable_showcostumes;
 	int16 rename;
 
 	time_t delete_date;

@@ -1,0 +1,13 @@
+-	script	FirstCharReward	-1,{
+OnPCLoginEvent:
+	if (BaseLevel == 1 && #first_char_vip == 0) {
+		getitem 42011, 1;
+		getitem 13895, 1;
+		getitem 480095 , 1;
+		getitem 36001 , 1;
+		getitem 36002 , 1;
+		getitem 36003 , 1;
+		set #first_char_vip, 1;
+	}
+	end;
+}

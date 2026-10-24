@@ -55,9 +55,6 @@ alberta	mapflag	pvp	off
 alde_alche	mapflag	pvp	off
 aldeba_in	mapflag	pvp	off
 aldebaran	mapflag	pvp	off
-ama_in01	mapflag	pvp	off
-ama_in02	mapflag	pvp	off
-amatsu	mapflag	pvp	off
 brasilis	mapflag	pvp	off
 bra_in01	mapflag	pvp	off
 cmd_in01	mapflag	pvp	off

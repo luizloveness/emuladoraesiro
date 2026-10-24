@@ -1,0 +1,107 @@
+prontera,169,138,4	script	MVP Shop	953,{
+
+	set .@lang, #langtype; // INT (0 = EN / 8 = PT)
+
+	if(.@lang == 0){
+		// ================= ENGLISH
+		mes "[MVP Shop]";
+		mes "You have ^00FF00"+#MVP_POINTS+"^000000 MVP Points.";
+		next;
+
+		set .@menu,
+		select(
+		"10x Fire Resist Potion (1 pts)",
+		"10x Wind Resist Potion (1 pts)",
+		"10x Water Resist Potion (1 pts)",
+		"10x Earth Resist Potion (1 pts)",
+		"10x Old Card Album (1 pts)",
+		"10x Poison Bottle (1 pts)",
+		"100x Yggdrasil Fruit (2 pts)",
+		"1x Costume Alchemist Mask (15 pts)",
+		"1x Costume Angel Wings Egg (25 pts)",
+		"1x Best Weapon Box (30 pts)",
+		"Exit");
+
+	}else{
+		// ================= PORTUGUÊS
+		mes "[MVP Shop]";
+		mes "Você possui ^00FF00"+#MVP_POINTS+"^000000 MVP Points.";
+		next;
+
+		set .@menu,
+		select(
+		"10x Poção Anti-Fogo (1 pts)",
+		"10x Poção Anti-Vento (1 pts)",
+		"10x Poção Anti-Água (1 pts)",
+		"10x Poção Anti-Terra (1 pts)",
+		"10x Velho Álbum de Cartas (1 pts)",
+		"10x Garrafa de Veneno (1 pts)",
+		"100x Fruto de Yggdrasil (2 pts)",
+		"1x Visual Máscara do Alquimista (15 pts)",
+		"1x Visual Ovo das Asas de Anjo (25 pts)",
+		"1x Caixa das Melhores Armas (30 pts)",
+		"Sair");
+	}
+
+	switch(.@menu){
+
+	case 1: callsub S_Troca,12118,10,1; break;
+	case 2: callsub S_Troca,12121,10,1; break;
+	case 3: callsub S_Troca,12119,10,1; break;
+	case 4: callsub S_Troca,12120,10,1; break;
+	case 5: callsub S_Troca,616,10,1; break;
+	case 6: callsub S_Troca,678,10,1; break;
+	case 7: callsub S_Troca,607,100,2; break;
+	case 8: callsub S_Troca,31052,1,15; break;
+	case 9: callsub S_Troca,31466,1,25; break;
+	case 10: callsub S_Troca,12623,1,30; break;
+	case 11: close;
+	}
+
+	end;
+
+// ================= TROCA
+S_Troca:
+	set .@item,getarg(0);
+	set .@amount,getarg(1);
+	set .@cost,getarg(2);
+
+	set .@lang, #langtype;
+
+	//  Sem pontos suficientes
+	if(#MVP_POINTS < .@cost){
+		mes "[MVP Shop]";
+		if(.@lang == 0)
+			mes "You don't have enough points.";
+		else
+			mes "Você não tem pontos suficientes.";
+		close;
+	}
+
+	// CHECAGEM DE PESO
+	if (!checkweight(.@item, .@amount)) {
+		mes "[MVP Shop]";
+		if(.@lang == 0)
+			mes "You are overweight or carrying too much.";
+		else
+			mes "Você está com peso excessivo ou carregando itens demais.";
+		close;
+	}
+
+	// EXECUTA TROCA
+	set #MVP_POINTS, #MVP_POINTS - .@cost;
+	getitem .@item,.@amount;
+
+	mes "[MVP Shop]";
+	if(.@lang == 0){
+		mes "Exchange completed successfully!";
+		mes "Remaining points: "+#MVP_POINTS;
+	}else{
+		mes "Troca realizada com sucesso!";
+		mes "Pontos restantes: "+#MVP_POINTS;
+	}
+
+	close;
+
+
+}

@@ -1,0 +1,182 @@
+prontera.gat,128,135,5	script	Tac	705,{
+	mes "[Tac]";
+	mes "This time,";
+	mes "as a gratitude of everyone's support to the Museum,";
+	mes "we have prepared a special item,";
+	mes "That is ...!";
+	next;
+	mes "[Tac]";
+	mes "If an accessoiries for monsters is reconstructed, it can be equipped by human too!";
+	next;
+	mes "[Tac]";
+	mes "We are in the experimenting stage currently,";
+	mes "and there're only 3 type of monster's accesories that can be equipped.";
+	mes "Maybe there're more to come in the future.";
+	mes "However,";
+	mes "we cannot provide these accessories to everyone without limit.";
+	mes "We would like to ask for the materials and production fee,";
+	mes "before we can provide the accessories to you.";
+	next;
+	mes "[Tac]";
+	mes "Please select an accessoiries that you are curious of, or wich us to produce for you.";
+	next;
+	switch(select("Decorative Golden Bell:Crown of Ancient Queen:Crown of Mistress")) {
+	case 1: //Big golden bell [5091]
+		mes "[Tac]";
+		mes "The Decorative Golden Bell is";
+		mes "the accessory equipped by the monster 'Sohee'.";
+		mes "It's very suitable and looks good on female players.";
+		mes "Altough it might be a little big, I'm sure you'll like it.";
+		next;
+		if (countitem(10016) && countitem(714) && countitem(969) > 2 && Zeny > 19999) {
+			delitem 10016,1;
+			delitem 714,1;
+			delitem 969,3;
+			set Zeny,Zeny-20000;
+			mes "[Tac]";
+			mes "So you have brought all the required materials.";
+			mes "Please wait for a while.";
+			next;
+			mes "^3355FF- Dang Dang! Qing Yi Qing Yi! Ding Ding Dang Dang! -^000000";
+			getitem 5091,1;
+			next;
+			mes "[Tac]";
+			mes "EEyaah~ The elegant golden bell is complete.";
+			mes "Walk around with it.";
+			mes "Altough it won't make the ding dong sounds,";
+			mes "it sure is beautiful.";
+			next;
+			mes "[Tac]";
+			mes "Don't you feel that you look like a Sohee now?";
+			mes "But don't commit suicide like her.";
+			mes "If you want to make anymore of it,";
+			mes "do come and find me again.";
+			mes "Finally, please come to visit the Monster Museum frequently.";
+			close;
+		} else {
+			mes "[Tac]";
+			mes "The material required for the production of this item are,";
+			mes "^3355FFGolden Bell x1, Emperium x1, Gold x3^000000 and";
+			mes "20,000 zeny";
+			next;
+			mes "[Tac]";
+			mes "As long as you are prepared,";
+			mes "with the materials and zeny required for the production,";
+			mes "I will make it for you anytime.";
+			close;
+		}
+	case 2: //Headgear of Queen [5080] (Crown of ancient queen)
+		mes "[Tac]";
+		mes "The Crown of Ancient Queen is the equipment of";
+		mes "monster 'Isis'.";
+		mes "When you wear it,";
+		mes "you will feel like a queen.";
+		next;
+		if (countitem(10006) && countitem(714) && countitem(969)>2 && Zeny>19999) {
+			delitem 10006,1;
+			delitem 714,1;
+			delitem 969,3;
+			set Zeny,Zeny-20000;
+			mes "[Tac]";
+			mes "So you have brought all the required materials.";
+			mes "Please wait for a while.";
+			next;
+			mes "^3355FF- Dang Dang! Qing Yi Qing Yi! Ding Ding Dang Dang! -";
+			getitem 5080,1;
+			next;
+			mes "[Tac]";
+			mes "Here it is! The Crown of Ancient Queen!";
+			mes "Altough you won't become a real queen after wearing it,";
+			mes "you will surely";
+			mes "have a different feeling.";
+			next;
+			mes "[Tac]";
+			mes "After you wear this,";
+			mes "I think you should really have a good figure,";
+			mes "because that will be more meaningful.";
+			mes "If you need to make it again,";
+			mes "do come find me again.";
+			mes "Finally, please come to visit the Monster Museum frequently.";
+			close;
+		} else {
+			mes "[Tac]";
+			mes "The materials required for the production are";
+			mes "^3355FFQueen's Hair Ornament x1, Emperium x1, Gold x3^000000 and";
+			mes "20,000 zeny.";
+			next;
+			mes "[Tac]";
+			mes "As long as you are prepared";
+			mes "with the materials and zeny required for the production";
+			mes "I will make it for you anytime.";
+			close;
+		}
+	case 3: //crown of mistress [5081]
+		mes "[Tac]";
+		mes "Crown of Mistress is";
+		mes "brought by monster 'Mistress'."; //Maya? riiiight!
+		mes "You can feel the precence of Mistress from it.";
+		next;
+		if (countitem(2249) && countitem(714) && countitem(969)>2 && Zeny>39999) {
+			mes "[Tac]";
+			mes "So you have brought everything.";
+			mes "^FF0000However, during the process of production,";
+			mes "no matter how many times";
+			mes "the coronet is refined,";
+			mes "it does not have effect to the product.";
+			next;
+			mes "[Tac]";
+			mes "^FF0000So,";
+			mes "please bring along only the Coronet x 1 that is required for the production.";
+			mes "If anything is missing,";
+			mes "we will not take responsible of it.^000000";
+			mes "So, are you ready?";
+			next;
+			switch(select("Yes, I am.:Hold on, please")) {
+			case 1:
+				mes "[Tac]";
+				mes "Please wait for a while.";
+				next;
+				mes "^3355FF- Dang Dang! Qing Yi Qing Yi! Ding Ding Dang Dang! -";
+				if (countitem(2249) && countitem(714) && countitem(969)>2 && Zeny>39999) {
+					delitem 2249,1;
+					delitem 714,1;
+					delitem 969,3;
+					set Zeny,Zeny-40000;
+					getitem 5081,1;
+				}
+				next;
+				mes "[Tac]";
+				mes "Woohoo!";
+				mes "The beautiful Crown of Mistress is completed.";
+				mes "Altough you won't have any servants,";
+				mes "after you've worn it,";
+				mes "I am sure you're having a different feeling.";
+				next;
+				mes "[Tac]";
+				mes "If you wear this crown,";
+				mes "and takea photo with Mistress,";
+				mes "it will be very interesting.";
+				mes "If you want to make anymore of it,";
+				mes "do come find me again.";
+				mes "Finally, please come to visit the Monster Museum frequently.";
+				close;
+			case 2:
+				mes "[Tac]";
+				mes "Please confirm it first";
+				mes "before you come to me~";
+				close;
+			}
+		} else {
+			mes "[Tac]";
+			mes "The materials required for production are";
+			mes "^3355FFCoronet x1, Emperium x1, Gold x3^000000 together with";
+			mes "40,000 zeny.";
+			next;
+			mes "[Tac]";
+			mes "As long as you are prepaired";
+			mes "with the materials and zeny required for the production,";
+			mes "I will make it for you anytime.";
+			close;
+		}
+	}
+}

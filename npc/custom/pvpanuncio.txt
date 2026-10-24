@@ -1,0 +1,21 @@
+-	script	PvP_Enter_Announce	-1,{
+
+OnPCLoadMapEvent:
+	.@map$ = strcharinfo(3);
+
+	if (getgmlevel() > 70)
+		end;
+
+	if (.@map$ == "guild_vs3") {
+
+		announce "[PvP] O jogador " + strcharinfo(0) + " entrou no PvP Arena!", bc_all;
+
+	}
+	else if (.@map$ == "amatsu") {
+
+		announce "[Old Times PvP] O jogador " + strcharinfo(0) + " entrou no PvP de Amatsu!", bc_all;
+
+	}
+
+	end;
+}

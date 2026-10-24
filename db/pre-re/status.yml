@@ -111,7 +111,7 @@ Body:
       BossResist: true
       StopAttacking: true
       StopCasting: true
-      RemoveOnDamaged: true
+      RemoveOnDamaged: true 
     Fail:
       Refresh: true
       Inspiration: true
@@ -1244,7 +1244,6 @@ Body:
     Opt3:
       Assumptio: true
     EndOnStart:
-      Kyrie: true
       Kaite: true
     Flags:
       RemoveOnHermode: true
@@ -1458,7 +1457,6 @@ Body:
       NoDispell: true
       NoBanishingBuster: true
       NoClearance: true
-      NoRemoveOnDead: true
       NoSave: true
       Debuff: true
   - Status: Devotion
@@ -1636,11 +1634,6 @@ Body:
       RemoveOnHermode: true
     Fail:
       Decreaseagi: true
-    EndOnStart:
-      Aspdpotion0: true
-      Aspdpotion1: true
-      Aspdpotion2: true
-      Aspdpotion3: true
   - Status: Preserve
     Icon: EFST_PRESERVE
     DurationLookup: ST_PRESERVE
@@ -1907,7 +1900,6 @@ Body:
       Speed: true
       Aspd: true
     Flags:
-      NoRemoveOnDead: true
       NoClearance: true
     Fail:
       Speedup1: true
@@ -5431,11 +5423,9 @@ Body:
   - Status: Pyroclastic
     Icon: EFST_PYROCLASTIC
     DurationLookup: MH_PYROCLASTIC
-    States:
-      NoEquipItem: true
     CalcFlags:
       Batk: true
-      Atk_Ele: true
+      Watk: true
   - Status: Paralysis
     Icon: EFST_NEEDLE_OF_PARALYZE
     DurationLookup: MH_NEEDLE_OF_PARALYZE

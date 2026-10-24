@@ -77201,44 +77201,34 @@ Body:
             Item: Old_Card_Album
             Rate: 500
           - Index: 3
-            Item: Magic_Card_Album
-            Rate: 80
-          - Index: 4
             Item: Hot_Tee
             Rate: 1700
             Amount: 5
-          - Index: 5
-            Item: Bloody_Dead_Branch
-            Rate: 100
-          - Index: 6
+          - Index: 4
             Item: Old_Violet_Box
             Rate: 907
-            Amount: 3
-          - Index: 7
+            Amount: 5
+          - Index: 5
             Item: Manacles
             Rate: 600
             Amount: 10
-          - Index: 8
+          - Index: 6
             Item: Bloody_Page
             Rate: 610
             Amount: 10
-          - Index: 9
-            Item: Sweet_Canape
-            Rate: 2100
-            Amount: 5
-          - Index: 10
+          - Index: 7
             Item: Bloody_Coin
             Rate: 1200
             Amount: 5
-          - Index: 11
+          - Index: 8
             Item: Gold
             Rate: 1
             Amount: 2
-          - Index: 12
+          - Index: 9
             Item: Violet_Jewel
             Rate: 1200
             Amount: 10
-          - Index: 13
+          - Index: 10
             Item: Crystal_Jewel__
             Rate: 1000
             Amount: 10

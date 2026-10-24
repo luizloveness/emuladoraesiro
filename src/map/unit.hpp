@@ -9,6 +9,7 @@
 
 #include "path.hpp" // struct walkpath_data
 #include "skill.hpp" // struct skill_timerskill, struct skill_unit_group, struct skill_unit_group_tickset
+#include "battle.hpp" // struct Damage
 
 enum sc_type : int16;
 struct block_list;
@@ -25,11 +26,13 @@ struct unit_data {
 	struct skill_timerskill *skilltimerskill[MAX_SKILLTIMERSKILL];
 	std::vector<std::shared_ptr<s_skill_unit_group>> skillunits;
 	struct skill_unit_group_tickset skillunittick[MAX_SKILLUNITGROUPTICKSET];
+	struct Damage dmg;
 	int16 attacktarget_lv;
 	int16 to_x, to_y;
 	uint8 sx, sy; // Subtile position (0-15, with 8 being center of cell)
 	int16 skillx, skilly;
 	uint16 skill_id, skill_lv;
+	int32 multihit_animation, multihit_target, multihit_timer;
 	int32 skilltarget;
 	int32 skilltimer;
 	int32 target;

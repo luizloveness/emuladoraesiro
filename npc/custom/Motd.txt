@@ -1,0 +1,12 @@
+-	script	Anuncioaologar	-1,{
+
+OnPCLogInEvent:
+	set .@lang, #langtype; // 0 = EN / 8 = PT
+
+	if (.@lang == 0) {
+		announce "Welcome "+strcharinfo(0)+"! Bring your Guild and schedule your exclusive Guild Pack now on the aesiRO Discord!", bc_self;
+	} else {
+		announce "Bem-vindo "+strcharinfo(0)+"! Traga sua Guild e agende agora mesmo seu Pack Guild exclusivo em nosso Discord do aesiRO!", bc_self;
+	}
+	end;
+}

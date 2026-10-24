@@ -1,0 +1,207 @@
+prontera,199,199,4	script	Encantador Visual	4_M_SAGE_C,{
+
+	.@lang = #langtype;
+
+	mes (.@lang ? "[Encantador Visual]" : "[Visual Enchanter]");
+	mes (.@lang ? "Posso encantar seus visuais." : "I can enchant your costumes.");
+	mes "";
+
+	//==================================================
+	// Informativo de custo VIP
+	//==================================================
+
+	if (getgroupid() == 5) {
+
+		mes "^00FF00"+(.@lang ?
+			"Benefício VIP Ativo!" :
+			"VIP Benefit Active!")+"^000000";
+
+		mes (.@lang ?
+			"Você possui 50% de desconto no encantamento." :
+			"You have a 50% discount on enchantment.");
+
+		mes "";
+
+		mes (.@lang ? "Custo VIP:" : "VIP Cost:");
+		mes "^00AAFF25 Aesiro Coins^000000";
+		mes "^00AAFF25 Bronze Coin^000000";
+
+	} else {
+
+		mes (.@lang ? "Custo:" : "Cost:");
+		mes "^00AAFF50 Aesiro Coins^000000";
+		mes "^00AAFF50 Bronze Coin^000000";
+	}
+
+	mes "";
+
+	mes (.@lang ? "Chance de sucesso:" : "Success Chance:");
+	mes "^FF000010%^000000";
+
+	mes "";
+	mes "^FFCC00"+(.@lang ? "Observações:" : "Important Notes:")+"^000000";
+
+	mes (.@lang ?
+		"- O visual não pode possuir encantamentos." :
+		"- The costume must not already have an enchantment.");
+
+	mes (.@lang ?
+		"- Alguns visuais especiais não podem ser encantados." :
+		"- Some special costumes cannot be enchanted.");
+
+	mes (.@lang ?
+		"- Pokémon Hats, Saiyan Tail e Dark Fairy Wings são incompatíveis." :
+		"- Pokémon Hats, Saiyan Tail and Dark Fairy Wings are not compatible.");
+	next;
+
+	switch(select(
+		(.@lang ? "Costume Top (+5% Dano contra Humanos)" : "Costume Top (+5% Damage vs Humans)")+
+		":"+
+		(.@lang ? "Costume Low (-5% Dano recebido de Humanos)" : "Costume Low (-5% Damage from Humans)")+
+		":"+
+		(.@lang ? "Costume Garment (+5% Ignorar DEF de Humanos)" : "Costume Garment (+5% Ignore Human DEF)")+
+		":"+
+		(.@lang ? "Sair" : "Exit"))) {
+
+	case 1:
+		.@equip = EQI_COSTUME_HEAD_TOP;
+		.@option = 256;	// RACE_DAMAGE_HUMAN
+		break;
+
+	case 2:
+		.@equip = EQI_COSTUME_HEAD_LOW;
+		.@option = 255;	// RACE_TOLERACE_HUMAN
+		break;
+
+	case 3:
+		.@equip = EQI_COSTUME_GARMENT;
+		.@option = 257;	// RACE_IGNORE_DEF_PERCENT_HUMAN
+		break;
+
+	default:
+		close;
+	}
+
+	// Verifica se há um visual equipado
+	if (!getequipisequiped(.@equip)) {
+		mes (.@lang ?
+			"Você não está utilizando um visual neste slot." :
+			"You are not wearing a costume in this slot.");
+		close;
+	}
+
+	//==================================================
+	// Visuais bloqueados
+	//==================================================
+
+	.@item = getequipid(.@equip);
+
+	// Saiyan Tail
+	if (.@item == 35024) {
+		mes (.@lang ?
+			"Este visual não pode ser encantado." :
+			"This costume cannot be enchanted.");
+		close;
+	}
+
+	// Dark Fairy Wings
+	if (.@item == 35022) {
+		mes (.@lang ?
+			"Este visual não pode ser encantado." :
+			"This costume cannot be enchanted.");
+		close;
+	}
+
+	// Pokémon Hats
+	if (.@item >= 3019 && .@item <= 3042) {
+		mes (.@lang ?
+			"Os visuais Pokémon não podem ser encantados." :
+			"Pokémon costumes cannot be enchanted.");
+		close;
+	}
+
+	//==================================================
+	// Já possui encantamento?
+	//==================================================
+
+	for (.@i = 0; .@i < 5; .@i++) {
+
+		if (getequiprandomoption(.@equip,.@i,0)) {
+
+			mes (.@lang ?
+				"Este visual já possui um encantamento." :
+				"This costume is already enchanted.");
+
+			close;
+		}
+	}
+
+//==================================================
+// Custo (VIP recebe 50% de desconto)
+//==================================================
+
+if (getgroupid() == 5) {
+	.@coin  = 25;
+	.@stone = 25;
+} else {
+	.@coin  = 50;
+	.@stone = 50;
+}
+
+if (countitem(671) < .@coin || countitem(673) < .@stone) {
+
+	mes (.@lang ?
+		"Você precisa de "+.@coin+" Aesiro Coins e "+.@stone+" Enchant Stones." :
+		"You need "+.@coin+" Aesiro Coins and "+.@stone+" Enchant Stones.");
+
+	close;
+}
+
+if (getgroupid() == 5) {
+	mes "^00FF00"+(.@lang ?
+		"Benefício VIP: você recebeu 50% de desconto!" :
+		"VIP Benefit: you received a 50% discount!")+"^000000";
+	next;
+}
+
+delitem 671,.@coin;
+delitem 673,.@stone;
+
+mes (.@lang ?
+	"Tentando aplicar o encantamento..." :
+	"Attempting to enchant your costume...");
+
+next;
+
+	//==================================================
+	// 90% de falha (10% de sucesso)
+	//==================================================
+
+	if (rand(100) < 90) {
+
+		specialeffect EF_FAIL;
+
+		mes (.@lang ?
+			"^FF0000O encantamento falhou!^000000" :
+			"^FF0000The enchantment has failed!^000000");
+
+		close;
+	}
+
+	//==================================================
+	// Sucesso
+	//==================================================
+
+	setrandomoption(.@equip,0,.@option,5,0);
+
+	specialeffect EF_SUI_EXPLOSION;
+
+	mes (.@lang ?
+		"^00FF00Parabéns! Seu visual foi encantado com sucesso!^000000" :
+		"^00FF00Congratulations! Your costume has been successfully enchanted!^000000");
+
+	close;
+
+OnInit:
+	end;
+}

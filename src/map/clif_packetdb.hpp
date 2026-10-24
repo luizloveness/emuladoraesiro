@@ -1706,6 +1706,9 @@
 	packet(0x09DC,-1); // ZC_NOTIFY_NEWENTRY10
 	packet(0x09DD,-1); // ZC_NOTIFY_STANDENTRY10
 #endif
+#if PACKETVER_MAIN_NUM >= 20140430 || PACKETVER_RE_NUM >= 20140430 || defined(PACKETVER_ZERO)
+	parseable_packet( HEADER_CZ_DYNAMICNPC_CREATE_REQUEST, sizeof( PACKET_CZ_DYNAMICNPC_CREATE_REQUEST ), clif_parse_dynamic_npc, 0 );
+#endif
 
 // 2014-10-08Ragexe
 #if PACKETVER >= 20141008
@@ -2034,11 +2037,12 @@
 #endif
 
 #if PACKETVER_MAIN_NUM >= 20230607
-	parseable_packet( HEADER_CZ_ALLY_CHAT, -1, clif_parse_dull, 0 );
+	parseable_packet( HEADER_CZ_ALLY_CHAT, -1, clif_parse_guild_alliance_message, 2, 4 );
 #endif
 
 #if PACKETVER_MAIN_NUM >= 20230705
-	parseable_packet( HEADER_CZ_REQ_EMOTION_EXPANSION, sizeof( struct PACKET_CZ_REQ_EMOTION_EXPANSION ), clif_parse_dull, 0 );
+/// Fix of emoticon [sofiaisha]
+	parseable_packet( HEADER_CZ_REQ_EMOTION_EXPANSION, sizeof( struct PACKET_CZ_REQ_EMOTION_EXPANSION), clif_parse_Emotion, 4 );
 #endif
 
 #if PACKETVER_MAIN_NUM >= 20230802

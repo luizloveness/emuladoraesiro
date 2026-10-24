@@ -1,0 +1,1092 @@
+//============================================================
+// aesiRO - Sistema de Premiação de Ranking
+// Versão 2.1
+//
+// Tabela utilizada:
+// ranking_rewards
+//
+// status:
+// 0 = Disponível
+// 1 = Coletado
+// 2 = Cancelado
+//
+// COMPONENTES:
+//
+// 1. Central de Premiações
+//    - Jogador consulta suas premiações
+//    - Jogador escolhe qual prêmio receber
+//    - Verificação de peso
+//    - Entrega do item
+//    - Marca como coletado
+//
+// 2. Gerenciador de Premiações
+//    - Somente GM
+//    - Cadastro por Char ID
+//    - Consulta de pendentes
+//    - Cancelamento de premiação
+//
+// 3. RankingRewardsTimer
+//    - NPC invisível
+//    - Verifica jogadores online
+//    - Avisa jogadores com premiação pendente
+//
+// ATENÇÃO:
+// O timer está temporariamente configurado para 1 minuto
+// para facilitar os testes.
+//
+// Depois que confirmar o funcionamento:
+//
+// OnTimer60000
+//
+// deverá ser alterado para:
+//
+// OnTimer3600000
+//
+//============================================================
+
+
+
+//============================================================
+// NPC DO JOGADOR
+//============================================================
+
+prontera,120,175,4	script	Central de Premiações	564,{
+
+	//========================================================
+	// CHAR ID DO JOGADOR
+	//========================================================
+
+	.@char_id = getcharid(0);
+
+
+	mes "[Central de Premiações]";
+	mes "Olá, ^0055FF" + strcharinfo(0) + "^000000!";
+	mes "";
+	mes "Aqui você pode retirar suas";
+	mes "premiações de Ranking PvP e MVP.";
+	mes "";
+
+
+	//========================================================
+	// VERIFICA PREMIAÇÕES DISPONÍVEIS
+	//========================================================
+
+	query_sql(
+		"SELECT COUNT(*) " +
+		"FROM ranking_rewards " +
+		"WHERE char_id = " + .@char_id + " " +
+		"AND status = 0",
+		.@total
+	);
+
+
+	if (.@total <= 0) {
+
+		mes "^777777Você não possui nenhuma premiação disponível.^000000";
+		close;
+
+	}
+
+
+	mes "^00AA00Você possui " + .@total + " premiação(ões) disponível(is)!^000000";
+	mes "";
+
+	next;
+
+
+	//========================================================
+	// CARREGA PREMIAÇÕES
+	//========================================================
+
+	query_sql(
+		"SELECT reward_id, ranking_type, ranking_position, " +
+		"item_id, amount, description " +
+		"FROM ranking_rewards " +
+		"WHERE char_id = " + .@char_id + " " +
+		"AND status = 0 " +
+		"ORDER BY reward_id ASC",
+		.@reward_id,
+		.@ranking_type$,
+		.@position,
+		.@item_id,
+		.@amount,
+		.@description$
+	);
+
+
+	//========================================================
+	// CRIA MENU DINÂMICO
+	//========================================================
+
+	.@menu$ = "";
+
+	for (.@i = 0; .@i < .@total; .@i++) {
+
+		.@menu$ +=
+			.@ranking_type$[.@i]
+			+ " - "
+			+ .@position[.@i]
+			+ "º Lugar - "
+			+ .@description$[.@i]
+			+ ":";
+
+	}
+
+	.@menu$ += "Fechar";
+
+
+	//========================================================
+	// ESCOLHA DA PREMIAÇÃO
+	//========================================================
+
+	.@choice = select(.@menu$);
+
+
+	if (.@choice == .@total + 1)
+		close;
+
+
+	.@index = .@choice - 1;
+
+
+	//========================================================
+	// MOSTRA DETALHES
+	//========================================================
+
+	mes "[Premiação]";
+
+	mes "Ranking: ^0055FF"
+		+ .@ranking_type$[.@index]
+		+ "^000000";
+
+	mes "Posição: ^0055FF"
+		+ .@position[.@index]
+		+ "º Lugar^000000";
+
+	mes "";
+
+	mes "Descrição:";
+
+	mes "^777777"
+		+ .@description$[.@index]
+		+ "^000000";
+
+	mes "";
+
+	mes "Recompensa:";
+
+	mes "^00AA00"
+		+ .@amount[.@index]
+		+ "x "
+		+ getitemname(.@item_id[.@index])
+		+ "^000000";
+
+	mes "";
+
+	next;
+
+
+	//========================================================
+	// CONFIRMAÇÃO
+	//========================================================
+
+	if (select(
+		"Receber premiação",
+		"Voltar"
+	) == 2)
+		close;
+
+
+	//========================================================
+	// VERIFICA PESO
+	//========================================================
+
+	if (!checkweight(
+		.@item_id[.@index],
+		.@amount[.@index]
+	)) {
+
+		mes "[Central de Premiações]";
+
+		mes "^FF0000Não foi possível entregar a premiação.^000000";
+
+		mes "";
+
+		mes "Seu inventário está acima do limite";
+		mes "de peso necessário para receber";
+		mes "esta recompensa.";
+
+		mes "";
+
+		mes "Libere espaço/peso e tente novamente.";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// ENTREGA
+	//========================================================
+
+	getitem
+		.@item_id[.@index],
+		.@amount[.@index];
+
+
+	//========================================================
+	// MARCA COMO COLETADO
+	//========================================================
+
+	query_sql(
+		"UPDATE ranking_rewards " +
+		"SET status = 1, claimed_at = NOW() " +
+		"WHERE reward_id = " + .@reward_id[.@index] + " " +
+		"AND char_id = " + .@char_id + " " +
+		"AND status = 0"
+	);
+
+
+	//========================================================
+	// CONFIRMAÇÃO
+	//========================================================
+
+	mes "[Central de Premiações]";
+
+	mes "^00AA00Premiação entregue com sucesso!^000000";
+
+	mes "";
+
+	mes "Você recebeu:";
+
+	mes "^00AA00"
+		+ .@amount[.@index]
+		+ "x "
+		+ getitemname(.@item_id[.@index])
+		+ "^000000";
+
+	mes "";
+
+	mes "Obrigado por participar do aesiRO!";
+
+	close;
+}
+
+
+
+//============================================================
+// NPC ADMINISTRADOR
+// SOMENTE GM
+//============================================================
+
+new_1-1,65,108,2	script	Gerenciador Ranking	4_M_SAGE_A,{
+
+	//========================================================
+	// PERMISSÃO
+	//========================================================
+
+	if (getgmlevel() < 99) {
+
+		mes "[Gerenciador Ranking]";
+
+		mes "Acesso permitido somente para administradores.";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// MENU PRINCIPAL
+	//========================================================
+
+L_MENU:
+
+	mes "[Gerenciador Ranking]";
+
+	mes "Sistema administrativo de premiações.";
+
+	mes "";
+
+
+	.@option = select(
+		"Cadastrar premiação",
+		"Consultar premiações pendentes",
+		"Cancelar premiação",
+		"Fechar"
+	);
+
+
+	switch (.@option) {
+
+		case 1:
+			goto L_CADASTRAR;
+
+		case 2:
+			goto L_CONSULTAR;
+
+		case 3:
+			goto L_CANCELAR;
+
+		case 4:
+			close;
+
+	}
+
+
+
+//============================================================
+// CADASTRAR PREMIAÇÃO
+//============================================================
+
+L_CADASTRAR:
+
+	mes "[Nova Premiação]";
+
+	mes "Digite o ^0055FFChar ID^000000 do jogador.";
+
+	mes "";
+
+	mes "Exemplo:";
+	mes "^777777150328^000000";
+
+	next;
+
+
+	input .@char_id;
+
+
+	//========================================================
+	// VALIDA CHAR ID
+	//========================================================
+
+	if (.@char_id <= 0) {
+
+		mes "[Erro]";
+
+		mes "^FF0000Char ID inválido.^000000";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// VERIFICA SE O CHAR EXISTE
+	//========================================================
+
+	query_sql(
+		"SELECT name " +
+		"FROM `char` " +
+		"WHERE char_id = " + .@char_id,
+		.@char_name$
+	);
+
+
+	if (.@char_name$ == "") {
+
+		mes "[Erro]";
+
+		mes "^FF0000Char ID não encontrado.^000000";
+
+		close;
+
+	}
+
+
+	mes "[Nova Premiação]";
+
+	mes "Jogador encontrado:";
+
+	mes "";
+
+	mes "^00AA00" + .@char_name$ + "^000000";
+
+	mes "";
+
+	next;
+
+
+	//========================================================
+	// TIPO DO RANKING
+	//========================================================
+
+	mes "[Nova Premiação]";
+
+	mes "Selecione o tipo do ranking.";
+
+	.@type = select(
+		"Ranking PvP",
+		"Ranking MVP"
+	);
+
+
+	if (.@type == 1)
+		.@ranking_type$ = "PVP";
+	else
+		.@ranking_type$ = "MVP";
+
+
+	//========================================================
+	// POSIÇÃO
+	//========================================================
+
+	mes "[Nova Premiação]";
+
+	mes "Digite a posição do jogador.";
+
+	mes "";
+
+	mes "Exemplo:";
+	mes "^7777771^000000";
+
+	next;
+
+
+	input .@position;
+
+
+	if (.@position <= 0) {
+
+		mes "[Erro]";
+
+		mes "^FF0000Posição inválida.^000000";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// ITEM
+	//========================================================
+
+	mes "[Nova Premiação]";
+
+	mes "Digite o ID do item da premiação.";
+
+	next;
+
+
+	input .@item_id;
+
+
+	if (.@item_id <= 0) {
+
+		mes "[Erro]";
+
+		mes "^FF0000Item ID inválido.^000000";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// VERIFICA ITEM
+	//========================================================
+
+	if (getitemname(.@item_id) == "null") {
+
+		mes "[Erro]";
+
+		mes "^FF0000Item não encontrado.^000000";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// QUANTIDADE
+	//========================================================
+
+	mes "[Nova Premiação]";
+
+	mes "Digite a quantidade do item.";
+
+	next;
+
+
+	input .@amount;
+
+
+	if (.@amount <= 0) {
+
+		mes "[Erro]";
+
+		mes "^FF0000Quantidade inválida.^000000";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// DESCRIÇÃO
+	//========================================================
+
+	mes "[Nova Premiação]";
+
+	mes "Digite uma descrição para esta premiação.";
+
+	mes "";
+
+	mes "Exemplo:";
+
+	mes "^777777Ranking PvP - Agosto/2026^000000";
+
+	next;
+
+
+	input .@description$;
+
+
+	if (.@description$ == "") {
+
+		mes "[Erro]";
+
+		mes "^FF0000A descrição não pode ficar vazia.^000000";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// CONFIRMAÇÃO
+	//========================================================
+
+	mes "[Confirmar Premiação]";
+
+	mes "Jogador:";
+
+	mes "^00AA00"
+		+ .@char_name$
+		+ "^000000";
+
+	mes "";
+
+	mes "Ranking:";
+
+	mes "^0055FF"
+		+ .@ranking_type$
+		+ "^000000";
+
+	mes "Posição:";
+
+	mes "^0055FF"
+		+ .@position
+		+ "º Lugar^000000";
+
+	mes "";
+
+	mes "Recompensa:";
+
+	mes "^00AA00"
+		+ .@amount
+		+ "x "
+		+ getitemname(.@item_id)
+		+ "^000000";
+
+	mes "";
+
+	mes "Descrição:";
+
+	mes "^777777"
+		+ .@description$
+		+ "^000000";
+
+	mes "";
+
+	next;
+
+
+	if (select(
+		"Confirmar cadastro",
+		"Cancelar"
+	) == 2) {
+
+		mes "[Gerenciador de Premiações]";
+
+		mes "Cadastro cancelado.";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// INSERT
+	//========================================================
+
+	query_sql(
+		"INSERT INTO ranking_rewards " +
+		"(char_id, ranking_type, ranking_position, item_id, amount, description, status) " +
+		"VALUES (" +
+		.@char_id + ", " +
+		"'" + .@ranking_type$ + "', " +
+		.@position + ", " +
+		.@item_id + ", " +
+		.@amount + ", " +
+		"'" + escape_sql(.@description$) + "', " +
+		"0)"
+	);
+
+
+	mes "[Gerenciador Ranking]";
+
+	mes "^00AA00Premiação cadastrada com sucesso!^000000";
+
+	mes "";
+
+	mes "Jogador:";
+
+	mes "^0055FF"
+		+ .@char_name$
+		+ "^000000";
+
+	mes "";
+
+	mes "O jogador poderá retirar";
+
+	mes "a premiação através da";
+
+	mes "Central de Premiações.";
+
+	close;
+
+
+
+//============================================================
+// CONSULTAR PREMIAÇÕES PENDENTES
+//============================================================
+
+L_CONSULTAR:
+
+	query_sql(
+		"SELECT COUNT(*) " +
+		"FROM ranking_rewards " +
+		"WHERE status = 0",
+		.@pending
+	);
+
+
+	mes "[Premiações Pendentes]";
+
+	mes "";
+
+
+	if (.@pending <= 0) {
+
+		mes "^777777Não existem premiações pendentes.^000000";
+
+		close;
+
+	}
+
+
+	mes "Total de premiações pendentes:";
+
+	mes "^00AA00"
+		+ .@pending
+		+ "^000000";
+
+	mes "";
+
+
+	//========================================================
+	// CARREGA LISTA
+	//========================================================
+
+	query_sql(
+		"SELECT r.reward_id, r.char_id, c.name, " +
+		"r.ranking_type, r.ranking_position, " +
+		"r.item_id, r.amount, r.description " +
+		"FROM ranking_rewards r " +
+		"LEFT JOIN `char` c ON c.char_id = r.char_id " +
+		"WHERE r.status = 0 " +
+		"ORDER BY r.reward_id ASC " +
+		"LIMIT 50",
+		.@reward_id,
+		.@r_char_id,
+		.@r_name$,
+		.@r_type$,
+		.@r_position,
+		.@r_item_id,
+		.@r_amount,
+		.@r_description$
+	);
+
+
+	//========================================================
+	// MOSTRA LISTA
+	//========================================================
+
+	for (.@i = 0; .@i < .@pending && .@i < 50; .@i++) {
+
+		mes "^0055FFReward #"
+			+ .@reward_id[.@i]
+			+ "^000000";
+
+		mes "Jogador: "
+			+ .@r_name$[.@i];
+
+		mes "Char ID: "
+			+ .@r_char_id[.@i];
+
+		mes "Ranking: "
+			+ .@r_type$[.@i];
+
+		mes "Posição: "
+			+ .@r_position[.@i]
+			+ "º";
+
+		mes "Recompensa: "
+			+ .@r_amount[.@i]
+			+ "x "
+			+ getitemname(.@r_item_id[.@i]);
+
+		mes "Descrição:";
+
+		mes "^777777"
+			+ .@r_description$[.@i]
+			+ "^000000";
+
+		mes "";
+
+	}
+
+	close;
+
+
+
+//============================================================
+// CANCELAR PREMIAÇÃO
+//============================================================
+
+L_CANCELAR:
+
+	mes "[Cancelar Premiação]";
+
+	mes "Digite o Reward ID que deseja cancelar.";
+
+	mes "";
+
+	mes "Exemplo:";
+	mes "^77777715^000000";
+
+	next;
+
+
+	input .@reward_id;
+
+
+	if (.@reward_id <= 0) {
+
+		mes "[Erro]";
+
+		mes "Reward ID inválido.";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// BUSCA PREMIAÇÃO
+	//========================================================
+
+	query_sql(
+		"SELECT char_id, ranking_type, ranking_position, " +
+		"item_id, amount, description " +
+		"FROM ranking_rewards " +
+		"WHERE reward_id = " + .@reward_id + " " +
+		"AND status = 0",
+		.@char_id,
+		.@ranking_type$,
+		.@position,
+		.@item_id,
+		.@amount,
+		.@description$
+	);
+
+
+	if (.@char_id <= 0) {
+
+		mes "[Erro]";
+
+		mes "^FF0000Premiação não encontrada ou já processada.^000000";
+
+		close;
+
+	}
+
+
+	//========================================================
+	// CONFIRMA CANCELAMENTO
+	//========================================================
+
+	mes "[Cancelar Premiação]";
+
+	mes "Reward ID:";
+
+	mes "^0055FF#"
+		+ .@reward_id
+		+ "^000000";
+
+	mes "";
+
+	mes "Char ID:";
+
+	mes .@char_id;
+
+	mes "";
+
+	mes "Ranking:";
+
+	mes .@ranking_type$;
+
+	mes "Posição:";
+
+	mes .@position
+		+ "º Lugar";
+
+	mes "";
+
+	mes "Recompensa:";
+
+	mes .@amount
+		+ "x "
+		+ getitemname(.@item_id);
+
+	mes "";
+
+	mes "^FF0000ATENÇÃO:^000000";
+
+	mes "Esta ação irá cancelar";
+
+	mes "a premiação permanentemente.";
+
+	next;
+
+
+	if (select(
+		"Cancelar premiação",
+		"Voltar"
+	) == 2)
+		close;
+
+
+	//========================================================
+	// CANCELA
+	//========================================================
+
+	query_sql(
+		"UPDATE ranking_rewards " +
+		"SET status = 2 " +
+		"WHERE reward_id = " + .@reward_id + " " +
+		"AND status = 0"
+	);
+
+
+	mes "[Gerenciador de Premiações]";
+
+	mes "^00AA00Premiação cancelada com sucesso.^000000";
+
+	close;
+
+}
+
+
+
+//============================================================
+// RANKING REWARDS TIMER
+//
+// NPC INVISÍVEL
+// Responsável pelo aviso automático de premiações.
+//
+// Regras:
+//
+// PVP somente:
+//    Aviso de Ranking PvP
+//
+// MVP somente:
+//    Aviso de Ranking MVP
+//
+// PVP + MVP:
+//    Aviso informando os dois.
+//
+// O jogador recebe somente UMA mensagem,
+// mesmo que possua várias premiações.
+//============================================================
+
+-	script	RankingRewardsTimer	-1,{
+
+OnInit:
+
+	//========================================================
+	// INICIA O TIMER
+	//========================================================
+
+	initnpctimer;
+
+	end;
+
+
+
+//============================================================
+// TIMER DE TESTE
+//
+// 60000 = 1 minuto
+//
+// Depois do teste:
+//
+// OnTimer3600000
+//
+//============================================================
+
+OnTimer3600000:
+
+
+	//========================================================
+	// BUSCA JOGADORES ONLINE COM PREMIAÇÕES PENDENTES
+	//========================================================
+
+	query_sql(
+		"SELECT DISTINCT r.char_id, c.account_id, r.ranking_type " +
+		"FROM ranking_rewards r " +
+		"INNER JOIN `char` c ON c.char_id = r.char_id " +
+		"WHERE r.status = 0 " +
+		"AND c.online = 1",
+		.@char_id,
+		.@account_id,
+		.@ranking_type$
+	);
+
+
+	//========================================================
+	// PROCESSA CADA JOGADOR
+	//========================================================
+
+	for (.@i = 0; .@i < getarraysize(.@account_id); .@i++) {
+
+
+		//====================================================
+		// VARIÁVEIS DO JOGADOR
+		//====================================================
+
+		.@has_pvp = 0;
+		.@has_mvp = 0;
+
+
+		//====================================================
+		// PROCURA TODAS AS PREMIAÇÕES DESSE CHAR
+		//====================================================
+
+		for (.@j = 0; .@j < getarraysize(.@char_id); .@j++) {
+
+
+			if (.@char_id[.@j] != .@char_id[.@i])
+				continue;
+
+
+			//================================================
+			// PVP
+			//================================================
+
+			if (.@ranking_type$[.@j] == "PVP")
+				.@has_pvp = 1;
+
+
+			//================================================
+			// MVP
+			//================================================
+
+			if (.@ranking_type$[.@j] == "MVP")
+				.@has_mvp = 1;
+
+		}
+
+
+		//====================================================
+		// VERIFICA LOGIN
+		//====================================================
+
+		if (!isloggedin(.@account_id[.@i]))
+			continue;
+
+
+		attachrid(.@account_id[.@i]);
+
+
+		//====================================================
+		// AVISO
+		//====================================================
+
+		dispbottom "========================================";
+
+
+		//====================================================
+		// PVP + MVP
+		//====================================================
+
+		if (.@has_pvp && .@has_mvp) {
+
+			dispbottom "[RANKING] Você possui premiações de PvP e MVP disponíveis!";
+
+			dispbottom "Visite a Central de Premiações em Prontera";
+
+			dispbottom "para realizar a coleta.";
+
+		}
+
+
+		//====================================================
+		// SOMENTE PVP
+		//====================================================
+
+		else if (.@has_pvp) {
+
+			dispbottom "[RANKING PVP] Você possui uma premiação";
+
+			dispbottom "do Ranking PvP disponível para coleta!";
+
+			dispbottom "Visite a Central de Premiações em Prontera";
+
+		}
+
+
+		//====================================================
+		// SOMENTE MVP
+		//====================================================
+
+		else if (.@has_mvp) {
+
+			dispbottom "[RANKING MVP] Você possui uma premiação";
+
+			dispbottom "do Ranking MVP disponível para coleta!";
+
+			dispbottom "Visite a Central de Premiações em Prontera";
+
+		}
+
+
+		dispbottom "========================================";
+
+
+		detachrid;
+
+	}
+
+
+	//========================================================
+	// REINICIA O TIMER
+	//========================================================
+
+	initnpctimer;
+
+	end;
+
+}
+

@@ -1,0 +1,276 @@
+prontera,200,143,5	script	Refino God	813,{
+
+	mes "[Refino Seguro]";
+	mes "Bem-vindo ao Refino Seguro!";
+	mes " ";
+	mes "Posso levar seu equipamento";
+	mes "diretamente para o ^FF0000+10^000000.";
+	mes " ";
+	mes "Custo:";
+	mes "^FF0000• 1x Ticket Refine God^000000";
+	mes "^777777(ID: 42015)^000000";
+	next;
+
+	// =========================================================
+	// Verifica o Ticket
+	// =========================================================
+
+	if (countitem(42015) < 1) {
+		mes "[Refino Seguro]";
+		mes "Você não possui o";
+		mes "^FF0000Ticket Refine God^000000.";
+		close;
+	}
+
+	// =========================================================
+	// Limpa variáveis
+	// =========================================================
+
+	.@count = 0;
+	.@menu$ = "";
+
+	// =========================================================
+	// HEAD TOP
+	// =========================================================
+
+	.@item_id = getequipid(EQI_HEAD_TOP);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_HEAD_TOP;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_HEAD_TOP) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// HEAD MID
+	// =========================================================
+
+	.@item_id = getequipid(EQI_HEAD_MID);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_HEAD_MID;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_HEAD_MID) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// HEAD LOW
+	// =========================================================
+
+	.@item_id = getequipid(EQI_HEAD_LOW);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_HEAD_LOW;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_HEAD_LOW) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// ARMOR
+	// =========================================================
+
+	.@item_id = getequipid(EQI_ARMOR);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_ARMOR;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_ARMOR) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// WEAPON - MÃO DIREITA
+	// =========================================================
+
+	.@item_id = getequipid(EQI_HAND_R);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_HAND_R;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_HAND_R) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// WEAPON - MÃO ESQUERDA
+	// =========================================================
+
+	.@item_id = getequipid(EQI_HAND_L);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_HAND_L;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_HAND_L) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// GARMENT
+	// =========================================================
+
+	.@item_id = getequipid(EQI_GARMENT);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_GARMENT;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_GARMENT) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// SHOES
+	// =========================================================
+
+	.@item_id = getequipid(EQI_SHOES);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_SHOES;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_SHOES) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// ACCESSORY LEFT
+	// =========================================================
+
+	.@item_id = getequipid(EQI_ACC_L);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_ACC_L;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_ACC_L) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// ACCESSORY RIGHT
+	// =========================================================
+
+	.@item_id = getequipid(EQI_ACC_R);
+
+	if (.@item_id > 0) {
+		.@slot[.@count] = EQI_ACC_R;
+		.@itemid[.@count] = .@item_id;
+
+		.@menu$ += getitemname(.@item_id) + " [+"
+			+ getequiprefinerycnt(EQI_ACC_R) + "]:";
+		.@count++;
+	}
+
+	// =========================================================
+	// Nenhum equipamento
+	// =========================================================
+
+	if (.@count <= 0) {
+		mes "[Refino Seguro]";
+		mes "Você não possui nenhum";
+		mes "equipamento equipado.";
+		close;
+	}
+
+	// =========================================================
+	// Escolha do equipamento
+	// =========================================================
+
+	.@choice = select(.@menu$) - 1;
+
+	.@equip_slot = .@slot[.@choice];
+	.@item_id = .@itemid[.@choice];
+
+	// =========================================================
+	// Verifica refino atual
+	// =========================================================
+
+	.@refine = getequiprefinerycnt(.@equip_slot);
+
+	if (.@refine >= 10) {
+		mes "[Refino Seguro]";
+		mes "Este equipamento já está";
+		mes "no ^FF0000+10^000000 ou superior.";
+		close;
+	}
+
+	// =========================================================
+	// Confirmação
+	// =========================================================
+
+	mes "[Refino Seguro]";
+	mes "Equipamento:";
+	mes "^00AAFF" + getitemname(.@item_id) + "^000000";
+	mes " ";
+	mes "Refino atual:";
+	mes "^FF0000+" + .@refine + "^000000";
+	mes " ";
+	mes "Novo refino:";
+	mes "^00AA00+10^000000";
+	mes " ";
+	mes "Custo:";
+	mes "^FF0000 1x Ticket Refine God^000000";
+	next;
+
+	if (select("Confirmar:Cancelar") == 2) {
+		mes "[Refino Seguro]";
+		mes "Operação cancelada.";
+		close;
+	}
+
+	// =========================================================
+	// Verificação final do Ticket
+	// =========================================================
+
+	if (countitem(42015) < 1) {
+		mes "[Refino Seguro]";
+		mes "Você não possui mais o";
+		mes "^FF0000Ticket Refine God^000000.";
+		close;
+	}
+
+	// =========================================================
+	// Consome Ticket
+	// =========================================================
+
+	delitem 42015,1;
+
+	// =========================================================
+	// Refina para +10
+	// =========================================================
+
+	while (getequiprefinerycnt(.@equip_slot) < 10) {
+		successrefitem .@equip_slot;
+	}
+
+	// =========================================================
+	// Resultado
+	// =========================================================
+
+	mes "[Refino Seguro]";
+	mes "^00AA00Refino concluído!^000000";
+	mes " ";
+	mes getitemname(.@item_id);
+	mes "Agora está em ^00AA00+10^000000.";
+	mes " ";
+	mes "Bom jogo!";
+	close;
+}

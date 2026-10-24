@@ -227,6 +227,9 @@ enum send_target : uint8_t {
 	GUILD_AREA,
 	GUILD_AREA_WOS,
 	GUILD_NOBG,
+	GUILD_ALLIANCES,
+	GUILD_ALLIANCES_FRIEND,
+	GUILD_ALLIANCES_ENEMY,	
 	DUEL,
 	DUEL_WOS,
 	SELF,
@@ -720,7 +723,9 @@ enum e_config_type : uint32 {
 	CONFIG_OPEN_EQUIPMENT_WINDOW = 0,
 	CONFIG_CALL,
 	CONFIG_PET_AUTOFEED,
-	CONFIG_HOMUNCULUS_AUTOFEED
+	CONFIG_HOMUNCULUS_AUTOFEED,
+	// CONFIG_UNKNOWN,
+	CONFIG_DISABLE_SHOWCOSTUMES = 5,	
 };
 
 enum e_memorial_dungeon_command : uint16 {
@@ -867,7 +872,11 @@ void clif_setport(uint16 port);
 uint32 clif_getip(void);
 uint32 clif_refresh_ip(void);
 uint16 clif_getport(void);
+extern int countPlayers;
 
+void setPlayerCount(int count);
+int getPlayerCount(void);
+void clif_usercount(int fd, int count);
 void clif_authok(map_session_data *sd);
 void clif_authrefuse(int32 fd, uint8 error_code);
 void clif_authfail_fd(int32 fd, int32 type);
@@ -1504,6 +1513,7 @@ void clif_set_dialog_align(map_session_data& sd, int32 npcid, e_say_dialog_align
 void clif_set_npc_window_size(map_session_data& sd, int32 width, int32 height);
 void clif_set_npc_window_pos(map_session_data& sd, int32 x, int32 y);
 void clif_set_npc_window_pos_percent(map_session_data& sd, int32 x, int32 y);
+void clif_goldpc_info( map_session_data& sd );
 
 void clif_noask_sub( map_session_data& sd, map_session_data& tsd, int32 type );
 

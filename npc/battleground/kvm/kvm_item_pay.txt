@@ -66,7 +66,7 @@ bat_room,151,144,3	script	KVM Logistic Officer#a	734,{
 			mes "You have selected the Weapon Category.";
 			mes "Please select a sub-category.";
 			next;
-			switch(select("Dagger/Sword/Spear:Staff/Mace/Axe/Shuriken:Bow/Katar/Instrument/Whip:Book/Knuckle:Revolver/Rifle/Gun/Grenade Launcher")) {
+			switch(select("Dagger/Sword/Spear:Staff/Mace/Axe:Bow/Katar:Book/Knuckle")) {
 			case 1:
 				mes "[Logistics]";
 				mes "You have selected the Dagger/Sword/Spear category.";
@@ -131,8 +131,8 @@ bat_room,151,144,3	script	KVM Logistic Officer#a	734,{
 					case 1: callsub PurchaseItem,1281,0,0; //Krieger_Katar1
 					case 2: callsub PurchaseItem,1282,0,0; //Krieger_Katar2
 					}
-				case 3: callsub PurchaseItem,1927,0,1; //Krieger_Instrument1
-				case 4: callsub PurchaseItem,1981,0,1; //Krieger_Whip1
+				//case 3: callsub PurchaseItem,1927,0,1; //Krieger_Instrument1
+				//case 4: callsub PurchaseItem,1981,0,1; //Krieger_Whip1
 				}
 			case 4:
 				mes "[Logistics]";
@@ -163,18 +163,18 @@ bat_room,151,144,3	script	KVM Logistic Officer#a	734,{
 					case 2: callsub PurchaseItem,1827,0,0; //Krieger_Knuckle2
 					}
 				}
-			case 5:
-				mes "[Logistics]";
-				mes "You have selected the 'Revolver/Rifle/Gun/Grenade Launcher' category.";
-				mes "Please select a sub-category.";
-				next;
-				switch(select("Revolver:Rifle:Gatling Gun:Shotgun:Grenade Launcher")) {
-				case 1: callsub PurchaseItem,13110,0,1; //Krieger_Pistol1
-				case 2: callsub PurchaseItem,13176,0,1; //Krieger_Rifle1
-				case 3: callsub PurchaseItem,13177,0,1; //Krieger_Gatling1
-				case 4: callsub PurchaseItem,13178,0,1; //Krieger_Shotgun1
-				case 5: callsub PurchaseItem,13179,0,1; //Krieger_Launcher1
-				}
+			//case 5:
+			//	mes "[Logistics]";
+			//	mes "You have selected the 'Revolver/Rifle/Gun/Grenade Launcher' category.";
+			//	mes "Please select a sub-category.";
+			//	next;
+			//	switch(select("Revolver:Rifle:Gatling Gun:Shotgun:Grenade Launcher")) {
+			//	case 1: callsub PurchaseItem,13110,0,1; //Krieger_Pistol1
+			//	case 2: callsub PurchaseItem,13176,0,1; //Krieger_Rifle1
+			//	case 3: callsub PurchaseItem,13177,0,1; //Krieger_Gatling1
+			//	case 4: callsub PurchaseItem,13178,0,1; //Krieger_Shotgun1
+			//	case 5: callsub PurchaseItem,13179,0,1; //Krieger_Launcher1
+			//	}
 			}
 		case 2:
 			mes "[Logistics]";

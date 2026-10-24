@@ -2214,7 +2214,7 @@ bool status_check_skilluse(struct block_list *src, struct block_list *target, ui
 	if (tsc != nullptr && !tsc->empty()) {
 		if(!skill_id && tsc->getSCE(SC_TRICKDEAD))
 			return false;
-		if((skill_id == WZ_STORMGUST || skill_id == WZ_FROSTNOVA || skill_id == NJ_HYOUSYOURAKU || skill_id == NPC_STORMGUST2)
+		 if((skill_id == WZ_STORMGUST /*|| skill_id == WZ_FROSTNOVA*/ || skill_id == NJ_HYOUSYOURAKU || skill_id == NPC_STORMGUST2)
 			&& tsc->getSCE(SC_FREEZE))
 			return false;
 		if(skill_id == PR_LEXAETERNA && (tsc->getSCE(SC_FREEZE) || tsc->getSCE(SC_STONE)))
@@ -2403,7 +2403,7 @@ int32 status_base_amotion_pc(map_session_data* sd, struct status_data* status)
 	 : (job->aspd_base[sd->weapontype1] + job->aspd_base[sd->weapontype2]) * 7 / 10; // Dual-wield
 
 	// Percentual delay reduction from stats
-	amotion -= amotion * (4 * status->agi + status->dex) / 1000;
+	amotion -= amotion * (4 * status->agi + status->dex) / 900;
 
 	// Raw delay adjustment from bAspd bonus
 	amotion += sd->bonus.aspd_add;
@@ -8526,6 +8526,8 @@ static int16 status_calc_aspd_rate(struct block_list *bl, status_change *sc, int
 		aspd_rate += sc->getSCE(SC_MELON_BOMB)->val3 * 10;
 	if( sc->getSCE(SC_INCASPDRATE) )
 		aspd_rate -= sc->getSCE(SC_INCASPDRATE)->val1 * 10;
+	if( sc->getSCE(SC_SOUCOLLECT) )
+		aspd_rate -= sc->getSCE(SC_SOUCOLLECT)->val1 * 10;
 	if( sc->getSCE(SC_GOLDENE_FERSE))
 		aspd_rate -= sc->getSCE(SC_GOLDENE_FERSE)->val3 * 10;
 	if (sc->getSCE(SC_WIND_INSIGNIA) && sc->getSCE(SC_WIND_INSIGNIA)->val1 == 2)
@@ -10153,6 +10155,32 @@ bool status_change_start(block_list* src, block_list* bl, sc_type type, int32 ra
 
 	if( bl->type != BL_NPC && status_isdead(*bl) && ( type != SC_NOCHAT && type != SC_JAILED ) ) // SC_NOCHAT and SC_JAILED should work even on dead characters
 		return false;
+
+	if (bl->type == BL_PC) {
+		map_session_data* sd = BL_CAST(BL_PC, bl);
+		switch (type) {
+		case SC_HIDING:
+		case SC_CLOAKING:
+		case SC_CAMOUFLAGE:
+		case SC_NEWMOON:
+		case SC_CLOAKINGEXCEED:
+		case SC_CHASEWALK:
+			// Pet hide
+			if(sd->status.pet_id > 0 && sd->pd) {
+				struct pet_data *pd = sd->pd;
+				pet_unlocktarget(pd);
+				clif_clearunit_area(*pd, CLR_OUTSIGHT);
+				map_delblock(pd);
+			}
+			// Homun hide
+			if(hom_is_active(sd->hd) && hom_vaporize(sd,HOM_ST_REST)){
+				struct homun_data *hd = sd->hd;
+				unit_remove_map(hd, CLR_OUTSIGHT);
+				sd->state.homun_hide = 1;
+			}
+			break;
+		}
+	}
 
 	if (status_change_isDisabledOnMap(type, map_getmapdata(bl->m)))
 		return false;
@@ -13015,7 +13043,9 @@ static bool status_change_start_post_delay(block_list* src, block_list* bl, sc_t
 				clif_changelook(bl,LOOK_WEAPON,0);
 				clif_changelook(bl,LOOK_SHIELD,0);
 				clif_changelook(bl,LOOK_CLOTHES_COLOR,vd->cloth_color);
+#if PACKETVER < 20231220				
 				clif_changelook(bl,LOOK_BODY2,0);
+#endif			
 				break;
 			case SC_STONE:
 			case SC_STONEWAIT:
@@ -13493,6 +13523,36 @@ int32 status_change_end( struct block_list* bl, enum sc_type type, int32 tid ){
 	view_data* vd = status_get_viewdata( bl );
 	std::bitset<SCB_MAX> calc_flag = scdb->calc_flag;
 	status_data* status = status_get_status_data(*bl);
+	if(bl->type == BL_PC){
+		switch (type) {
+			case SC_HIDING:
+			case SC_CLOAKING:
+			case SC_CAMOUFLAGE:
+			case SC_NEWMOON:
+			case SC_CLOAKINGEXCEED:
+			case SC_CHASEWALK:
+				// Pet appear
+				if(sd->status.pet_id > 0 && sd->pd) {
+					struct pet_data *pd = sd->pd;
+					pd->m = sd->m;
+					pd->x = sd->x;
+					pd->y = sd->y;
+					unit_refresh(pd);
+					map_addblock(pd);
+				}
+				// Homun appear
+				if (sd->status.hom_id && sd->hd && sd->hd->homunculus.vaporize && sd->state.homun_hide){
+					struct homun_data *hd = sd->hd;
+					hd->m = sd->m;
+					hd->x = sd->x;
+					hd->y = sd->y;
+					unit_refresh(hd);
+					hd->homunculus.vaporize = HOM_ST_ACTIVE;
+					map_addblock(hd);
+					sd->state.homun_hide = 0;
+				}
+		}
+	}
 
 	switch(type) {
 		case SC_KEEPING:
@@ -14070,7 +14130,7 @@ int32 status_change_end( struct block_list* bl, enum sc_type type, int32 tid ){
 			clif_changelook(bl,LOOK_WEAPON,sd->vd.weapon);
 			clif_changelook(bl,LOOK_SHIELD,sd->vd.shield);
 			clif_changelook(bl,LOOK_CLOTHES_COLOR,cap_value(sd->status.clothes_color,0,battle_config.max_cloth_color));
-			clif_changelook(bl,LOOK_BODY2,cap_value(sd->status.body,0,battle_config.max_body_style));
+			clif_changelook(bl,LOOK_BODY2,cap_value(sd->status.body,0,MAX_BODY_STYLE));
 		}
 	}
 	if (calc_flag.any()) {

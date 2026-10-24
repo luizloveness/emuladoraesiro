@@ -1,0 +1,63 @@
+//    ___  __  __   ___  ___   ___   ___  ___ 
+//   | _ )|  \/  | / __|/ _ \ |   \ | __|| _ \
+//   | _ \| |\/| || (__| (_) || |) || _| |   /
+//   |___/|_|  |_| \___|\___/ |___/ |___||_|_\
+//                                            
+//   Odin Security v2.0
+
+-	script	authOdin	-1,{
+OnPCLoginEvent:
+    query_sql("SELECT `enable_auth` FROM `odin_conf`", .@enable);
+    if (.@enable == 1) {
+        // Aguarda 5s para o Odin Security completar o SetAuth via API
+        addtimer 5000, strnpcinfo(3)+"::OnOdinFirstCheck";
+    }
+    end;
+
+OnOdinFirstCheck:
+    .@account_id = getcharid(3);
+    if (!isloggedin(.@account_id)) end;
+
+    query_sql("SELECT UNIX_TIMESTAMP(last_login) FROM odin_auth WHERE account_id = '" + .@account_id + "' order by last_login desc limit 1", .@last_login);
+    .@agora = gettimetick(2);
+    .@diferenca = .@agora - .@last_login[0];
+
+    if (.@diferenca >= 300 || .@diferenca <= -300) {
+        dispbottom "[ODIN Security] Voce sera desconectado, a autenticacao do Odin falhou.";
+        sleep2 2000;
+        atcommand "@kick " + strcharinfo(0);
+        end;
+    }
+
+    addtimer 120000, strnpcinfo(3)+"::OnOdinPeriodicCheck";
+    end;
+
+OnOdinPeriodicCheck:
+ query_sql("SELECT `enable_auth` FROM `odin_conf`", .@enable);
+ if (.@enable == 1) {
+	.@account_id = getcharid(3);
+	if (!isloggedin(.@account_id)) end;
+
+	 query_sql("SELECT UNIX_TIMESTAMP(last_login) FROM odin_auth WHERE account_id = '" + .@account_id + "' order by last_login desc limit 1", .@last_login);
+	.@agora = gettimetick(2);
+	.@diferenca = .@agora - .@last_login[0];
+
+	if (.@diferenca >= 300 || .@diferenca <= -300) {
+		dispbottom "[ODIN Security] Voc? ser? desconectado, a autentica??o do Odin falhou.";
+		sleep2 2000;
+		atcommand "@kick " + strcharinfo(0);
+		end;
+	}
+
+	addtimer 120000, strnpcinfo(3)+"::OnOdinPeriodicCheck";
+	end;
+	}
+	
+OnPCLogoutEvent:
+      deltimer strnpcinfo(3)+"::OnOdinFirstCheck";
+      deltimer strnpcinfo(3)+"::OnOdinPeriodicCheck";
+      .@account_id = getcharid(3);
+      query_sql("UPDATE odin_auth SET last_login = '2000-01-01' WHERE account_id = '" + .@account_id + "'");
+end;
+
+}

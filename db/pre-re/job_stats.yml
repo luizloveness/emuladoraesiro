@@ -1532,7 +1532,7 @@ Body:
   - Jobs:
       High_Priest: true
     MaxWeight: 26000
-    HpFactor: 75
+    HpFactor: 85
     SpIncrease: 800
     BonusStats:
       - Level: 1
@@ -1628,7 +1628,7 @@ Body:
   - Jobs:
       High_Wizard: true
     MaxWeight: 24000
-    HpFactor: 55
+    HpFactor: 75
     SpIncrease: 900
     BonusStats:
       - Level: 1
@@ -1724,7 +1724,7 @@ Body:
   - Jobs:
       Whitesmith: true
     MaxWeight: 30000
-    HpFactor: 90
+    HpFactor: 120
     SpIncrease: 400
     BonusStats:
       - Level: 1
@@ -1916,7 +1916,7 @@ Body:
   - Jobs:
       Assassin_Cross: true
     MaxWeight: 24000
-    HpFactor: 110
+    HpFactor: 120
     SpIncrease: 400
     BonusStats:
       - Level: 1
@@ -2013,7 +2013,7 @@ Body:
       Paladin: true
       Paladin2: true
     MaxWeight: 28000
-    HpFactor: 110
+    HpFactor: 150
     HpIncrease: 700
     SpIncrease: 470
     BonusStats:
@@ -2303,7 +2303,7 @@ Body:
   - Jobs:
       Stalker: true
     MaxWeight: 24000
-    HpFactor: 85
+    HpFactor: 90
     SpIncrease: 500
     BonusStats:
       - Level: 1
@@ -2399,7 +2399,7 @@ Body:
   - Jobs:
       Creator: true
     MaxWeight: 30000
-    HpFactor: 90
+    HpFactor: 110
     SpIncrease: 400
     BonusStats:
       - Level: 1
@@ -2495,7 +2495,7 @@ Body:
   - Jobs:
       Clown: true
     MaxWeight: 27000
-    HpFactor: 75
+    HpFactor: 85
     HpIncrease: 300
     SpIncrease: 600
     BonusStats:
@@ -2592,7 +2592,7 @@ Body:
   - Jobs:
       Gypsy: true
     MaxWeight: 27000
-    HpFactor: 75
+    HpFactor: 85
     HpIncrease: 300
     SpIncrease: 600
     BonusStats:

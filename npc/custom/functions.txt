@@ -1,0 +1,25 @@
+function	script	EnchantWeaponElement	{
+	.@element = getarg(0);
+	if (!getequipisequiped(EQI_WEAPON)) {
+		mes "Você precisa equipar uma arma para encantá-la.";
+		return;
+	}
+	sc_end SC_ELEMENTALCHANGE;
+	sc_start SC_ELEMENTALCHANGE, 60000, .@element; // 60 segundos
+	mes "Sua arma foi encantada com o elemento " + getelementname(.@element) + " por 60 segundos!";
+	specialeffect EF_ENHANCE;
+	return;
+}
+
+function	script	getelementname	{
+	.@el = getarg(0);
+	switch(.@el) {
+		case 1: return "Água";
+		case 2: return "Fogo";
+		case 3: return "Vento";
+		case 4: return "Terra";
+		case 5: return "Sagrado";
+		case 6: return "Sombrio";
+		default: return "Desconhecido";
+	}
+}

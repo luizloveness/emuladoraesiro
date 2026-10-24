@@ -790,7 +790,7 @@ Body:
     Title: Job Change to Monk - Become a Monk
   - Id: 3040
     Title: The Curse of Baphomet
-    TimeLimit: +12h
+    TimeLimit: +24h
   - Id: 3041
     Title: The Curse of Baphomet
     TimeLimit: +3mn
@@ -7102,3 +7102,48 @@ Body:
   - Id: 62238
     Title: Midgardian Mercenary timer
     TimeLimit: +1h
+  - Id: 12316
+    Title: Meeting Hugin
+  - Id: 12317
+    Title: Trace of Time Travel
+    TimeLimit: 4h
+  - Id: 12318
+    Title: Corrupted Soul Hunt
+    Targets:
+      - Mob: MG_CORRUPTION_ROOT
+        Count: 1
+  - Id: 12319
+    Title: Amdarais Hunt
+    Targets:
+      - Mob: MG_AMDARAIS
+        Count: 1
+  - Id: 12320
+    Title: Time Traveler
+  - Id: 12321
+    Title: Time Conqueror
+  - Id: 12322
+    Title: Space Distortion
+  - Id: 12334
+    Title: Trace of Time Travel
+    TimeLimit: +70h
+  - Id: 12335
+    Title: Space Distortion
+  - Id: 12336
+    Title: Corrupted Soul Hunt
+    Targets:
+      - Mob: MG_CORRUPTION_ROOT_H
+        Count: 1
+  - Id: 12337
+    Title: Amdarais Soul Hunt
+    Targets:
+      - Mob: MG_AMDARAIS_H
+        Count: 1
+  - Id: 12338
+    Title: Time Traveler
+  - Id: 12339
+    Title: Time Conqueror
+  - Id: 12330
+    Title: Skull-faced Girl
+  - Id: 12331
+    Title: Trail of Toy Factory
+    TimeLimit: 4h

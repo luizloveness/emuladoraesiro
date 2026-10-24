@@ -1,0 +1,58 @@
+prontera,167,191,3	script	CoinEnchant#1	563,{
+
+	mes "[Coin Enchant]";
+	mes "What would you like to do?";
+	next;
+
+	switch(select(
+		"Exchange 1 Platinum Coin for 100 Bronze Coin:"
+		+"Exchange 100 Bronze Coin for 1 Platinum Coin:"
+		+"Leave"
+	)) {
+
+		case 1:
+
+
+			if (countitem(677) < 1) {
+				mes "[Coin Enchant]";
+				mes "You don't have any ^FF0000Platinum Coin^000000.";
+				close;
+			}
+			if (!checkweight(673,100)) {
+				mes "[Coin Enchant]";
+				mes "You're carrying too much weight!";
+				close;
+			}
+			delitem 677,1;
+			getitem 673,100;
+			mes "[Coin Enchant]";
+			mes "You exchanged 1 Platinum Coin for 100 Bronze Coin!";
+			close;
+
+		case 2:
+
+
+			if (countitem(673) < 100) {
+				mes "[Coin Enchant]";
+				mes "You don't have ^FF0000100 Bronze Coin^000000.";
+				close;
+			}
+			if (!checkweight(677,1)) {
+				mes "[Coin Enchant]";
+				mes "You're carrying too much weight!";
+				close;
+			}
+			delitem 673,100;
+			getitem 677,1;
+			mes "[Coin Enchant]";
+			mes "You exchanged 100 Bronze Coin for 1 Platinum Coin!";
+			close;
+
+		default:
+			mes "[Coin Enchant]";
+			mes "Come back anytime!";
+			close;
+	}
+
+
+}

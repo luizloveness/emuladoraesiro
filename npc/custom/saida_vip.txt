@@ -1,0 +1,13 @@
+que_qsch05,141,124,3	script	Leave VIP	723,{
+	mes "[Leave VIP]";
+	mes "You will be teleported back to Prontera.";
+	next;
+	mes "Good luck on your journey!";
+	close2;
+	warp "prontera",155,193;
+	end;
+
+OnInit:
+	waitingroom "Exit vip room", 0;
+	end;
+}

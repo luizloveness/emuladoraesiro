@@ -32,5 +32,12 @@
 //
 // Examples:
 // MC_MAMMONITE,BL_PC,1,50 // In normal maps, players deal +50% damage to other players with Mammonite.
-// MO_EXTREMITYFIST,BL_PC,6,-50 // In PVP and GVG, players deal -50% (half) damage to other players with Asura Strike.
+MO_EXTREMITYFIST,BL_PC,6,50 // In PVP and GVG, players deal -50% (half) damage to other players with Asura Strike.
 // AB_ADORAMUS,BL_PC,6,50,0,10,15 // In PVP and GVG, players deal +50% damage to other players, +0% to mobs, +10% to bosses, and +15% to other with Adoramus.
+//AS_SONICBLOW,BL_PC,6,130
+//PA_SACRIFICE,BL_PC,6,25 // In PVP and GVG, Sacrifice deals 25% of its normal damage.
+//WS_CARTTERMINATION,BL_PC,6,250 // In PVP and GVG, Cart Termination deals +250% damage.
+ASC_BREAKER,BL_PC,6,20 // In PVP and GVG, players deal 20% more damage with Soul Breaker.
+CG_ARROWVULCAN,BL_PC,6,25 // In PVP and GVG, players deal +25% damage with Arrow Vulcan.
+WS_CARTTERMINATION,BL_PC,6,65 // In PVP and GVG, players deal +65% damage with Cart Termination.
+KN_BOWLINGBASH,BL_PC,6,120 // In PVP and GVG, players deal +120% damage with Bowling Bash.

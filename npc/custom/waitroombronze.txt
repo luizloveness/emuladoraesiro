@@ -1,0 +1,30 @@
+// ===============================
+// Bronze Coin Shop - WaitRoom
+// ===============================
+prontera,182,183,4	script	BronzeCoinShop_Wait	111,{
+
+OnInit:
+	delwaitingroom;
+	waitingroom "Bronze Coin Items", 0;
+	end;
+
+OnTouch:
+	end;
+
+OnClick:
+	end;
+}
+
+prontera,184,181,4	script	aesirocoin_Wait	111,{
+
+OnInit:
+	delwaitingroom;
+	waitingroom "Aesiro coin Itens", 0;
+	end;
+
+OnTouch:
+	end;
+
+OnClick:
+	end;
+}

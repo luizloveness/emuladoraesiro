@@ -231,7 +231,7 @@ Body:
           - Orc_Archer_Bow
           - Steel_Arrow
     Script: |
-      bonus bLongAtkRate,50;
+      bonus bLongAtkRate,25;
   - Combos:
       - Combo:
           - Cursed_Lyre
@@ -1102,7 +1102,7 @@ Body:
           - Darkness_Helm_J
     Script: |
       bonus bStr,1;
-      bonus bAtkRate,5;
+      bonus bBaseAtk,20;
   - Combos:
       - Combo:
           - Ear_Of_Angel's_Wing
@@ -1150,3 +1150,483 @@ Body:
       bonus bHit,10;
       bonus2 bAddSize,Size_Large,30;
       autobonus "{ bonus bAspdRate,100; }",1,7000,BF_WEAPON,"{ specialeffect2 EF_POTION_BERSERK; }";
+  - Combos:
+      - Combo:
+          - S_Stability_Shield    # 24090
+          - Unfreez_Weapon_S2    # 24356
+    Script: |
+      .@r = getequiprefinerycnt(EQI_SHADOW_SHIELD) + getequiprefinerycnt(EQI_SHADOW_WEAPON);
+      bonus bDef,5;
+      if (.@r >= 20) {
+         bonus2 bResEff,Eff_Freeze,10000;
+      }
+  - Combos:
+      - Combo:
+          - Old_Pink_Poo_Hat    # 18959
+          - Steel_Chonchon_Card    # 4042
+    Script: |
+      bonus2 bResEff,Eff_Freeze,10000;
+      bonus5 bAutoSpellWhenHit,"NPC_WIDEFREEZE",2,10,BF_WEAPON|BF_MAGIC,0;      
+  - Combos:
+      - Combo:
+          - Old_Pink_Poo_Hat    # 18959
+          - Sandals_    # 2402
+          - Chonchon_Card    # 4009
+    Script: |
+      .@r = getequiprefinerycnt(EQI_SHOES);
+      bonus bMaxHPrate,4+(2*.@r);
+      bonus bMaxSPrate,4+(2*.@r);
+  - Combos:
+      - Combo:
+          - Orcsuccessionhelm_TW    # 400006
+          - Orc_Warrior_Card    # 4066
+    Script: |
+      bonus2 bSubRace,RC_Player_Human,30;
+      bonus2 bSubRace,RC_Player_Doram,30;
+  - Combos:
+      - Combo:
+          - Orcsuccessionhelm_TW    # 400006
+          - Orc_Load_Card    # 4135
+    Script: |
+      bonus bMaxHPrate,50;
+      bonus2 bResEff,Eff_Freeze,10000;
+      bonus2 bResEff,Eff_Stone,10000;
+  - Combos:
+      - Combo:
+          - Orcsuccessionhelm_TW    # 400006
+          - Orc_Hero_Card    # 4143
+    Script: |
+      bonus bMaxHPrate,20;
+      skill "BS_OVERTHRUST",5;
+  - Combos:
+      - Combo:
+          - Orcsuccessionhelm_TW    # 400006
+          - Orc_Lady_Card    # 4255
+    Script: |
+      bonus2 bAddRace,RC_DemiHuman,10;
+      bonus2 bAddRace,RC_Player_Human,10;
+      bonus2 bAddRace,RC_Brute,10;
+      bonus2 bAddRace,RC_Player_Doram,10;
+  - Combos:
+      - Combo:
+          - Orcsuccessionhelm_TW    # 400006
+          - Orc_Archer_Card    # 4256
+    Script: |
+      bonus bAspdRate,3;
+      bonus bDelayrate,-3;
+  - Combos:
+      - Combo:
+          - Orcsuccessionhelm_TW    # 400006
+          - Orc_Warrior_Card    # 4066
+          - Orc_Load_Card    # 4135
+          - Orc_Hero_Card    # 4143
+          - Orc_Lady_Card    # 4255
+          - Orc_Archer_Card    # 4256
+    Script: |
+      skill "CR_DEFENDER",4;
+      bonus bDefRatioAtkClass,Class_All;
+  - Combos:
+      - Combo:
+          - Sunglasses    # 2201
+          - Mob_Scarf    # 28502
+      - Combo:
+          - Sunglasses_    # 2202
+          - Mob_Scarf    # 28502
+      - Combo:
+          - Glasses    # 2203
+          - Mob_Scarf    # 28502
+      - Combo:
+          - Glasses_    # 2204
+          - Mob_Scarf    # 28502
+      - Combo:
+          - Sunglasses    # 2201
+          - Comp_Mob_Scarf    # 420089
+      - Combo:
+          - Sunglasses_    # 2202
+          - Comp_Mob_Scarf    # 420089
+      - Combo:
+          - Glasses    # 2203
+          - Comp_Mob_Scarf    # 420089
+      - Combo:
+          - Glasses_    # 2204
+          - Comp_Mob_Scarf    # 420089
+      - Combo:
+          - Comp_Sunglasses_    # 410299
+          - Comp_Mob_Scarf    # 420089
+      - Combo:
+          - Masquerade_    # 410299
+          - Mob_Scarf    # 420089
+      - Combo:
+          - Gossip_Raven    # 410299
+          - Mob_Scarf    # 420089
+      - Combo:
+          - Black_Devil_Mask_   # 410299
+          - Mob_Scarf    # 420089
+      - Combo:
+          - Mask_of_Hero   # 410299
+          - Mob_Scarf    # 420089
+      - Combo:
+          - alucard_sunglasses   # 410299
+          - Mob_Scarf    # 420089          
+    Script: |
+      .@a = (readparam(bStr)+readparam(bLuk))/80;
+      .@b = (readparam(bAgi)+readparam(bVit))/80;
+      .@c = (readparam(bInt)+readparam(bDex))/80;
+      bonus bMaxHPrate,5*.@b;
+      bonus2 bAddClass,Class_All,6*.@a;
+      bonus bMatk,120*.@c;
+      bonus bCritical,5*.@a;
+      bonus bAspdRate,5*.@b;
+      bonus bVariableCastrate,-3*.@c;
+      bonus bCritAtkRate,10*.@a;
+      bonus2 bSubRace,RC_DemiHuman,((2*.@b)+2);
+      bonus2 bSubRace,RC_Player_Human,((2*.@b)+2);
+      bonus bHealPower,10*.@c;
+  - Combos:
+      - Combo:
+          - Mob_Scarf     # 28502
+          - YDragon_SkyWing     # 19104
+    Script: |
+      if (BaseClass == Job_Archer)
+         bonus bLongAtkDef,-10;
+  - Combos:
+      - Combo:
+          - Mob_Scarf     # 28502
+          - YDragon_SkyWing     # 19104
+    Script: |
+      .@a = (readparam(bStr)+readparam(bLuk))/80;
+      .@b = (readparam(bAgi)+readparam(bVit))/80;
+      .@c = (readparam(bInt)+readparam(bDex))/80;
+      bonus bMaxHPrate,5*.@b;
+      bonus2 bAddClass,Class_All,6*.@a;
+      bonus bMatk,120*.@c;
+      bonus bCritical,5*.@a;
+      bonus bAspdRate,5*.@b;
+      bonus bVariableCastrate,-3*.@c;
+      bonus bCritAtkRate,10*.@a;
+      bonus2 bSubRace,RC_DemiHuman,((2*.@b)+2);
+      bonus2 bSubRace,RC_Player_Human,((2*.@b)+2);
+      bonus bHealPower,10*.@c;
+  - Combos:
+      - Combo:
+          - Cuffs    # 2408
+          - Bloody_Iron_Ball    # 2655
+      - Combo:
+          - Cuffs_    # 22105
+          - Bloody_Iron_Ball    # 2655
+      - Combo:
+          - Cuffs_    # 22105
+          - Bloody_Iron_Ball_    # 28388
+      - Combo:
+          - Bloody_Iron_Ball_    # 28388
+          - Cuffs    # 2408
+    Script: |
+      bonus bBaseAtk,50;
+      bonus2 bAddDefMonster,1196,20;
+      bonus2 bAddDefMonster,1197,20;
+  - Combos:
+      - Combo:
+          - Cuffs    # 2408
+          - Prison_Uniform    # 15040
+      - Combo:
+          - Cuffs_    # 22105
+          - Prison_Uniform    # 15040
+    Script: |
+      .@r = getequiprefinerycnt(EQI_SHOES);
+      bonus bBaseAtk,5+.@r;
+  - Combos:
+      - Combo:
+          - Tidal_Shoes    # 2424
+          - Wool_Scarf    # 2528
+    Script: |
+      bonus bHPrecovRate,5;
+      bonus bMaxHPrate,10;
+  - Combos:
+      - Combo:
+          - Black_Leather_Boots    # 2425
+          - Rider_Suit    # 15058
+      - Combo:
+          - Black_Leather_Boots_    # 2434
+          - Rider_Suit    # 15058
+  - Combos:
+      - Combo:
+          - Orleans_Server    # 2123
+          - Orleans_Glove    # 2701
+      - Combo:
+          - Mechanical_Plant_Hat    # 18933
+          - C_Tower_Manager_Card    # 4229
+      - Combo:
+          - Illusion_Engine_A    # 20933
+          - Illusion_Leg_B    # 22197
+      - Combo:
+          - WhistleK    # 400000
+          - Pendant_Of_Harmony    # 2990
+      - Combo:
+          - E_Illusion_Engine_A    # 480062
+          - E_Illusion_Leg_B    # 470055
+      - Combo:
+          - Sprint_Glove_IL    # 490121
+          - Sprint_Mail_IL    # 450182
+    Script: |
+      bonus bVariableCastrate,-10;
+  - Combos:
+      - Combo:
+          - Orleans_Server    # 2123
+          - Orleans_Necklace    # 2881
+    Script: |
+      bonus bMatk,getequiprefinerycnt(EQI_HAND_L)*2;
+  - Combos:
+      - Combo:
+          - Thorny_Buckler    # 2124
+          - Bison_Horn    # 2702
+    Script: |
+      bonus bAspdRate,10;
+      bonus bShortWeaponDamageReturn,5;
+  - Combos:
+      - Combo:
+          - Thorny_Buckler    # 2124
+          - Thorny_Shoes    # 22064
+    Script: |
+      .@r = getequiprefinerycnt(EQI_HAND_L)/3;
+      bonus bAspdRate,.@r*6;
+  - Combos:
+      - Combo:
+          - Strong_Shield    # 2125
+          - Hoplite_Helmet    # 5782
+    Script: |
+      bonus bDef,2;
+      bonus2 bSubEle,Ele_All,5;
+  - Combos:
+      - Combo:
+          - Shadow_Guard    # 2135
+          - Shadow_Walk    # 2426
+    Script: |
+      bonus2 bAddEffWhenHit,Eff_Blind,500;
+      autobonus2 "{ bonus bFlee,20; }",200,10000,BF_WEAPON,"{ specialeffect2 EF_INCAGILITY; }";
+  - Combos:
+      - Combo:
+          - Imperial_Guard    # 2153
+          - Imperial_Ring    # 28372
+    Script: |
+      .@r = getequiprefinerycnt(EQI_HAND_L);
+      bonus2 bSkillAtk,"LG_SHIELDPRESS",.@r > 5 ? (.@r - 5) * 8 : 0;
+  - Combos:
+      - Combo:
+          - S_Malicious_Armor    # 24081
+          - S_Malicious_Shoes    # 24082
+          - S_Malicious_Shield    # 24083
+    Script: |
+      bonus2 bHPDrainRate,40,2+(getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_SHOES)/5);
+  - Combos:
+      - Combo:
+          - S_Malicious_Shoes    # 24082
+          - S_Malicious_Shield    # 24083
+          - S2_Malicious_Armor    # 24325
+    Script: |
+      bonus2 bHPDrainRate,40,2+(getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_SHOES))/5;
+  - Combos:
+      - Combo:
+          - Ring_Of_Rogue    # 2620
+          - Cold_Heart    # 2746
+    Script: |
+      bonus2 bAddSize,Size_Medium,8;
+      bonus bAspdRate,5;
+  - Combos:
+      - Combo:
+          - Ring_Of_Rogue    # 2620
+          - Black_Cat    # 2747
+    Script: |
+      bonus2 bAddSize,Size_Large,8;
+      bonus bHit,getequiprefinerycnt(EQI_HAND_R)/2;
+      bonus bVariableCastrate,-getequiprefinerycnt(EQI_HAND_R)/2;
+  - Combos:
+      - Combo:
+          - Bison_Horn    # 2702
+          - Buffalo_Horn    # 2874
+      - Combo:
+          - Riot_Chip_J    # 5965
+          - Reactor_A_ASPD    # 4991
+      - Combo:
+          - Snake_Encyclopedia    # 1590
+          - Snake_Card    # 4037
+          - Side_Winder_Card    # 4117
+      - Combo:
+          - Snake_Encyclopedia_    # 1598
+          - Snake_Card    # 4037
+          - Side_Winder_Card    # 4117
+      - Combo:
+          - R_Hunting_Boots    # 22169
+          - R_Hunting_Mail    # 15247
+    Script: |
+      bonus bAspd,1;
+  - Combos:
+      - Combo:
+          - Bison_Horn    # 2702
+          - Thorny_Shoes    # 22064
+      - Combo:
+          - Bison_Horn    # 2702
+          - Thorny_Shoes_BR    # 22149
+    Script: |
+      if (readparam(bAgi) >= 120)
+         bonus bAspdRate,1;
+  - Combos:
+      - Combo:
+          - Krieger_Suit1    # 2394
+          - Krieger_Shoes1    # 2444
+          - Krieger_Muffler1    # 2549
+    Script: |
+      bonus2 bAddClass,Class_All,5;
+      bonus bMatkRate,5;
+      bonus2 bResEff,Eff_Freeze,5000;
+      bonus bHealPower,3;
+  - Combos:
+      - Combo:
+          - hood_of_death    # 2394
+          - face_of_death   # 2444
+    Script: |
+      if (Class != Job_Champion) {
+         bonus bAgi,10;
+         bonus bInt,-20;       
+         bonus bCritAtkRate,10;     
+         bonus2 bComaRace,RC_DemiHuman,100;
+         bonus2 bComaRace,RC_Player_Human,100;
+      }
+  - Combos:
+      - Combo:
+          - Medal_Swordman    # 2720
+          - Krieger_Ring1    # 2772
+      - Combo:
+          - Medal_Swordman    # 2720
+          - Krieger_Ring2    # 2773
+      - Combo:
+          - Medal_Swordman    # 2720
+          - Krieger_Ring3    # 2774
+      - Combo:
+          - Medal_Thief    # 2721
+          - Krieger_Ring1    # 2772
+      - Combo:
+          - Medal_Thief    # 2721
+          - Krieger_Ring2    # 2773
+      - Combo:
+          - Medal_Thief    # 2721
+          - Krieger_Ring3    # 2774
+      - Combo:
+          - Medal_Acolyte    # 2722
+          - Krieger_Ring1    # 2772
+      - Combo:
+          - Medal_Acolyte    # 2722
+          - Krieger_Ring2    # 2773
+      - Combo:
+          - Medal_Acolyte    # 2722
+          - Krieger_Ring3    # 2774
+      - Combo:
+          - Medal_Mage    # 2723
+          - Krieger_Ring1    # 2772
+      - Combo:
+          - Medal_Mage    # 2723
+          - Krieger_Ring2    # 2773
+      - Combo:
+          - Medal_Mage    # 2723
+          - Krieger_Ring3    # 2774
+      - Combo:
+          - Medal_Archer    # 2724
+          - Krieger_Ring1    # 2772
+      - Combo:
+          - Medal_Archer    # 2724
+          - Krieger_Ring2    # 2773
+      - Combo:
+          - Medal_Archer    # 2724
+          - Krieger_Ring3    # 2774
+      - Combo:
+          - Medal_Merchant    # 2725
+          - Krieger_Ring1    # 2772
+      - Combo:
+          - Medal_Merchant    # 2725
+          - Krieger_Ring2    # 2773
+      - Combo:
+          - Medal_Merchant    # 2725
+          - Krieger_Ring3    # 2774
+      - Combo:
+          - Medal_Gunner    # 2733
+          - Krieger_Ring1    # 2772
+      - Combo:
+          - Medal_Gunner    # 2733
+          - Krieger_Ring2    # 2773
+      - Combo:
+          - Medal_Gunner    # 2733
+          - Krieger_Ring3    # 2774
+    Script: |
+      bonus2 bAddClass,Class_All,5;
+      bonus bMatkRate,3;
+      bonus bHealPower,5;
+  - Combos:
+      - Combo:
+          - Siege_Greave    # 2483
+          - Siege_Manteau    # 2586
+          - Siege_Plate    # 15046
+    Script: |
+      bonus bVit,5;
+      bonus2 bSubRace,RC_Player_Human,15;
+      bonus2 bSubRace,RC_Player_Doram,15;
+  - Combos:
+      - Combo:
+          - Siege_Boots    # 2484
+          - Siege_Manteau    # 2586
+          - Siege_Suits    # 15047
+    Script: |
+      bonus bDex,5;
+      bonus2 bSubRace,RC_Player_Doram,15;
+      bonus2 bSubRace,RC_Player_Human,15;
+  - Combos:
+      - Combo:
+          - Siege_Shoes    # 2485
+          - Siege_Muffler    # 2587
+          - Siege_Robe    # 15048
+    Script: |
+      bonus bInt,5;
+      bonus bMdef,5;
+      bonus2 bSubRace,RC_Player_Doram,15;
+      bonus2 bSubRace,RC_Player_Human,15;
+  - Combos:
+      - Combo:
+          - Siege_Shoes    # 2485
+          - Siege_Muffler    # 2587
+          - Tuxedo_Coletor    # 15048
+    Script: |
+      bonus bInt,5;
+      bonus bMdef,5;
+      bonus2 bSubRace,RC_Player_Doram,15;
+      bonus2 bSubRace,RC_Player_Human,15;
+  - Combos:
+      - Combo:
+          - Shield_Of_Death    # 2177
+          - Lord_of_Death    # 18574
+    Script: |
+      bonus2 bAddClass,Class_Boss,10;
+      bonus2 bMagicAddClass,Class_Boss,10;
+      if (getequiprefinerycnt(EQI_HEAD_TOP) >= 7) {
+         bonus2 bAddClass,Class_Boss,25;
+         bonus2 bMagicAddClass,Class_Boss,5;
+      }
+  - Combos:
+      - Combo:
+          - Diabolus_Robe    # 2374
+          - Diabolus_Ring    # 2729
+      - Combo:
+          - Diabolus_Armor    # 2375
+          - Diabolus_Ring    # 2729
+    Script: |
+      bonus bBaseAtk,15;
+      bonus bMatkRate,3;
+  - Combos:
+      - Combo:
+          - Diabolus_Boots    # 2433
+          - Diabolus_Manteau    # 2537
+    Script: |
+      bonus bMaxHPrate,6;
+
+
+ 
+
+
+

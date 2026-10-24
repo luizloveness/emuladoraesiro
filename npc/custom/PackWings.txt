@@ -1,0 +1,19 @@
+function	script	F_boxnewbiewings_Select	{
+
+	mes "[Pack Newbie Wings]";
+	mes "Select the item you want (7 days rental):";
+	next;
+
+	switch(select(
+		"Arch Demon",
+		"Arch Angel",
+		"Dark Angel"
+	)) {
+		case 1: rentitem 35006, (60*60*24*7); break; // Arch Demon
+		case 2: rentitem 35005, (60*60*24*7); break; // Arch Angel
+		case 3: rentitem 35007, (60*60*24*7); break; // Dark Angel
+
+	}
+
+	end;
+}

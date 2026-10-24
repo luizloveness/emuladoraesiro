@@ -1,0 +1,61 @@
+comodo,203,75,4	script	King of Rock	480,{
+
+	cutin "3rd_mins_song01",2;
+	mes "[Old Rock Spirit]";
+	mes "Ah... I see a brave soul standing before me.";
+	mes "Have you ever heard of the legendary ^FF0000Glorious Guitar^000000?";
+	next;
+
+	mes "[Old Rock Spirit]";
+	mes "Long ago, when the world was consumed by chaos and despair,";
+	mes "there was a man who wielded not a sword, nor a spear,";
+	mes "but a guitar that could pierce the heavens themselves.";
+	next;
+
+	mes "[Old Rock Spirit]";
+	mes "They say his name was lost to time, but mortals remember him as ^FF5500Slash^000000.";
+	mes "With his guitar, he played notes so powerful that even the gods trembled.";
+	mes "Every string cried with passion, every chord roared like thunder.";
+	next;
+
+	mes "[Old Rock Spirit]";
+	mes "His music carried both rage and beauty.";
+	mes "Legends claim he once stood atop a burning battlefield,";
+	mes "and instead of screams of war, all you could hear was the echo of his solo.";
+	next;
+
+	mes "[Old Rock Spirit]";
+	mes "Now, the spirit of that glorious instrument lingers in this world.";
+	mes "But to recreate it, mortal... you must prove your worth.";
+	next;
+
+	mes "[Old Rock Spirit]";
+	mes "Bring me these sacred materials:";
+	mes " - ^FF0000200 Skulls^000000, trophies taken from warriors in battle .";
+	mes " - ^0000FFBrave Battlefield Guitar^000000, sealed inside a mysterious relic.";
+	mes "- 1 Platinum Coin ";
+	next;
+
+if (countitem(7420) >= 200 && countitem(1924) >= 1 && countitem(677) >= 1) {
+	delitem 7420,200;
+	delitem 1924,1;
+	delitem 677,1;
+	getitem 1927,1;
+
+	mes "[Old Rock Spirit]";
+	mes "You have done it... The echoes of his music return once more!";
+	mes "Take this ^FF0000Glorious Guitar^000000, forged with blood, souls, and eternal sound!";
+	mes "Play it, and let the world hear the thunder of Slash once again!";
+	close2;
+	cutin "",255;
+	end;
+} else {
+	mes "[Old Rock Spirit]";
+	mes "You are not ready... The Glorious Guitar demands both spirit and sacrifice.";
+	mes "Return to me when you have gathered all the materials.";
+	close2;
+	cutin "",255;
+	end;
+}
+}
+

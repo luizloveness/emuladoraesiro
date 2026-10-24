@@ -1286,8 +1286,13 @@ void pc_makesavestatus(map_session_data *sd) {
 	if(!battle_config.save_clothcolor)
 		sd->status.clothes_color = 0;
 
-	if(!battle_config.save_body_style)
+	if(!battle_config.save_body_style) {
+#if PACKETVER_MAIN_NUM >= 20231220
+		sd->status.body = sd->status.class_;
+#else
 		sd->status.body = 0;
+#endif
+ 	}
 
 	//Only copy the Cart/Peco/Falcon options, the rest are handled via
 	//status change load/saving. [Skotlex]
@@ -2008,6 +2013,8 @@ bool pc_lastpoint_special( map_session_data& sd ){
  * No problem with the session id
  * set the status that has been sent from char server
  *------------------------------------------*/
+
+
 bool pc_authok(map_session_data *sd, uint32 login_id2, time_t expiration_time, int32 group_id, struct mmo_charstatus *st, bool changing_mapservers)
 {
 	t_tick tick = gettick();
@@ -2020,6 +2027,8 @@ bool pc_authok(map_session_data *sd, uint32 login_id2, time_t expiration_time, i
 	pc_group_pc_load(sd);
 
 	memcpy(&sd->status, st, sizeof(*st));
+
+
 
 	if (st->sex != sd->status.sex) {
 		clif_authfail_fd(sd->fd, 0);
@@ -2280,6 +2289,38 @@ bool pc_set_hate_mob(map_session_data *sd, int32 pos, struct block_list *bl)
 	return true;
 }
 
+TIMER_FUNC(pc_goldpc_update){
+	map_session_data* sd = map_id2sd( id );
+
+	if( sd == nullptr ){
+		return 0;
+	}
+
+	sd->goldpc_tid = INVALID_TIMER;
+
+	// Check if feature is still active
+	if( !battle_config.feature_goldpc_active ){
+		return 0;
+	}
+
+	// TODO: add mapflag to disable?
+
+	int64 points = pc_readparam( sd, SP_GOLDPC_POINTS );
+
+	if( battle_config.feature_goldpc_vip && pc_isvip( sd ) ){
+		points += 2;
+	}else{
+		points += 1;
+	}
+
+	// Reset the seconds
+	pc_setreg2( sd, GOLDPC_SECONDS_VAR, 0 );
+	// Update the points and trigger a new timer if necessary
+	pc_setparam( sd, SP_GOLDPC_POINTS, points );
+
+	return 0;
+}
+
 /*==========================================
  * Invoked once after the char/account/account2 registry variables are received. [Skotlex]
  * We didn't receive item information at this point so DO NOT attempt to do item operations here.
@@ -2387,6 +2428,14 @@ void pc_reg_received(map_session_data *sd)
 	// Before those clients you could send out the instance info even when the client was still loading the map, afterwards you need to send it later
 	clif_instance_info( *sd );
 #endif
+	if( battle_config.feature_goldpc_active && pc_readreg2( sd, GOLDPC_POINT_VAR ) < battle_config.feature_goldpc_max_points && !sd->state.autotrade ){
+		sd->goldpc_tid = add_timer(gettick() + (battle_config.feature_goldpc_time - pc_readreg2(sd, GOLDPC_SECONDS_VAR)) * 1000,pc_goldpc_update,sd->id,0);
+#ifndef VIP_ENABLE
+		clif_goldpc_info( *sd );
+#endif
+	}else{
+		sd->goldpc_tid = INVALID_TIMER;
+	}
 
 	// pet
 	if (sd->status.pet_id > 0)
@@ -4390,6 +4439,10 @@ void pc_bonus(map_session_data *sd,int32 type,int32 val)
 			if (sd->state.lr_flag != LR_FLAG_ARROW)
 				sd->special_state.no_walk_delay = 1;
 			break;
+		case SP_NO_COMA: // bonus bNoComa;
+			if (sd->state.lr_flag != LR_FLAG_ARROW)
+				sd->special_state.no_coma = 1;
+			break;			
 		case SP_ADD_ITEM_SPHEAL_RATE:
 			if (sd->state.lr_flag != LR_FLAG_ARROW)
 				sd->bonus.itemsphealrate2 += val;
@@ -10301,6 +10354,7 @@ int64 pc_readparam(map_session_data* sd,int64 type)
 #endif
 		case SP_CRIT_DEF_RATE: val = sd->bonus.crit_def_rate; break;
 		case SP_ADD_ITEM_SPHEAL_RATE: val = sd->bonus.itemsphealrate2; break;
+		case SP_GOLDPC_POINTS: val = pc_readreg2( sd, GOLDPC_POINT_VAR ); break;
 		default:
 			ShowError("pc_readparam: Attempt to read unknown parameter '%lld'.\n", type);
 			return -1;
@@ -10551,6 +10605,28 @@ bool pc_setparam(map_session_data *sd,int64 type,int64 val_tmp)
 		val = cap_value(val, 0, 1999);
 		sd->cook_mastery = val;
 		pc_setglobalreg(sd, add_str(COOKMASTERY_VAR), sd->cook_mastery);
+		return true;
+	case SP_GOLDPC_POINTS:
+		val = cap_value( val, 0, battle_config.feature_goldpc_max_points );
+
+		pc_setreg2( sd, GOLDPC_POINT_VAR, val );
+
+		// If you do not check this, some funny things happen (circle logics, timer mismatches, etc...)
+		if( !sd->state.connect_new ){
+			// Make sure to always delete the timer
+			if( sd->goldpc_tid != INVALID_TIMER ){
+				delete_timer( sd->goldpc_tid, pc_goldpc_update );
+				sd->goldpc_tid = INVALID_TIMER;
+			}
+
+			// If the system is enabled and the player can still earn some points restart the timer
+			if( battle_config.feature_goldpc_active && val < battle_config.feature_goldpc_max_points && !sd->state.autotrade ){
+				sd->goldpc_tid = add_timer( gettick() + ( battle_config.feature_goldpc_time - pc_readreg2( sd, GOLDPC_SECONDS_VAR ) ) * 1000, pc_goldpc_update, sd->id, (intptr_t)nullptr );
+			}
+
+			// Update the client
+			clif_goldpc_info( *sd );
+		}
 		return true;
 	default:
 		ShowError("pc_setparam: Attempted to set unknown parameter '%lld'.\n", type);
@@ -10816,8 +10892,12 @@ bool pc_jobchange(map_session_data *sd,int32 job, char upper)
 
 	// Reset body style to 0 before changing job to avoid
 	// errors since not every job has a alternate outfit.
+#if PACKETVER_MAIN_NUM >= 20231220
+	sd->status.body = job;
+#else	
 	sd->status.body = 0;
-	clif_changelook(sd,LOOK_BODY2,0);
+#endif
+	clif_changelook(sd, LOOK_BODY2, sd->status.body);
 
 	sd->status.class_ = job;
 	fame_flag = pc_famerank(sd->status.char_id,sd->class_&MAPID_UPPERMASK);
@@ -15112,12 +15192,48 @@ uint16 pc_maxparameter(map_session_data *sd, e_params param) {
 int16 pc_maxaspd(map_session_data *sd) {
 	nullpo_ret(sd);
 
+	int job = pc_mapid2jobid(sd->class_, sd->status.sex);
+
+	switch(job) {
+		case JOB_SNIPER:
+		case JOB_CREATOR:
+		case JOB_ASSASSIN_CROSS:
+		case JOB_WHITESMITH:
+		case JOB_CLOWN:
+		case JOB_GYPSY:
+		case JOB_STALKER:
+		case JOB_PROFESSOR:
+		case JOB_HIGH_WIZARD:
+		case JOB_LORD_KNIGHT:
+		case JOB_KNIGHT:
+		case JOB_PRIEST:
+		case JOB_WIZARD:
+		case JOB_BLACKSMITH:
+		case JOB_HUNTER:
+		case JOB_ASSASSIN:
+		case JOB_PALADIN:
+		case JOB_CRUSADER:
+		case JOB_SAGE:
+		case JOB_ROGUE:
+		case JOB_ALCHEMIST:
+		case JOB_BARD:
+		case JOB_DANCER:
+		case JOB_NOVICE_HIGH:
+		case JOB_SWORDMAN_HIGH:
+		case JOB_MAGE_HIGH:
+		case JOB_ARCHER_HIGH:
+		case JOB_ACOLYTE_HIGH:
+		case JOB_MERCHANT_HIGH:
+		case JOB_THIEF_HIGH:
+
+			return 90;
+	}
+
 	return (( sd->class_&JOBL_THIRD) ? battle_config.max_third_aspd : (
 			((sd->class_&MAPID_UPPERMASK) == MAPID_KAGEROUOBORO || (sd->class_&MAPID_UPPERMASK) == MAPID_REBELLION) ? battle_config.max_extended_aspd : (
-			(sd->class_&MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd : 
+			(sd->class_&MAPID_BASEMASK) == MAPID_SUMMONER) ? battle_config.max_summoner_aspd :
 			battle_config.max_aspd ));
 }
-
 /**
 * Calculates total item-group related bonuses for the given item
 * @param sd Player
@@ -15382,7 +15498,7 @@ void pc_set_costume_view(map_session_data *sd) {
 		sd->status.robe = id->look;
 
 	// Costumes check
-	if (!map_getmapflag(sd->m, MF_NOCOSTUME)) {
+	if (!map_getmapflag(sd->m, MF_NOCOSTUME) && !sd->status.disable_showcostumes) {
 		if ((i = sd->equip_index[EQI_COSTUME_HEAD_LOW]) != -1 && (id = sd->inventory_data[i])) {
 			if (!(id->equip&(EQP_COSTUME_HEAD_MID|EQP_COSTUME_HEAD_TOP)))
 				sd->status.head_bottom = id->look;
@@ -16001,6 +16117,7 @@ void do_init_pc(void) {
 	add_timer_func_list(pc_autotrade_timer, "pc_autotrade_timer");
 	add_timer_func_list(pc_on_expire_active, "pc_on_expire_active");
 	add_timer_func_list(pc_macro_detector_timeout, "pc_macro_detector_timeout");
+	add_timer_func_list( pc_goldpc_update, "pc_goldpc_update" );
 
 	add_timer(gettick() + autosave_interval, pc_autosave, 0, 0);
 

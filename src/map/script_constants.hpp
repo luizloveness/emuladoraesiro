@@ -597,6 +597,7 @@
 	export_parameter(PCDIECOUNTER_VAR, SP_PCDIECOUNTER);
 	export_parameter(COOKMASTERY_VAR, SP_COOKMASTERY);
 	export_parameter(ACHIEVEMENTLEVEL, SP_ACHIEVEMENT_LEVEL);
+	export_parameter(GOLDPC_POINT_VAR, SP_GOLDPC_POINTS);
 
 	export_constant2("bMaxHP",SP_MAXHP);
 	export_constant2("bMaxSP",SP_MAXSP);
@@ -832,6 +833,7 @@
 	export_constant2("bRegenPercentSP", SP_REGEN_PERCENT_SP);
 	export_constant2("bSkillDelay",SP_SKILL_DELAY);
 	export_constant2("bNoWalkDelay",SP_NO_WALK_DELAY);
+	export_constant2("bNoComa",SP_NO_COMA);		
 	export_constant2("bLongSPGainValue",SP_LONG_SP_GAIN_VALUE);
 	export_constant2("bLongHPGainValue",SP_LONG_HP_GAIN_VALUE);
 	export_constant2("bMagicSubSize",SP_MAGIC_SUBSIZE);

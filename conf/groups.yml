@@ -48,6 +48,19 @@ Body:
     Commands:
       changedress: true
       resurrect: true
+      autoloot: true
+      commands: true
+      whereis: true
+      rates: true
+      autotrade: true
+      exp: true
+      mi: true 
+      warp: true 
+      kill: true
+      invite: true
+      accept: true
+      reject: true
+      leave: true
     Permissions:
       # without this basic permissions regular players could not trade or party
       can_trade: true
@@ -62,7 +75,6 @@ Body:
     Commands:
       # Informational commands
       commands: true
-      charcommands: true
       help: true
       rates: true
       uptime: true
@@ -87,12 +99,11 @@ Body:
       autoloottype: true
       autotrade: true
       request: true
-      go: true
       breakguild: true
       channel: true
       langtype: true
     Permissions:
-      attendance: false
+      attendance: true
   - Id: 2
     Name: Support
     Inherit:
@@ -180,8 +191,43 @@ Body:
       Player: true
     Level: 0
     Commands:
+      # Informational commands
+      commands: true
+      help: true
       rates: true
-      who: true
+      showdelay: true
+      exp: true
+      whodrops: true
+      showexp: true
+      whereis: true
+      # Feature commands
+      refresh: true
+      mi: true 
+      homtalk: true
+      hominfo: true
+      homstats: true
+      noask: true
+      go: true  
+      noks: true
+      autoloot: true
+      alootid: true
+      autotrade: true
+      request: true
+      breakguild: true
+      channel: true
+      langtype: true
+      kill: true      
+      ws: true
+      wb: true      
+      invite: true
+      duel: true      
+      accept: true
+      reject: true
+      leave: true
+    Permissions:
+      can_trade: true
+      can_party: true
+      attendance: true
   - Id: 10
     Name: Law Enforcement
     Inherit:
@@ -217,6 +263,7 @@ Body:
       any_warp: true
       view_hpmeter: true
       macro_detect: true
+      all_commands: true
   - Id: 99
     Name: Admin
     Level: 99

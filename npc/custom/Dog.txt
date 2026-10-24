@@ -1,0 +1,145 @@
+//===== eAthena Script =======================================
+//= Heal Npc
+//===== By: ==================================================
+//= Lotsa People (1.x)
+//===== Current Version: =====================================
+//= 3.0
+//===== Compatible With: =====================================
+//= eAthena 0.1+;
+//===== Description: =========================================
+//= Healer NPC Which Heals For Free
+//===== Additional Comments: =================================
+//= 3.0 By massdriller, Changed and edited the script
+//= added other warp points of maps.
+//= 2.0 By Darkchild, Duplicates And Changed A Bit
+//= you can replace this script file by heal_payment.txt
+//= if you want that players have to pay their healings.
+//============================================================
+
+prontera,149,143,5	script	dog#h1-1::dog	81,{
+
+	set .@lang, #langtype; // 0 = EN / 8 = PT
+
+	if (.@lang == 0) {
+		mes "[Healer]";
+		mes "I have amazing healing powers!!";
+		mes "You look like a person who needs them.";
+		mes "Want some?";
+		next;
+		menu "Heal",-,"No thanks",CANCEL;
+	} else {
+		mes "[Curandeiro]";
+		mes "Eu possuo incríveis poderes de cura!!";
+		mes "Você parece precisar deles.";
+		mes "Deseja receber minha ajuda?";
+		next;
+		menu "Curar",-,"Não, obrigado",CANCEL;
+	}
+
+	if (vip_status(1)) {
+
+		// Cooldown apenas no NPC de Amatsu
+		if (strnpcinfo(3) == "dog#h1-12") {
+			if ((gettimetick(2) - #last_vipbuff_AMATSU) < 120) {
+				mes "[Healer]";
+				if (.@lang == 0)
+					mes "You must wait 2 minutes before receiving VIP buffs again (Amatsu).";
+				else
+					mes "Você deve aguardar 2 minutos para receber os buffs VIP novamente (Amatsu).";
+				close;
+			}
+		}
+
+		mes "[Healer]";
+		if (.@lang == 0)
+			mes "You're a VIP! Full service incoming!";
+		else
+			mes "Você é VIP! Receba nosso serviço completo!";
+
+		specialeffect2 EF_HEAL2;
+		percentheal 100,100;
+
+		// Buffs VIP
+		sc_start SC_BLESSING,300000,10;
+		sc_start SC_INCREASEAGI,300000,10;
+		sc_start SC_MAGNIFICAT,300000,5;
+		sc_start SC_FOOD_STR_CASH,300000,5;
+		sc_start SC_FOOD_AGI_CASH,300000,5;
+
+		// Identifica todos os itens
+		identifyall;
+
+		// Salva o cooldown após utilizar o NPC
+		if (strnpcinfo(3) == "dog#h1-12")
+			#last_vipbuff_AMATSU = gettimetick(2);
+
+		#last_vipbuff = gettimetick(2);
+
+		if (.@lang == 0) {
+			mes "You're fully healed, all your items have been identified, and you received exclusive VIP buffs!";
+		} else {
+			mes "Você foi completamente curado, todos os seus itens foram identificados e você recebeu os buffs exclusivos de VIP!";
+		}
+
+	} else {
+
+		heal 35000,35000;
+
+		mes "[Healer]";
+		if (.@lang == 0)
+			mes "You are now healed!";
+		else
+			mes "Você foi curado!";
+	}
+
+	if (.@lang == 0)
+		mes "Have fun adventuring!!";
+	else
+		mes "Boa aventura!!";
+
+	close;
+
+CANCEL:
+	if (.@lang == 0) {
+		mes "[Healer]";
+		mes "Alright, come back if you need a heal.";
+	} else {
+		mes "[Curandeiro]";
+		mes "Tudo bem. Volte quando precisar de uma cura.";
+	}
+	close;
+}
+
+-	script	VIPBuffResetOnDeath	-1,{
+
+OnPCDieEvent:
+	// Remove o cooldown do NPC de Amatsu
+	#last_vipbuff_AMATSU = gettimetick(2) - 120;
+
+	// Remove também o cooldown do @buffsvip (caso utilize esta variável)
+	#last_vipbuff = gettimetick(2) - 120;
+
+	end;
+}
+
+morocc.gat,159,97,6	duplicate(dog)	dog#h1-2	81
+ayothaya.gat,155,111,6	duplicate(dog)	dog#h1-3	81
+geffen.gat,113,64,6	duplicate(dog)	dog#h1-4	81
+umbala.gat,94,162,6	duplicate(dog)	dog#h1-5	81
+payon.gat,162,233,6	duplicate(dog)	dog#h1-6	81
+alberta.gat,48,226,6	duplicate(dog)	dog#h1-7	81
+aldebaran.gat,134,123,6	duplicate(dog)	dog#h1-8	81
+izlude.gat,125,118,6	duplicate(dog)	dog#h1-9	81
+xmas.gat,148,136,6	duplicate(dog)	dog#h1-10	81
+comodo.gat,191,162,6	duplicate(dog)	dog#h1-11	81
+amatsu.gat,200,80,6	duplicate(dog)	dog#h1-12	81
+gonryun.gat,164,130,6	duplicate(dog)	dog#h1-13	81
+yuno.gat,147,186,6	duplicate(dog)	dog#h1-14	81
+niflheim.gat,188,180,6	duplicate(dog)	dog#h1-15	81
+louyang.gat,221,102,6	duplicate(dog)	dog#h1-16	81
+umbala.gat,134,129,4	duplicate(dog)	dog#h1-17	81
+hugel.gat,90,151,4	duplicate(dog)	dog#h1-18	81
+que_qsch05,136,129,5	duplicate(dog)	dog#h1-19	81
+prontera,247,54,5	duplicate(dog)	dog#h1-20	81
+//gef_dun03,200,208,5	duplicate(dog)	dog#h1-21	81
+

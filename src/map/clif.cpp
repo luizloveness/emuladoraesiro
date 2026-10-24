@@ -3,13 +3,13 @@
 // For more information, see LICENCE in the main folder
 
 #include "clif.hpp"
-
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <unordered_set>
+#include <cstdint>
 
 #include <common/cbasetypes.hpp>
 #include <common/conf.hpp>
@@ -80,6 +80,7 @@ static struct eri *delay_clearunit_ers;
 
 struct s_packet_db packet_db[MAX_PACKET_DB + 1];
 unsigned long color_table[COLOR_MAX];
+
 
 #include "clif_obfuscation.hpp"
 static bool clif_session_isValid(map_session_data *sd);
@@ -422,6 +423,7 @@ static int32 clif_send_sub(struct block_list *bl, va_list ap)
 	case AREA_WOS:
 		if (bl == src_bl)
 			return 0;
+
 	break;
 	case AREA_WOC:
 		if (sd->chatID || bl == src_bl)
@@ -640,7 +642,10 @@ int32 clif_send(const void* buf, int32 len, struct block_list* bl, enum send_tar
 	case GUILD_SAMEMAP_WOS:
 	case GUILD:
 	case GUILD_WOS:
-	case GUILD_NOBG: {
+	case GUILD_NOBG:
+	case GUILD_ALLIANCES:
+	case GUILD_ALLIANCES_FRIEND:
+	case GUILD_ALLIANCES_ENEMY: {
 		if (!sd || !sd->status.guild_id || !sd->guild)
 			break;
 
@@ -656,7 +661,7 @@ int32 clif_send(const void* buf, int32 len, struct block_list* bl, enum send_tar
 				if( sd->id == bl->id && (type == GUILD_WOS || type == GUILD_SAMEMAP_WOS || type == GUILD_AREA_WOS) )
 					continue;
 
-				if( type != GUILD && type != GUILD_NOBG && type != GUILD_WOS && sd->m != bl->m )
+				if( type != GUILD && type != GUILD_NOBG && type != GUILD_WOS && type != GUILD_ALLIANCES && type != GUILD_ALLIANCES_FRIEND && type != GUILD_ALLIANCES_ENEMY && sd->m != bl->m )
 					continue;
 
 				if( (type == GUILD_AREA || type == GUILD_AREA_WOS) && (sd->x < x0 || sd->y < y0 || sd->x > x1 || sd->y > y1) )
@@ -667,6 +672,52 @@ int32 clif_send(const void* buf, int32 len, struct block_list* bl, enum send_tar
 				WFIFOSET(fd,len);
 			}
 		}
+
+		if( type == GUILD_ALLIANCES || type == GUILD_ALLIANCES_FRIEND || type == GUILD_ALLIANCES_ENEMY ){
+			for( const guild_alliance& alliance : g.alliance ){
+				if( alliance.guild_id == 0 ){
+					continue;
+				}
+
+				switch( type ){
+					case GUILD_ALLIANCES:
+						// Send it to both friends and enemies
+						break;
+
+					case GUILD_ALLIANCES_FRIEND:
+						// Only send it to friends
+						if( alliance.opposition != 0 ){
+							// Skip enemies
+							continue;
+						}
+						break;
+
+					case GUILD_ALLIANCES_ENEMY:
+						// Only send it to enemies
+						if( alliance.opposition == 0 ){
+							// Skip friends
+							continue;
+						}
+						break;
+				}
+
+				std::shared_ptr<MapGuild> alliance_guild = guild_search( alliance.guild_id );
+
+				if( alliance_guild == nullptr ){
+					continue;
+				}
+
+				map_session_data* alliance_sd = guild_getavailablesd( alliance_guild->guild );
+
+				if( alliance_sd == nullptr ){
+					continue;
+				}
+
+				// Send the packet to the alliance guild via clif_send again, in case a GM enabled guildspy on them
+				clif_send( buf, len, alliance_sd, GUILD );
+							}
+		}
+				
 		if (!enable_spy) //Skip unnecessary parsing. [Skotlex]
 			break;
 
@@ -2175,6 +2226,7 @@ void clif_changemap( map_session_data& sd, int16 m, uint16 x, uint16 y ){
 	mapindex_getmapname_ext(map_mapid2mapname(m), packet.mapName);
 	packet.xPos = x;
 	packet.yPos = y;
+
 
 	clif_send( &packet, sizeof( packet ), &sd, SELF );
 }
@@ -3709,6 +3761,9 @@ void clif_updatestatus( map_session_data& sd, enum _sp type ){
 			clif_par_change(sd, type, sd.battle_status.sp);
 			break;
 		case SP_ASPD:
+			if (sd.sc.getSCE(SC_INCASPDRATE))
+			clif_par_change(sd, type, 50);
+				else
 			clif_par_change(sd, type, sd.battle_status.amotion);
 			break;
 		case SP_ATK1:
@@ -3962,6 +4017,24 @@ void clif_sprite_change( struct block_list *bl, int32 id, int32 type, int32 val,
 	clif_send( &p, sizeof( p ), bl, target );
 }
 
+static int32 clif_get_woe_look(map_session_data* sd, int32 type, int32 val)
+{
+	if (!sd)
+		return val;
+
+	if (!map_getmapflag(sd->m, MF_GVG_CASTLE))
+		return val;
+
+	switch (type) {
+		case LOOK_HEAD_TOP:
+		case LOOK_HEAD_MID:
+		case LOOK_HEAD_BOTTOM:
+		case LOOK_ROBE:
+			return 0;
+	}
+
+	return val;
+}
 
 /// Updates sprite/style properties of an object.
 void clif_changelook(struct block_list *bl, int32 type, int32 val) {
@@ -3975,6 +4048,8 @@ void clif_changelook(struct block_list *bl, int32 type, int32 val) {
 	sd = BL_CAST(BL_PC, bl);
 	sc = status_get_sc(bl);
 	vd = status_get_viewdata(bl);
+
+		val = clif_get_woe_look(sd, type, val);
 
 	if( vd ) //temp hack to let Warp Portal change appearance
 		switch(type) {
@@ -4081,8 +4156,10 @@ void clif_changelook(struct block_list *bl, int32 type, int32 val) {
 #if PACKETVER < 20150513
 				return;
 #else
+#if PACKETVER < 20231220
 				if (val && sd && sd->sc.option&OPTION_COSTUME)
  					val = 0;
+#endif				
  				vd->body_style = val;
 #endif
 				break;
@@ -5050,7 +5127,6 @@ void clif_getareachar_unit( map_session_data* sd,struct block_list *bl ){
 	if( clif_npc_mayapurple( *bl ) ){
 		return;
 	}
-
 	if( bl->type == BL_NPC && npc_is_hidden_dynamicnpc( *( (struct npc_data*)bl ), *sd ) ){
 		// Do not send anything
 		return;
@@ -6021,6 +6097,8 @@ void clif_skill_cooldown( map_session_data &sd, uint16 skill_id, t_tick tick ){
 #endif
 }
 
+
+
 /// Skill attack effect and damage.
 /// 0114 <skill id>.W <src id>.L <dst id>.L <tick>.L <src delay>.L <dst delay>.L <damage>.W <level>.W <div>.W <type>.B (ZC_NOTIFY_SKILL)
 /// 01de <skill id>.W <src id>.L <dst id>.L <tick>.L <src delay>.L <dst delay>.L <damage>.L <level>.W <div>.W <type>.B (ZC_NOTIFY_SKILL2)
@@ -6076,6 +6154,8 @@ void clif_skill_damage( block_list& src, block_list& dst, t_tick tick, int32 sde
 		}
 		clif_send( &packet, sizeof( packet ), &src, SELF );
 	}
+
+
 }
 
 
@@ -10840,6 +10920,10 @@ void clif_parse_LoadEndAck(int32 fd,map_session_data *sd)
 			skill_unit_move(sd->hd,gettick(),1); // apply land skills immediately
 	}
 
+	if (map_flag_gvg(sd->m) && sd->hd) {
+		clif_displaymessage(sd->fd, "Homunculus are not allowed in Guild Wars.");
+		hom_vaporize(sd,0);
+	}
 	if( sd->md ) {
 		if(map_addblock(sd->md))
 			return;
@@ -10993,6 +11077,12 @@ void clif_parse_LoadEndAck(int32 fd,map_session_data *sd)
 			}
 		}
 #endif
+
+
+#if PACKETVER >= 20230419
+		clif_configuration( sd, CONFIG_DISABLE_SHOWCOSTUMES, sd->status.disable_showcostumes );
+#endif
+		
 		clif_reputation_list( *sd );
 
 		if (sd->guild && battle_config.guild_notice_changemap == 1){
@@ -11061,6 +11151,9 @@ void clif_parse_LoadEndAck(int32 fd,map_session_data *sd)
 			channel_mjoin(sd); //join new map
 
 		clif_pk_mode_message(sd);
+
+		// Update the client
+		clif_goldpc_info( *sd );
 	}
 	
 	if( sd->guild && ( battle_config.guild_notice_changemap == 2 || guild_notice ) ){
@@ -11582,8 +11675,16 @@ void clif_parse_Emotion(int32 fd, map_session_data *sd){
 	if( sd == nullptr ){
 		return;
 	}
-
-	int32 emoticon = RFIFOB(fd,packet_db[RFIFOW(fd,0)].pos[0]);
+/// Fix of emoticon [sofiaisha]
+#if PACKETVER_MAIN_NUM >= 20230705
+	emotion_type emoticon = static_cast<emotion_type>(RFIFOB(fd, packet_db[RFIFOW(fd, 0)].pos[0]));
+#else
+	const PACKET_CZ_REQ_EMOTION* p = reinterpret_cast<PACKET_CZ_REQ_EMOTION*>(RFIFOP(fd, 0));
+if( p->emotion_type >= ET_MAX ){
+		return;
+	}
+	emotion_type emoticon = static_cast<emotion_type>( p->emotion_type );
+#endif
 
 	if (battle_config.basic_skill_check == 0 || pc_checkskill(sd, NV_BASIC) >= 2 || pc_checkskill(sd, SU_BASIC_SKILL) >= 1) {
 		if (emoticon == ET_CHAT_PROHIBIT) {// prevent use of the mute emote [Valaris]
@@ -11611,7 +11712,7 @@ void clif_parse_Emotion(int32 fd, map_session_data *sd){
 		}
 
 		if(battle_config.client_reshuffle_dice && emoticon>=ET_DICE1 && emoticon<=ET_DICE6) {// re-roll dice
-			emoticon = rnd()%6+ET_DICE1;
+			emoticon = static_cast<emotion_type>(rnd() % 6 + ET_DICE1);
 		}
 
 		clif_emotion( *sd, static_cast<emotion_type>( emoticon ) );
@@ -11619,19 +11720,46 @@ void clif_parse_Emotion(int32 fd, map_session_data *sd){
 		clif_skill_fail( *sd, 1, USESKILL_FAIL_LEVEL, 1 );
 }
 
+int countPlayers = 0; // Variᶥl global para armazenar o "extra"
+
+// Fun磯 para modificar o contador
+void setPlayerCount(int count)
+{
+	if (count > 50) {
+		count = 42; // limite extra
+	}
+	countPlayers += count;
+
+	if (countPlayers < 0) {
+		countPlayers = 0;
+	}
+}
+
+// Getter para exibir o valor atual (usado no @increase)
+int getPlayerCount(void)
+{
+	return countPlayers;
+}
+
+// Fun磯 que envia o pacote de contagem de players
+void clif_usercount(int fd, int count)
+{
+	WFIFOW(fd,0) = 0xc2;
+	WFIFOL(fd,2) = count + countPlayers; // soma com o contador extra
+	WFIFOSET(fd, packet_len(0xc2));
+}
 
 /// Amount of currently online players, reply to /w /who
 /// 00c2 <count>.L (ZC_USER_COUNT)
 static void clif_user_count(map_session_data& sd)
 {
-	PACKET_ZC_USER_COUNT p{};
+    PACKET_ZC_USER_COUNT p{};
 
-	p.packetType = HEADER_ZC_USER_COUNT;
-	p.playersCount = map_getusers();
+    p.packetType   = HEADER_ZC_USER_COUNT;
+    p.playersCount = map_getusers() + countPlayers; // soma com o valor extra
 
-	clif_send(&p,sizeof(p),&sd,SELF);
+    clif_send(&p, sizeof(p), &sd, SELF);
 }
-
 
 /// /w /who (CZ_REQ_USER_COUNT).
 /// Request to display amount of currently connected players.
@@ -17689,6 +17817,10 @@ void clif_parse_configuration( int32 fd, map_session_data* sd ){
 
 			sd->hd->homunculus.autofeed = flag;
 			break;
+		case CONFIG_DISABLE_SHOWCOSTUMES:
+			sd->status.disable_showcostumes = flag;
+			pc_set_costume_view(sd);
+			break;			
 		default:
 			ShowWarning( "clif_parse_configuration: received unknown configuration type '%d'...\n", type );
 			return;
@@ -18185,8 +18317,10 @@ void clif_mercenary_updatestatus(map_session_data *sd, int32 type)
 			WFIFOL(fd,4) = status->flee;
 			break;
 		case SP_ASPD:
-			WFIFOL(fd,4) = status->amotion;
-			break;
+			if (sd->sc.getSCE(SC_SOUCOLLECT))
+			WFIFOL(fd,4) = 195;
+			else
+			WFIFOL(fd,4) = sd->battle_status.amotion;
 		case SP_HP:
 			WFIFOL(fd,4) = status->hp;
 			break;
@@ -18513,13 +18647,11 @@ void clif_sendbgemblem_single(int32 fd, map_session_data *sd)
 	WFIFOSET(fd,packet_len(0x2dd));
 }
 
-/// Battlegrounds queue incoming apply request from client.
+/// Battlegrounds queue or custom instance lobby incoming apply request from client.
 /// Queue types: 1 solo queue, 2 party queue, 4 guild queue.
 /// 0x8d7 <queue type>.W <battleground name>.24B (CZ_REQ_ENTRY_QUEUE_APPLY)
 void clif_parse_bg_queue_apply_request(int32 fd, map_session_data *sd)
 {
-	if (!battle_config.feature_bgqueue)
-		return;
 
 	nullpo_retv(sd);
 
@@ -18527,6 +18659,41 @@ void clif_parse_bg_queue_apply_request(int32 fd, map_session_data *sd)
 	char name[NAME_LENGTH];
 
 	safestrncpy(name, RFIFOCP(fd, 4), NAME_LENGTH);
+	// Instance entries share the client's EntryQueue UI with battlegrounds.
+	std::shared_ptr<s_instance_db> instance = instance_search_db_lobby_id(name);
+
+	if (instance != nullptr) {
+		if (type != 1 && type != 2 && type != 4) {
+			ShowWarning("clif_parse_bg_queue_apply_request: Received invalid instance lobby type: %d from player %s (AID:%d CID:%d).\n", type, sd->status.name, sd->status.account_id, sd->status.char_id);
+			return;
+		}
+
+		if (!map_getmapflag(sd->m, MF_TOWN)) {
+			clif_displaymessage(sd->fd, "You must be in a town to create or enter an instance.");
+			return;
+		}
+
+		if (sd->npc_id || sd->npc_shopid || sd->vender_id || sd->state.trading || sd->state.storage_flag) {
+			clif_displaymessage(sd->fd, "You cannot create or enter an instance while another interaction is open.");
+			return;
+		}
+
+		pc_setregstr(sd, add_str("@instance_idname$"), instance->lobby_id.c_str());
+		pc_setregstr(sd, add_str("@instance_name$"), instance->name.c_str());
+		pc_setreg(sd, add_str("@instance_id"), instance->id);
+		pc_setreg(sd, add_str("@min_level"), instance->lobby_min_level);
+		pc_setreg(sd, add_str("@max_level"), instance->lobby_max_level);
+		pc_setreg(sd, add_str("@instance_quest"), instance->lobby_quest_id);
+		pc_setreg(sd, add_str("@lock"), instance->lobby_lock_quest_id);
+		pc_setreg(sd, add_str("@cooldown"), instance->lobby_cooldown);
+		pc_setreg(sd, add_str("@party_limit"), instance->lobby_party_limit);
+		pc_setreg(sd, add_str("@type"), type);
+		npc_event(sd, "InstanceLobby::OnJoinInstance", 0);
+		return;
+	}
+
+	if (!battle_config.feature_bgqueue)
+		return;
 
 	if (sd->bg_queue_id > 0) {
 		//ShowWarning("clif_parse_bg_queue_apply_request: Received duplicate queue application: %d from player %s (AID:%d CID:%d).\n", type, sd->status.name, sd->status.account_id, sd->status.char_id);
@@ -19467,7 +19634,7 @@ void clif_search_store_info_ack( map_session_data& sd ){
 		entry.amount = ssitem->amount;
 		entry.refine = ssitem->refine;
 
-		// make-up an item for clif_addcards
+		// make-up an item for clif_addcards and clif_add_random_options
 		struct item it = {};
 
 		for( int32 j = 0; j < MAX_SLOTS; j++ ){
@@ -19475,6 +19642,9 @@ void clif_search_store_info_ack( map_session_data& sd ){
 		}
 		it.nameid = ssitem->nameid;
 		it.amount = ssitem->amount;
+		for( int32 j = 0; j < MAX_ITEM_RDM_OPT; j++ ){
+			it.option[j] = ssitem->option[j];
+		}		
 
 		clif_addcards( &entry.slot, &it );
 #if PACKETVER >= 20150226
@@ -25506,6 +25676,70 @@ void clif_set_npc_window_pos_percent(map_session_data& sd, int32 x, int32 y)
 #endif  // PACKETVER_MAIN_NUM >= 20220504
 }
 
+void clif_goldpc_info( map_session_data& sd ){
+#if PACKETVER_MAIN_NUM >= 20140508 || PACKETVER_RE_NUM >= 20140508 || defined(PACKETVER_ZERO)
+	const static int32 client_max_seconds = 3600;
+
+	if( battle_config.feature_goldpc_active ){
+		struct PACKET_ZC_GOLDPCCAFE_POINT p = {};
+
+		p.PacketType = HEADER_ZC_GOLDPCCAFE_POINT;
+		p.isActive = true;
+		if( battle_config.feature_goldpc_vip && pc_isvip( &sd ) ){
+			p.mode = 2;
+		}else{
+			p.mode = 1;
+		}
+		p.point = (int32)pc_readparam( &sd, SP_GOLDPC_POINTS );
+		if( sd.goldpc_tid != INVALID_TIMER ){
+			const struct TimerData* td = get_timer( sd.goldpc_tid );
+
+			if( td != nullptr ){
+				// Get the remaining milliseconds until the next reward
+				t_tick remaining = td->tick - gettick();
+
+				// Always round up to full second
+				remaining += ( remaining % 1000 );
+
+				p.playedTime = (int32)( client_max_seconds - ( remaining / 1000 ) );
+			}else{
+				p.playedTime = 0;
+			}
+		}else{
+			p.playedTime = client_max_seconds;
+		}
+
+		clif_send( &p, sizeof( p ), &sd, SELF );
+	}
+#endif
+}
+
+void clif_parse_dynamic_npc( int fd, map_session_data* sd ){
+#if PACKETVER_MAIN_NUM >= 20140430 || PACKETVER_RE_NUM >= 20140430 || defined(PACKETVER_ZERO)
+	struct PACKET_CZ_DYNAMICNPC_CREATE_REQUEST* p = (struct PACKET_CZ_DYNAMICNPC_CREATE_REQUEST*)RFIFOP( fd, 0 );
+
+	char npcname[NPC_NAME_LENGTH + 1];
+
+	if( strncasecmp( "GOLDPCCAFE", p->name, sizeof( p->name ) ) == 0 ){
+		safestrncpy( npcname, p->name, sizeof( npcname ) );
+	}else{
+		return;
+	}
+
+	struct npc_data* nd = npc_name2id( npcname );
+
+	if( nd == nullptr ){
+		ShowError( "clif_parse_dynamic_npc: Original NPC \"%s\" was not found.\n", npcname );
+		clif_dynamicnpc_result( *sd, DYNAMICNPC_RESULT_UNKNOWNNPC );
+		return;
+	}
+
+	if( npc_duplicate_npc_for_player( *nd, *sd ) != nullptr ){
+		clif_dynamicnpc_result( *sd, DYNAMICNPC_RESULT_SUCCESS );
+	}
+#endif
+}
+
 /// Displays a special popup.
 /// Works only if player moved from one map to another.
 /// 0bbe <popup id>.L (ZC_SPECIALPOPUP)
@@ -25574,6 +25808,115 @@ void clif_parse_MoveFromKafraFav( int32 fd, map_session_data* sd ){
 #endif
 }
 
+// LionShield - chave secreta centralizada em src/config/lionshield.hpp
+static void lion_sha256_map(const uint8_t* data, size_t len, uint8_t out[32]) {
+        uint32_t k[64]={0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2};
+        uint32_t h[8]={0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19};
+        auto RR=[](uint32_t x,int n){return(x>>n)|(x<<(32-n));};
+        size_t total=((len+8)/64+1)*64;
+        uint8_t*buf=new uint8_t[total]();
+        memcpy(buf,data,len);buf[len]=0x80;
+        uint64_t bits=(uint64_t)len*8;
+        for(int i=0;i<8;i++)buf[total-1-i]=(uint8_t)(bits>>(i*8));
+        for(size_t i=0;i<total;i+=64){uint32_t w[64];
+                for(int j=0;j<16;j++)w[j]=((uint32_t)buf[i+j*4]<<24)|((uint32_t)buf[i+j*4+1]<<16)|((uint32_t)buf[i+j*4+2]<<8)|buf[i+j*4+3];
+                for(int j=16;j<64;j++){uint32_t s0=RR(w[j-15],7)^RR(w[j-15],18)^(w[j-15]>>3);uint32_t s1=RR(w[j-2],17)^RR(w[j-2],19)^(w[j-2]>>10);w[j]=w[j-16]+s0+w[j-7]+s1;}
+                uint32_t a=h[0],b=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],hh=h[7];
+                for(int j=0;j<64;j++){uint32_t S1=RR(e,6)^RR(e,11)^RR(e,25),ch=(e&f)^(~e&g),temp1=hh+S1+ch+k[j]+w[j];uint32_t S0=RR(a,2)^RR(a,13)^RR(a,22),maj=(a&b)^(a&c)^(b&c),temp2=S0+maj;hh=g;g=f;f=e;e=d+temp1;d=c;c=b;b=a;a=temp1+temp2;}
+                h[0]+=a;h[1]+=b;h[2]+=c;h[3]+=d;h[4]+=e;h[5]+=f;h[6]+=g;h[7]+=hh;}
+        delete[]buf;
+        for(int i=0;i<8;i++){out[i*4]=(h[i]>>24)&0xff;out[i*4+1]=(h[i]>>16)&0xff;out[i*4+2]=(h[i]>>8)&0xff;out[i*4+3]=h[i]&0xff;}
+}
+static std::string map_shield_sha256(const std::string& input){
+        uint8_t hash[32];lion_sha256_map(reinterpret_cast<const uint8_t*>(input.c_str()),input.size(),hash);
+        std::string r(64,'0');for(int i=0;i<32;i++){char b[3];snprintf(b,3,"%02x",hash[i]);r[i*2]=b[0];r[i*2+1]=b[1];}return r;
+}
+
+void clif_guild_alliance_message( std::shared_ptr<MapGuild> guild, const char* message, size_t length ){
+#if PACKETVER_MAIN_NUM >= 20230607
+	// Check if it was an empty message
+	if( length == 0 ){
+		return;
+	}
+
+	map_session_data* sd = guild_getavailablesd( guild->guild );
+
+	if( sd == nullptr ){
+		return;
+	}
+
+	// Zero termination
+	length += 1;
+
+	if( length >= CHAT_SIZE_MAX ){
+		ShowWarning( "clif_guild_alliance_message: Truncated message '%s' (length=%" PRIuPTR ", CHAT_SIZE_MAX=% " PRIuPTR ", guild_id = % d).\n", message, length, CHAT_SIZE_MAX, guild->guild.guild_id );
+		length = CHAT_SIZE_MAX;
+	}
+
+	PACKET_ZC_ALLY_CHAT* p = reinterpret_cast<PACKET_ZC_ALLY_CHAT*>( packet_buffer );
+
+	p->packetType = HEADER_ZC_ALLY_CHAT;
+	p->packetLength = sizeof( *p );
+
+	static size_t maximum = static_cast<size_t>( std::numeric_limits<decltype( p->packetLength )>::max() ) - sizeof( *p );
+
+	if( length >= maximum ){
+		ShowWarning( "clif_guild_alliance_message: Truncated message '%s' (length=%" PRIuPTR ", maximum=% " PRIuPTR ", guild_id = % d).\n", message, length, maximum, guild->guild.guild_id );
+		length = maximum;
+	}
+
+	safestrncpy( p->message, message, length );
+	p->packetLength += static_cast<decltype( p->packetLength )>( length );
+
+	clif_send( p, p->packetLength, sd, GUILD_ALLIANCES_FRIEND );
+#endif
+}
+
+void clif_parse_guild_alliance_message( int32 fd, map_session_data* sd ){
+#if PACKETVER_MAIN_NUM >= 20230607
+	if( sd == nullptr ){
+		return;
+	}
+
+	// This packet is sent if the message starts with #
+	// Therefore if either the atcommand or the charcommand symbol is a #, we have to do the guild check later
+	if( atcommand_symbol != '#' && charcommand_symbol != '#' ){
+		// Check if the player is in a guild
+		if( sd->guild == nullptr ){
+			// Not in a guild, return early
+			return;
+		}
+	}
+
+	char name[NAME_LENGTH], message[CHAT_SIZE_MAX], output[CHAT_SIZE_MAX+NAME_LENGTH*2];
+
+	// Validate packet and retrieve name and message
+	if( !clif_process_message( sd, false, name, message, output ) ){
+		return;
+	}
+
+	// If either the atcommand or the charcommand symbol is a #, we have to try to parse the command
+	if( atcommand_symbol == '#' || charcommand_symbol == '#' ){
+		char cmd[CHAT_SIZE_MAX];
+
+		safesnprintf( cmd, sizeof( cmd ), "#%s", message );
+
+		// Check if the message contained a command
+		if( is_atcommand( fd, sd, cmd, 1 ) ){
+			// It was a command, no need to send it to the allicances
+			return;
+		}
+
+		// This check has to be done after clif_process_message, because the player may have used a command
+		if( sd->guild == nullptr ){
+			return;
+		}
+	}
+
+	clif_guild_alliance_message( sd->guild, output, strlen( output ) );
+#endif
+}
+
 /*==========================================
  * Main client packet processing function
  *------------------------------------------*/
@@ -25622,6 +25965,9 @@ static int32 clif_parse(int32 fd)
 		return 0;
 
 	cmd = RFIFOW(fd, 0);
+
+
+
 
 #ifdef PACKET_OBFUSCATION
 	// Check if it is a player that tries to connect to the map server.
@@ -25768,6 +26114,8 @@ void packetdb_readdb(){
 /*==========================================
  *
  *------------------------------------------*/
+ 
+
 void do_init_clif(void) {
 	const int32 colors[COLOR_MAX] = {
 		0x00FF00, // COLOR_DEFAULT
@@ -25796,6 +26144,7 @@ void do_init_clif(void) {
 
 	add_timer_func_list(clif_clearunit_delayed_sub, "clif_clearunit_delayed_sub");
 	add_timer_func_list(clif_delayquit, "clif_delayquit");
+
 
 #if PACKETVER_MAIN_NUM >= 20190403 || PACKETVER_RE_NUM >= 20190320
 	add_timer_func_list( clif_ping_timer, "clif_ping_timer" );

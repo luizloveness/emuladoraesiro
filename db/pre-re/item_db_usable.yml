@@ -125,8 +125,10 @@ Body:
     AegisName: Blue_Potion
     Name: Blue Potion
     Type: Healing
-    Buy: 5000
-    Weight: 150
+    Flags:
+      NoConsume: true    
+    Buy: 800
+    Weight: 50
     Script: |
       itemheal 0,rand(40,60);
   - Id: 506
@@ -1104,7 +1106,7 @@ Body:
     Flags:
       BuyingStore: true
     Delay:
-      Duration: 5000
+      Duration: 0
       Status: Reuse_Limit_F
     Script: |
       percentheal 100,100;
@@ -1116,8 +1118,6 @@ Body:
     Weight: 300
     Flags:
       BuyingStore: true
-    Delay:
-      Duration: 3000
       Status: Reuse_Limit_G
     Script: |
       percentheal 50,50;
@@ -1568,6 +1568,7 @@ Body:
       Taekwon: true
       Thief: true
       Wizard: true
+      BardDancer: true
     EquipLevelMin: 40
     Flags:
       BuyingStore: true
@@ -1653,7 +1654,7 @@ Body:
     Flags:
       BuyingStore: true
     Script: |
-      sc_start SC_SPEEDUP0,180000,25;
+      sc_start SC_SPEEDUP0,180000,40;
   - Id: 663
     AegisName: Korea_Rice_Cake
     Name: Korean Rice Cake
@@ -1976,18 +1977,6 @@ Body:
       Sitting: true
     Script: |
       itemskill "MG_FIREWALL",5;
-  - Id: 700
-    AegisName: Cold_Scroll_2_1
-    Name: Level 1 Frost Diver
-    Type: Delayconsume
-    Buy: 1000
-    Weight: 10
-    Flags:
-      BuyingStore: true
-    NoUse:
-      Sitting: true
-    Script: |
-      itemskill "MG_FROSTDIVER",1;
   - Id: 6046
     AegisName: Clothing_Dye_Coupon
     Name: Clothing Dye Coupon
@@ -2034,6 +2023,8 @@ Body:
     AegisName: Light_Blue_Pot
     Name: Light Blue Potion
     Type: Healing
+    Flags:
+      NoConsume: true    
     Buy: 5000
     Weight: 10
     Script: |
@@ -2428,18 +2419,6 @@ Body:
     Weight: 100
     Script: |
       itemheal rand(50,70),rand(10,12);
-  - Id: 12000
-    AegisName: Cold_Scroll_2_5
-    Name: Level 5 Frost Diver
-    Type: Delayconsume
-    Buy: 2000
-    Weight: 10
-    Flags:
-      BuyingStore: true
-    NoUse:
-      Sitting: true
-    Script: |
-      itemskill "MG_FROSTDIVER",5;
   - Id: 12001
     AegisName: Holy_Scroll_1_3
     Name: Level 3 Heal
@@ -2718,7 +2697,7 @@ Body:
     NoUse:
       Sitting: true
     Script: |
-      sc_start SC_SPEEDUP0,20000,25;
+      sc_start SC_SPEEDUP0,30000,50;
   - Id: 12029
     AegisName: Gloomy_Box
     Name: Box of Gloom
@@ -3519,7 +3498,7 @@ Body:
     AegisName: Bloody_Dead_Branch
     Name: Bloody Branch
     Type: Usable
-    Buy: 10000
+    Buy: 20
     Weight: 200
     Flags:
       BuyingStore: true
@@ -4656,10 +4635,6 @@ Body:
     Buy: 2
     Weight: 10
     Trade:
-      NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -4673,10 +4648,6 @@ Body:
     Buy: 2
     Weight: 10
     Trade:
-      NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -4690,10 +4661,6 @@ Body:
     Buy: 2
     Weight: 10
     Trade:
-      NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -4707,10 +4674,6 @@ Body:
     Buy: 2
     Weight: 10
     Trade:
-      NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -4724,10 +4687,6 @@ Body:
     Buy: 2
     Weight: 10
     Trade:
-      NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -4741,10 +4700,6 @@ Body:
     Buy: 2
     Weight: 10
     Trade:
-      NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -4762,14 +4717,8 @@ Body:
       Status: Reuse_Limit_C
     Trade:
       NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
-      NoGuildStorage: true
-      NoMail: true
-      NoAuction: true
     Script: |
-      sc_start SC_EXPBOOST,1800000,50;
+      sc_start SC_EXPBOOST,1800000,150;
   - Id: 12209
     AegisName: Insurance
     Name: Life Insurance
@@ -4796,12 +4745,6 @@ Body:
       Duration: 60000
       Status: Reuse_Limit_D
     Trade:
-      NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
-      NoGuildStorage: true
-      NoMail: true
       NoAuction: true
     Script: |
       sc_start SC_ITEMBOOST,1800000,100;
@@ -4998,16 +4941,12 @@ Body:
     Buy: 2
     Weight: 10
     Trade:
-      NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
     Script: |
       input @megaphone$;
-      announce strcharinfo(0) + ": " + @megaphone$,bc_all,0xFF0000;
+      announce strcharinfo(0) + ": " + @megaphone$,bc_all,0xFFFF00;
   - Id: 12225
     AegisName: Sweet_Candy_Striper
     Name: Sweet Candy Cane
@@ -5358,8 +5297,6 @@ Body:
       NoTrade: true
       NoSell: true
       NoCart: true
-      NoStorage: true
-      NoGuildStorage: true
       NoMail: true
       NoAuction: true
     Script: |
@@ -5382,12 +5319,11 @@ Body:
       NoTrade: true
       NoSell: true
       NoCart: true
-      NoStorage: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
     Script: |
-      getexp2(2000000,1000000);
+      getexp2(200000000,1000000);
   - Id: 12262
     AegisName: Inspector_Certificate_
     Name: Authoritative Badge
@@ -9619,10 +9555,6 @@ Body:
     Weight: 10
     Trade:
       NoDrop: true
-      NoSell: true
-      NoGuildStorage: true
-      NoMail: true
-      NoAuction: true
     Script: |
       getitem 12211,10;
   - Id: 12910
@@ -9758,8 +9690,6 @@ Body:
     Buy: 20
     Weight: 10
     Trade:
-      NoDrop: true
-      NoSell: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -10917,7 +10847,7 @@ Body:
     Buy: 20
     Weight: 10
     Script: |
-      getitem 607,3;
+      getitem 607,100;
   - Id: 13518
     AegisName: Weapon_Card_Scroll_Box
     Name: Weapon Card Pet Egg Scroll Box
@@ -16033,8 +15963,8 @@ Body:
       NoMail: true
       NoAuction: true
     Script: |
-      getitem 11503,25;
-      getitem 11504,10;
+      getitem 607,100;
+      getitem 14521,2;
   - Id: 14002
     AegisName: Adv_Siege_Supply_Box
     Name: Veteran Siege Supply Box
@@ -18541,12 +18471,6 @@ Body:
     Weight: 10
     Trade:
       NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
-      NoGuildStorage: true
-      NoMail: true
-      NoAuction: true
     Script: |
       getitem 12208,10;
   - Id: 14157
@@ -18573,12 +18497,6 @@ Body:
     Weight: 10
     Trade:
       NoDrop: true
-      NoTrade: true
-      NoSell: true
-      NoCart: true
-      NoGuildStorage: true
-      NoMail: true
-      NoAuction: true
     Script: |
       getitem 12210,10;
   - Id: 14159
@@ -19690,12 +19608,12 @@ Body:
       rentitem 1638,604800;
   - Id: 14232
     AegisName: Yggdrasilberry_Box_
-    Name: Yggdrasil Berry 10 Box
+    Name: Yggdrasil Berry 50 Box
     Type: Cash
     Buy: 20
     Weight: 10
     Script: |
-      getitem 607,10;
+      getitem 607,50;
   - Id: 14233
     AegisName: Dead_Tree_Branch_Box1
     Name: Dead Branch 10 Box
@@ -22101,3 +22019,1520 @@ Body:
       Third_Upper: true
       Third_Baby: true
     EquipLevelMin: 1
+  - Id: 17461
+    AegisName: Costama_Egg18
+    Name: Frozen Egg Costume
+    Type: Cash
+    Weight: 10
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+    Script: |
+      getgroupitem(IG_Costama_Egg18);
+  - Id: 12887
+    AegisName: C_Wing_Of_Fly
+    Name: Infinite Flywing
+    Type: Usable
+    Flags:
+      NoConsume: true
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      itemskill "AL_TELEPORT",1;
+  - Id: 17251
+    AegisName: C_Wing_Of_Fly_3Day_Box
+    Name: C Wing Of Fly 3Day Box
+    Type: Usable
+    Buy: 20
+    Weight: 10
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_C_WING_OF_FLY_3DAY_BOX_);
+  - Id: 42011
+    AegisName: Passe_VIP_3
+    Name: VIP Ticket 3D
+    Type: Usable
+    Buy: 10
+    Weight: 10
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Classes:
+      Normal: true
+      Upper: true
+      Baby: true
+      Third: true
+      Third_Upper: true
+      Third_Baby: true
+    EquipLevelMin: 1
+    Script: |
+      vip_time 4320;
+    View: 3508
+  - Id: 42012
+    AegisName: Passe_VIP_15
+    Name: VIP Ticket 15D
+    Type: Usable
+    Buy: 10
+    Weight: 10
+    Classes:
+      Normal: true
+      Upper: true
+      Baby: true
+      Third: true
+      Third_Upper: true
+      Third_Baby: true
+    EquipLevelMin: 1
+    Script: |
+      vip_time 21600;
+    View: 3509
+  - Id: 42013
+    AegisName: Passe_VIP_30
+    Name: VIP Ticket 30D
+    Type: Usable
+    Buy: 10
+    Weight: 10
+    Classes:
+      Normal: true
+      Upper: true
+      Baby: true
+      Third: true
+      Third_Upper: true
+      Third_Baby: true
+    EquipLevelMin: 1
+    Script: |
+      vip_time 43200;
+    View: 3510
+  - Id: 23436
+    AegisName: Shadow_Refine_Hammer
+    Name: Shadow Refine Hammer
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 22669
+    AegisName: HALLOWEEN_G_BOX
+    Name: Halloween Box
+    Type: Usable
+    Weight: 200
+    Flags:
+      Container: true
+    Script: |
+      getgroupitem(IG_HALLOWEEN_G_BOX);
+  - Id: 22670
+    AegisName: DARK_INVITATION
+    Name: Invitation of Darkness
+    Type: Usable
+    Buy: 10
+    Weight: 10
+    Script: |
+      .@rnd = rand(1,3);
+      if (.@rnd == 1) {
+         specialeffect2 EF_DEVIL;
+         warp "niflheim",193,186;
+      }
+      else if (.@rnd == 2) {
+         heal -500,-1000;
+         sc_start SC_STUN,3000,0;
+      }
+      else {
+         specialeffect2 EF_DEVIL;
+         warp "niflheim",347,255;
+      }    
+  - Id: 101455
+    AegisName: E_Auto_Up
+    Name: Automatic (bound) upgrade package    # !todo check english name
+    Type: DelayConsume
+    EquipLevelMin: 160
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 101645
+    AegisName: GMT_Robe_Stone
+    Name: Geffen Secret Stone
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 101792
+    AegisName: SubjectCape_Refine_Cube
+    Name: Subject Manteau 12 Refine Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();      
+  - Id: 9523
+    AegisName: Metal_Rifine_Ticket
+    Name: Metal Refining Ticket
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 9529
+    AegisName: Ein_Ddbox2
+    Name: Magical Modification Permit
+    Type: DelayConsume
+    Weight: 10
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();      
+  - Id: 9550
+    AegisName: Gemstone_Of_Time
+    Name: Gemstone of Time
+    Type: DelayConsume
+    Weight: 1
+    Script: |
+      laphine_upgrade();
+  - Id: 9551
+    AegisName: Time_Unseal_Key
+    Name: Time Unseal Key
+    Type: DelayConsume
+    Weight: 1
+    Script: |
+      laphine_upgrade();
+  - Id: 9551
+    AegisName: Time_Unseal_Key
+    Name: Time Unseal Key
+    Type: DelayConsume
+    Weight: 1
+    Script: |
+      laphine_upgrade();
+  - Id: 9785
+    AegisName: Frozen_Box_IL
+    Name: Frozen Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 9933
+    AegisName: True_Hunting_9Refine
+    Name: Troi Hunting 9 Refinement Package
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 23546
+    AegisName: Cursed_Blood
+    Name: Cursed Blood
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 23547
+    AegisName: Gold_Statue
+    Name: Gold Statue
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 23675
+    AegisName: Geffen_Magic_Scroll
+    Name: Geffen Magic Armor Order Form
+    Type: DelayConsume
+    Weight: 100
+    Script: |
+      laphine_upgrade();
+  - Id: 23676
+    AegisName: Gray_Charcoal_Melee
+    Name: Grey Abrasive (physical)
+    Type: DelayConsume
+    Weight: 50
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 23677
+    AegisName: Gray_Charcoal_Magic
+    Name: Grey Abrasive (magical)
+    Type: DelayConsume
+    Weight: 50
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 23678
+    AegisName: Gray_Charcoal_Range
+    Name: Grey Abrasive (distance)
+    Type: DelayConsume
+    Weight: 50
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 23679
+    AegisName: Geffen_Magic_Scroll2
+    Name: Geffen Magic Accessory Order Form
+    Type: DelayConsume
+    Weight: 100
+    Script: |
+      laphine_upgrade();
+  - Id: 23706
+    AegisName: Charleston_Parts_W
+    Name: Charleston Upgrade Parts (Physical)
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23707
+    AegisName: Charleston_Parts_R
+    Name: Charleston Upgrade Parts (Ranged)
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23720
+    AegisName: Shadow_Random_Mix
+    Name: Shadow Random Mix
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 23776
+    AegisName: EP17_1_SPC05
+    Name: Weapon Modifier (Physical)
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23777
+    AegisName: EP17_1_SPC06
+    Name: Advanced Weapon Modifier (Physical)
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23778
+    AegisName: EP17_1_SPC07
+    Name: Super Weapon Modifier (Physical)
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23779
+    AegisName: EP17_1_SPC08
+    Name: Weapon Modifier (Magic)
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23780
+    AegisName: EP17_1_SPC09
+    Name: Advanced Weapon Modifier (Magic)
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23781
+    AegisName: EP17_1_SPC10
+    Name: Super Weapon Modifier (Magic)
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23815
+    AegisName: Magma_Essence
+    Name: Lava Essence
+    Type: DelayConsume
+    Weight: 50
+    Script: |
+      laphine_upgrade();
+  - Id: 23926
+    AegisName: Shadow_9_Refine_Hammer
+    Name: Shadow 9 Refine Hammer
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100003
+    AegisName: ILL_Piece_A
+    Name: Red Phantom Resonance Stone
+    Type: DelayConsume
+    Script: |
+      laphine_upgrade();
+  - Id: 100004
+    AegisName: ILL_Piece_B
+    Name: Azure Mirage Resonance Stone
+    Type: DelayConsume
+    Script: |
+      laphine_upgrade();
+  - Id: 100009
+    AegisName: Joy_Of_Victory
+    Name: Victorious Happiness
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100023
+    AegisName: Ancient_Hero_Bravery
+    Name: Ancient Hero Bravery
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100025
+    AegisName: Ancient_Hero_Wisdom
+    Name: Ancient Hero Wisdom
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100043
+    AegisName: Boost_Up_1
+    Name: Booster Armor UpgradeBox
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100044
+    AegisName: Boost_Up_2
+    Name: Booster Weapon UpgradeBox
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 9514
+    AegisName: Ein_Ddbox
+    Name: Physical Modification Permit
+    Type: DelayConsume
+    Weight: 10
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100125
+    AegisName: Metal_7_Ticket
+    Name: Metal Weapon +7 Refinement Ticket
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100128
+    AegisName: Noblesse_Rifine_Ticket
+    Name: Noblesses Refine Ticket
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 100
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100129
+    AegisName: Imperial_Rifine_Ticket
+    Name: Imperial Refine Ticket
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 125
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100130
+    AegisName: Grace_Rifine_Ticket
+    Name: Grace Refine Ticket
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 150
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100131
+    AegisName: Imperial_Convert1
+    Name: Imperial Physical Modification Permit (Garment)
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 125
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100132
+    AegisName: Imperial_Convert2
+    Name: Imperial Magical Modification Permit (Garment)
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 125
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100133
+    AegisName: Grace_Convert1
+    Name: Grace Physical Modification Permit (Garment)
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 150
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100134
+    AegisName: Grace_Convert2
+    Name: Grace Magical Modification Permit (Garment)
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 150
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100135
+    AegisName: Imperial_Convert3
+    Name: Imperial Physical Modification Permit (Armor)
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 125
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100136
+    AegisName: Imperial_Convert4
+    Name: Imperial Magical Modification Permit (Armor)
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 125
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100137
+    AegisName: Grace_Convert3
+    Name: Grace Physical Modification Permit (Armor)
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 150
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100138
+    AegisName: Grace_Convert4
+    Name: Grace Magical Modification Permit (Armor)
+    Type: DelayConsume
+    Buy: 20
+    EquipLevelMin: 150
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100142
+    AegisName: Abyss_Ddbox2
+    Name: Stable Dragon's Power
+    Type: DelayConsume
+    Weight: 10
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100144
+    AegisName: Abyss_Ddbox3
+    Name: Burning Dragon's Power
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100145
+    AegisName: Abyss_Ddbox4
+    Name: Hot Dragon's Power
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100164
+    AegisName: Auto_Imp_Melee_1
+    Name: Normal Automatic Improvement Device (Physical)
+    Type: DelayConsume
+    Script: |
+      laphine_upgrade();
+  - Id: 100165
+    AegisName: Auto_Imp_Melee_2
+    Name: Advanced Automatic Improvement Device (Physical)
+    Type: DelayConsume
+    Script: |
+      laphine_upgrade();
+  - Id: 100166
+    AegisName: Auto_Imp_Melee_3
+    Name: Premium Automatic Improvement Device (Physical)
+    Type: DelayConsume
+    Script: |
+      laphine_upgrade();
+  - Id: 100167
+    AegisName: Auto_Imp_Magic_1
+    Name: Normal Automatic Improvement Device (Magical)
+    Type: DelayConsume
+    Script: |
+      laphine_upgrade();
+  - Id: 100168
+    AegisName: Auto_Imp_Magic_2
+    Name: Advanced Automatic Improvement Device (Magical)
+    Type: DelayConsume
+    Script: |
+      laphine_upgrade();
+  - Id: 100169
+    AegisName: Auto_Imp_Magic_3
+    Name: Premium Automatic Improvement Device (Magical)
+    Type: DelayConsume
+    Script: |
+      laphine_upgrade();
+  - Id: 100251
+    AegisName: Illu_Enhance_Cube
+    Name: Illusion Reinforcement Cube
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100252
+    AegisName: Auto_Enhance_Cube
+    Name: Automatic Reinforcement Cube
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100268
+    AegisName: Temporal_Refine_Cube
+    Name: Temporal Equipment 11 Refine Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100269
+    AegisName: Geffen_Refine_Cube
+    Name: Geffen Magic Tournament 12 Refine Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100270
+    AegisName: Old_Refine_Cube
+    Name: Fallen Warrior's Headgear 12 Refine Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100271
+    AegisName: Refine_Hero_Weapon
+    Name: Ancient Hero Weapon 9 Refine Permission
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100272
+    AegisName: Refine_Hero_Boots
+    Name: Ancient Hero Boots 9 Refine Permission
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100321
+    AegisName: OS_Weapon_Refine_Cube
+    Name: OS Weapon +11 Refinement Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100322
+    AegisName: Racecap_Refine_Cube
+    Name: Racing Cap +11 Refinement Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100338
+    AegisName: Booster_W_Up_1
+    Name: Booster Weapon Phase 1 Upgrade Package
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100339
+    AegisName: Booster_W_Up_2
+    Name: Booster Weapon Phase 2 Upgrade Package
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100340
+    AegisName: Booster_W_Up_3
+    Name: Booster Weapon Upgrade Package
+    Type: DelayConsume
+    EquipLevelMin: 100
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 101187
+    AegisName: Snow_F_Refine
+    Name: Snow Flower Armor +9 Refinement Cube
+    Type: DelayConsume
+    Weight: 10
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 101188
+    AegisName: Glacier_W_Refine
+    Name: Glacier Weapon +9 Refinement Cube
+    Type: DelayConsume
+    Weight: 10
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100744
+    AegisName: Hero_LT_Refine_Melee
+    Name: Hero's Weapon Modifier(Physical)
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100745
+    AegisName: Hero_LT_Refine_Magic
+    Name: Hero's Weapon Modifier(Magical)
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100823
+    AegisName: Lens_Craft_Stone
+    Name: Lens Craft Stone
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100722
+    AegisName: Booster_RandomOpt_P
+    Name: Booster Modification Stone(Physical)
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100723
+    AegisName: Booster_RandomOpt_M
+    Name: Booster Modification Stone(Magical)
+    Type: DelayConsume
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100699
+    AegisName: Twins_Box_IL
+    Name: Twins Refinement Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100700
+    AegisName: S_Twins_Box_IL
+    Name: Special Twins Refinement Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100684
+    AegisName: Bio_Helm_Refine_Cube
+    Name: Biological Lab Helmet +11 Refinement Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100651
+    AegisName: Pontifex_Wisdom
+    Name: Pontifex Wisdom
+    Type: DelayConsume
+    Weight: 10
+    EquipLevelMin: 180
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100652
+    AegisName: Pontifex_Tenacity
+    Name: Pontifex Tenacity
+    Type: DelayConsume
+    Weight: 10
+    EquipLevelMin: 180
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100653
+    AegisName: Pontifex_Belief
+    Name: Pontifex Belief
+    Type: DelayConsume
+    Weight: 10
+    EquipLevelMin: 180
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100650
+    AegisName: Pontifex_Courage
+    Name: Pontifex Courage
+    Type: DelayConsume
+    Weight: 10
+    EquipLevelMin: 180
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100626
+    AegisName: GrayWolf_7_Ticket
+    Name: Gray Wolf +7 Refinement Box
+    Type: DelayConsume
+    Weight: 10
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100627
+    AegisName: GrayWolf_9_Ticket
+    Name: Gray Wolf +9 Refinement Box
+    Type: DelayConsume
+    Weight: 10
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100341
+    AegisName: E_ILL_Up
+    Name: Illusion (Bound) Upgrade Package
+    Type: DelayConsume
+    EquipLevelMin: 130
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100354
+    AegisName: Auto_Armor_Refine_Cube
+    Name: Automatic Armor +11 Refinement Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100355
+    AegisName: Bio_Weapon_Refine_Cube
+    Name: Bio Lab Weapon +11 Refinement Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100391
+    AegisName: Moonlight_Box_IL
+    Name: Moonlight Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100392
+    AegisName: S_Moonlight_Box_IL
+    Name: Special Moonlight Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100412
+    AegisName: Great_Hero_Bravery
+    Name: Great Hero's Bravery
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100413
+    AegisName: Great_Hero_Wisdom
+    Name: Great Hero's Wisdom
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100414
+    AegisName: Vampire_Box_IL
+    Name: Vampire Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100415
+    AegisName: S_Vampire_Box_IL
+    Name: Special Vampire Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100416
+    AegisName: S_Frozen_Box_IL
+    Name: Special Frozen Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100417
+    AegisName: Turtle_Is_Box_IL
+    Name: Turtle Island Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100418
+    AegisName: S_Turtle_Is_Box_IL
+    Name: Special Turtle Island Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100419
+    AegisName: Teddy_Bear_Box_IL
+    Name: Teddy Bear Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100420
+    AegisName: S_Teddy_Bear_Box_IL
+    Name: Special Teddy Bear Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100421
+    AegisName: Luanda_Box_IL
+    Name: Luanda Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100422
+    AegisName: S_Luanda_Box_IL
+    Name: Special Luanda Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100423
+    AegisName: Labyrinth_Box_IL
+    Name: Labyrinth Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100424
+    AegisName: S_Teddy_Labyrinth_IL
+    Name: Special Labyrinth Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100425
+    AegisName: Underwater_Box_IL
+    Name: Underwater Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100426
+    AegisName: S_Underwater_Box_IL
+    Name: Special Underwater Refine Box
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 100436
+    AegisName: Circlet_Refine_Cube
+    Name: Temporal Circlet +11 Refine Cube
+    Type: DelayConsume
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      laphine_upgrade();
+  - Id: 100481
+    AegisName: Overclocker
+    Name: Battle Processor Accelerator
+    Type: DelayConsume
+    Weight: 10
+    Script: |
+      laphine_upgrade();
+  - Id: 22685
+    AegisName: Solo_Christmas_Gift
+    Name: Single Union Christmas Gift
+    Type: Usable
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_Solo_Christmas_Gift);
+  - Id: 22870
+    AegisName: Xmas_Package_14
+    Name: Christmas Package
+    Type: Usable
+    Weight: 10
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+    Script: |
+      getgroupitem(IG_XMAS_PACKAGE_14);
+  - Id: 36001
+    AegisName: box_newbie_hat
+    Name: Box newbie Hat
+    Type: Usable
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true    
+    Buy: 20
+    Weight: 10
+    Flags:
+      Container: true
+    Script: |
+      callfunc "F_boxnewbieHat_Select";
+    View: 3518  
+  - Id: 36002
+    AegisName: box_newbie_weapon
+    Name: Box newbie Weapon
+    Type: Usable
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true    
+    Buy: 20
+    Weight: 10
+    Flags:
+      Container: true
+    Script: |
+      callfunc "F_OldYellowBox_Select";
+    View: 3519
+  - Id: 36003
+    AegisName: box_newbie_wings
+    Name: Box newbie Wings
+    Type: Usable
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoStorage: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true    
+    Buy: 20
+    Weight: 10
+    Flags:
+      Container: true
+    Script: |
+      callfunc "F_boxnewbiewings_Select";
+    View: 3520  
+  - Id: 12790
+    AegisName: Change_Name_Card
+    Name: Character Name Change Coupon
+    Type: Usable
+    Trade:
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      CharRename++;
+  - Id: 101048
+    AegisName: Shadow_Hammer_Box_3
+    Name: Holgren's Shadow Smelting Hammer Box 3
+    Type: Usable
+    Weight: 0
+    Flags:
+      Container: true
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_Shadow_Hammer_Box_3);
+  - Id: 22686
+    AegisName: Solo_Cookie
+    Name: Single Cookie
+    Type: Healing
+    Weight: 50
+    Script: |
+      percentheal 5,5;
+  - Id: 11550
+    AegisName: Pumpkin_Cake
+    Name: Pumpkin Cake
+    Type: Healing
+    Buy: 10
+    Weight: 40
+    Script: |
+      percentheal 5,5;
+  - Id: 22668
+    AegisName: Guyak_Pudding_5_Box
+    Name: Guyak Pudding Box
+    Type: Usable
+    Weight: 100
+    Trade:
+      NoAuction: true
+    Script: |
+      getitem 12710,5;
+  - Id: 226500
+    AegisName: Guyak_Pudding_20_Box
+    Name: Guyak Pudding Box
+    Type: Usable
+    Weight: 100
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getitem 12710,20;
+  - Id: 22534
+    AegisName: Closedmind_Box
+    Name: Closed Mind Box
+    Type: Cash
+    Buy: 10
+    Weight: 1000
+    EquipLevelMin: 1
+    Flags:
+      BuyingStore: true
+      Container: true
+    Script: |
+      getgroupitem(IG_CLOSEDMIND_BOX);
+  - Id: 17470
+    AegisName: Costama_Egg19
+    Name: Headgear Costume Scroll
+    Type: Cash
+    Weight: 10
+    Flags:
+      Container: true
+    Trade:
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      getgroupitem(IG_Costama_Egg19);
+  - Id: 12623
+    AegisName: High_Weapon_Box
+    Name: Advanced Weapons Box
+    Type: Usable
+    Buy: 20
+    Weight: 10
+    Flags:
+      BuyingStore: true
+      Container: true
+    Script: |
+      getgroupitem(IG_Advanced_Weapons_Box);    
+  - Id: 12789
+    AegisName: Juicy_Fruit
+    Name: Juicy Fruit
+    Type: Usable
+    Buy: 2
+    Weight: 100
+  - Id: 23187
+    AegisName: Sap_Jelly
+    Name: Sap Liquid
+    Type: Usable
+    Buy: 10
+    Script: |
+      pet;
+  - Id: 23188
+    AegisName: Airship_Part
+    Name: Unprocessed Parts
+    Type: Usable
+    Buy: 10
+    Script: |
+      pet;
+  - Id: 23256
+    AegisName: Elixir_Bandage
+    Name: Elixir Bandages
+    Type: Usable
+    Buy: 10
+    Script: |
+      pet;
+  - Id: 23189
+    AegisName: Little_Dall_Needle
+    Name: Small Needle Kit
+    Type: Usable
+    Buy: 10
+    Script: |
+      pet;
+  - Id: 100796
+    AegisName: Darkness_Bible
+    Name: Dark Bible
+    Type: Usable
+    Weight: 50
+    Flags:
+      BuyingStore: true
+    Script: |
+      pet;
+  - Id: 101331
+    AegisName: Fruits_Set_Trap
+    Name: Fruit Set Trap
+
+    Weight: 10
+    Flags:
+      BuyingStore: true
+    Script: |
+      /* TODO : pet 21632; */
+      pet;            
+  - Id: 42014
+    AegisName: Bilhete01
+    Name: Ticket conversor
+    Type: Healing
+    Buy: 50
+    Weight: 70
+    Flags:
+      NoConsume: true
+    Script: |
+      .@item = 607;
+      if (!checkweight(.@item,100))
+        end;
+      getitem .@item,100;
+      delitem 42014,1; // Não esqueça de deletar o item após o uso.  
+    View: 3512
+  - Id: 674
+    AegisName: Mithril_Coin
+    Name: Roleta Coin
+    Type: Cash
+    Buy: 5000
+    Weight: 40
+  - Id: 3051
+    AegisName: Box_Gold_Luffy
+    Name: Gold Luffy
+    Type: Cash
+    Weight: 10
+    Script: |
+      getitem 3008,1;
+      getitem 3009,1; 
+      getitem 3010,1; 
+      getitem 3011,1; 
+  - Id: 3052
+    AegisName: Box_White_Luffy
+    Name: White Luffy
+    Type: Cash
+    Weight: 10
+    Script: |
+      getitem 3013,1;
+      getitem 3012,1; 
+      getitem 3011,1; 
+      getitem 3009,1;
+  - Id: 3093
+    AegisName: box_cheffenia
+    Name: Angeling Coin b
+    Type: Cash
+    Weight: 100
+    Trade:
+      NoAuction: true
+    Script: |
+      getitem 3090,100;
+  - Id: 3094
+    AegisName: box_insana
+    Name: Deviling Box
+    Type: Cash
+    Weight: 100
+    Trade:
+      NoAuction: true
+    Script: |
+      getitem 3092,100;
+  - Id: 3095
+    AegisName: cannon_box_poisoning
+    Name: Deviling Box
+    Type: Cash
+    Weight: 100
+    Trade:
+      NoAuction: true
+    Script: |
+      getitem 3091,100;
+  - Id: 12622
+    AegisName: Boarding_Halter
+    Name: Reins Of Mount
+    Type: Usable
+    Flags:
+      NoConsume: true
+    Delay:
+      Duration: 3000
+      Status: All_Riding_Reuse_Limit
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      setmounting();
+    UnEquipScript: |
+      if (ismounting())
+         setmounting();

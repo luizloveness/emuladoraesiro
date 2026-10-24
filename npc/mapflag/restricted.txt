@@ -34,7 +34,14 @@ force_5-1	mapflag	restricted	3
 force_1-2	mapflag	restricted	3
 force_1-3	mapflag	restricted	3
 prt_are_in	mapflag	restricted	3
-
+//============================================================
+//Cidades
+//============================================================
+//prontera	mapflag	restricted	32
+//izlude	mapflag	restricted	32
+//morrocc	mapflag	restricted	32
+//alberta	mapflag	restricted	32
+//aldebaran	mapflag	restricted	32
 //============================================================
 // WoE:SE Castles
 //============================================================
@@ -48,6 +55,11 @@ arug_cas02	mapflag	restricted	4
 arug_cas03	mapflag	restricted	4
 arug_cas04	mapflag	restricted	4
 arug_cas05	mapflag	restricted	4
+prtg_cas01	mapflag	restricted	4
+prtg_cas02	mapflag	restricted	4
+prtg_cas03	mapflag	restricted	4
+prtg_cas04	mapflag	restricted	4
+prtg_cas05	mapflag	restricted	4
 
 //============================================================
 // Sealed Shrine
@@ -82,7 +94,6 @@ arug_cas05	mapflag	restricted	4
 //============================================================
 alberta	mapflag	restricted	7
 aldebaran	mapflag	restricted	7
-amatsu	mapflag	restricted	7
 ayothaya	mapflag	restricted	7
 brasilis	mapflag	restricted	7
 comodo	mapflag	restricted	7
@@ -110,3 +121,13 @@ umbala	mapflag	restricted	7
 veins	mapflag	restricted	7
 xmas	mapflag	restricted	7
 yuno	mapflag	restricted	7
+amatsu	mapflag	restricted	2
+guild_vs3	mapflag	restricted	2
+//============================================================
+// WoE:
+//============================================================
+//prtg_cas01	mapflag	restricted	16
+//prtg_cas02	mapflag	restricted	16
+//prtg_cas03	mapflag	restricted	16
+//prtg_cas04	mapflag	restricted	16
+//prtg_cas05	mapflag	restricted	16

@@ -1,0 +1,42 @@
+-	script	buffsvip_cmd	-1,{
+
+OnInit:
+	bindatcmd "buffsvip", strnpcinfo(3) + "::OnBuff";
+	end;
+
+OnBuff:
+	if (!vip_status(1)) {
+		dispbottom "VIP only.";
+		end;
+	}
+
+	// Cooldown de 1 minuto
+	if ((gettimetick(2) - #last_vipbuff_CMD) < 60) {
+		dispbottom "You must wait 1 minute before using @buffsvip again.";
+		end;
+	}
+
+	// Cura
+	percentheal 100,100;
+
+	// Buffs VIP
+	sc_start SC_BLESSING,      300000, 10;
+	sc_start SC_INCREASEAGI,   300000, 10;
+	sc_start SC_MAGNIFICAT,    300000, 5;
+	sc_start SC_FOOD_STR_CASH, 300000, 5;
+	sc_start SC_FOOD_AGI_CASH, 300000, 5;
+
+	// Identifica todos os itens
+	identifyall;
+
+	// Salva o horário de utilização
+	#last_vipbuff_CMD = gettimetick(2);
+
+	dispbottom "VIP buffs applied!";
+	end;
+
+OnPCDieEvent:
+	// Remove o cooldown ao morrer
+	#last_vipbuff_CMD = gettimetick(2) - 60;
+	end;
+}

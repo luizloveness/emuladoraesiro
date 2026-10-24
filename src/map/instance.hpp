@@ -91,6 +91,13 @@ struct s_instance_data {
 struct s_instance_db {
 	int32 id; ///< Instance DB ID
 	std::string name; ///< Instance name
+	std::string lobby_id; ///< Client EntryQueue identifier
+	int32 lobby_min_level; ///< Minimum level shown/validated by the instance lobby
+	int32 lobby_max_level; ///< Maximum level shown/validated by the instance lobby
+	int32 lobby_quest_id; ///< Quest required by the custom lobby script
+	int32 lobby_lock_quest_id; ///< Quest that locks the instance in the custom lobby script
+	int32 lobby_party_limit; ///< Maximum party size accepted by the custom lobby script
+	int32 lobby_cooldown; ///< Re-entry cooldown in seconds used by the custom lobby script	
 	int64 limit, ///< Duration limit
 		timeout; ///< Timeout limit
 	bool nonpc;
@@ -117,6 +124,7 @@ extern InstanceDatabase instance_db;
 extern std::unordered_map<int32, std::shared_ptr<s_instance_data>> instances;
 
 std::shared_ptr<s_instance_db> instance_search_db_name(const char* name);
+std::shared_ptr<s_instance_db> instance_search_db_lobby_id(const char* lobby_id);
 void instance_getsd(int32 instance_id, map_session_data *&sd, enum send_target *target);
 
 int32 instance_create(int32 owner_id, const char *name, e_instance_mode mode);

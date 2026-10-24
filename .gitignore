@@ -150,3 +150,6 @@ Thumbs.db
 
 # generated files
 generated
+
+logs.txt
+shield_login_token

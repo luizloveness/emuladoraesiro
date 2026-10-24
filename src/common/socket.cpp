@@ -254,7 +254,7 @@ static time_t socket_data_last_tick = 0;
 
 // initial recv buffer size (this will also be the max. size)
 // biggest known packet: S 0153 <len>.w <emblem data>.?B -> 24x24 256 color .bmp (0153 + len.w + 1618/1654/1756 bytes)
-#define RFIFO_SIZE (2*1024)
+#define RFIFO_SIZE (4*1024)
 // initial send buffer size (will be resized as needed)
 #define WFIFO_SIZE (16*1024)
 

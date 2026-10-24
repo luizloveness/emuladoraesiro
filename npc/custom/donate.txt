@@ -1,0 +1,471 @@
+//!rathena
+// Donate System | Rev 1.0.0 | Myik
+/** SQL Commands
+	CREATE TABLE `donate_system` (
+	`id` int NOT NULL,
+	`account_id` int NOT NULL,
+	`unique_id` varchar(1000) NOT NULL,
+	`value` int NOT NULL,
+	`product` int DEFAULT NULL,
+	`coupon` varchar(100) DEFAULT NULL,
+	`unique_code` varchar(25) DEFAULT NULL,
+	`pending` int NOT NULL,
+	`method` varchar(10) NOT NULL,
+	`reference_id` varchar(255) NOT NULL,
+	`status` int NOT NULL DEFAULT '0',
+	`url_validate` varchar(5000) DEFAULT NULL,
+	`state` varchar(255) DEFAULT NULL,
+	`time` int NOT NULL,
+	`redeem_at` date DEFAULT NULL,
+	`ip` varchar(50) NOT NULL,
+	`agent` varchar(5000) NOT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+	ALTER TABLE `donate_system`
+	ADD PRIMARY KEY (`id`);
+
+	ALTER TABLE `donate_system`
+	MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+	COMMIT;
+
+	CREATE TABLE `donate_security` (
+	`account_id` int NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`email` varchar(255) NOT NULL,
+	`cpf` varchar(11) NOT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+	ALTER TABLE `donate_security`
+	ADD PRIMARY KEY (`account_id`);
+	COMMIT;
+*/
+-	script	donate#system	-1,{
+end;
+// - Configurações Gerais do Sistema de Doação
+OnInit:
+	// Configuração de Evento Pokeball
+	// .pokeevent = false;
+	// Bonificação nas Doações
+	.have_bonus = true;
+	setarray .bonus[0], 50, 5, 100, 10, 200, 20; // Sample < Valor Mínimo, Bônus%, Valor Mínimo, Bônus% >
+	// Configuração de Segurança
+	.security = 3; // Nível de segurança do sistema de doação (1-3) [1 = Baixo (Nome), 2 = Médio (Email), 3 = Alto (CPF)]
+	// Configuração de Pagamento/Moeda
+	.currency = 1; // 1 Real = 1 Cashpoints
+	setarray .payments$[0],
+		"Mercado Pago", "mp", "0",
+		"Coinbase", "cb", "10";
+	// Configuração do servidor & API
+	.gepard = false;
+	.server$ = "aesiRO";
+	.url$ = "https://donate.aesiro.com.br";
+	// NPC Names
+	.npc$ = "<b>^FF6600[Doações]^000000</b>";
+	.title_resgate$ = "<b>^FF6600[Resgatando Código]^000000</b>";
+
+	// Bind Atcomands	
+	bindatcmd "doar", strnpcinfo(0)+"::OnDonate", 0,99;
+	bindatcmd "donate", strnpcinfo(0)+"::OnDonate", 0,99;
+	bindatcmd "doação", strnpcinfo(0)+"::OnDonate", 0,99;
+	bindatcmd "resgatar", strnpcinfo(0)+"::OnResgatar", 0,99;
+
+	// Code Characters
+	setarray .characters_code$[0],
+		"A","B","C","D","E","F","G","H","I","J","K","L",
+		"M","N","O","P","Q","R","S","T","U","V","W","X",
+		"Y","Z","0","1","2","3","4","5","6","7","8","9";
+
+//	 Cupons Streamers
+//	.streamers_bonus = 5; // 5% de bônus para os cupons dos streamers
+//	setarray .streamers$[ getarraysize(.streamers$) ],
+//  "BLACK FRIDAY", "BLACKFRIDAY", 0;
+	
+	// Products
+	//setarray .products$[0];
+	//.products_size = getarraysize(.products$);
+	//setarray .products[0];
+	 // ID, ItemID, Quantidade, Preço em
+end;
+
+OnDonate:
+	function uCode;
+	function getPlayerData;
+	function insertDonateData;
+	function ClaimCredits;
+	function getPaymentMethods;
+	ignoretimeout(1);
+	disable_command;
+	if(.gepard)
+		.@gpd = 0;
+	.@code$ = uCode(5);
+	mes .npc$;
+	mes "Olá ^ff0084"+strcharinfo(0)+"^000000, ajude-nos a continuar conectando você a este incrível mundo online. Além da incansável dedicação, mensalmente temos despesas, como o aluguel do hardware de nosso servidor, pagamento de técnicos qualificados para nos ajudar, investimentos em publicidade, e outros.";
+	next;
+	mes .npc$;
+	mes "Nós não cobramos para você jogar aqui, então, esteja ciente que o ato de doar é voluntário. Como forma de agradecimento a sua doação, lhe daremos créditos para poder trocar dentro do jogo por alguns itens.";
+	next;
+	switch(select("» Doar:» Resgatar Créditos:» Resgatar Código:" + (getarraysize(.products[0]) > 0 ? "» Pacotes Promocionais:":":") + "» Histórico de Doações:» Cancelar")) {
+		case 1:
+			.@payments_size = getarraysize(.payments$);
+			//setdialogsize(278, (.@payments_size > 3 ? 220:200));
+			mes .npc$;
+			if(!#HAVEINFOS && .security > 0){
+				getPlayerData;
+			}
+			mes "^ff0084»^000000 Digite o valor que deseja doar:";
+			input .@donate;
+			mes "^979797----------------------------------^000000";
+			if(.@donate == 0){
+				mes "^ff0084»^000000 O valor doado deve ser igual ou maior do que ^ff0084R$ 1,00^000000";
+				end;
+			}
+			mes "Você está doando <b>^ff0084R$ "+callfunc( "donate", .@donate )+",00^000000</b>";
+			mes "^979797----------------------------------^000000";
+			mes "Você possui um cupom?";
+			.@coupon$ = ""; 
+			switch(select("» ^999999Continuar sem cupom^000000:» Inserir cupom manualmente:» Escolher streamer parceiro")) {
+				case 2:
+					mes "Digite o cupom:";
+					input .@coupon$;
+					break;
+				case 3:
+					mes "Escolha o streamer:";
+					.@total = getarraysize(.streamers$) / 3;
+
+					for (.@i = 0; .@i < .@total; .@i++)
+						.@indexes[.@i] = .@i;
+
+					for (.@i = .@total - 1; .@i > 0; .@i--) {
+						.@j = rand(.@i + 1);
+						.@temp = .@indexes[.@i];
+						.@indexes[.@i] = .@indexes[.@j];
+						.@indexes[.@j] = .@temp;
+					}
+
+					.@menu$ = "";
+					for (.@i = 0; .@i < .@total; .@i++) {
+						.@idx = .@indexes[.@i] * 3;
+						.@menu$ += .streamers$[.@idx] + " (" + .streamers$[.@idx + 1] + ")";
+						if (.@i < .@total - 1) .@menu$ += ":";
+					}
+
+					.@s = select(.@menu$);
+					.@real_idx = .@indexes[.@s - 1] * 3;
+					.@coupon$ = .streamers$[.@real_idx + 1];
+					break;
+			}
+
+
+	// Salva a doação com o cupom aplicado
+	insertDonateData(.@donate, "mp", .@code$, NULL, .@coupon$, "0", "Unknown");
+			// Itera os métodos de pagamento
+			getPaymentMethods(.@code$);
+			break;
+		case 2:
+			mes .npc$;
+			ClaimCredits(1);
+			break;
+		case 3:
+			OnResgatar:
+			mes .title_resgate$;
+			mes "^ff0084»^000000 Digite o código:";
+			input .@resgatar$;
+
+			.@code$ = escape_sql(.@resgatar$);
+
+			if (query_sql("SELECT `value`, `product`, `unique_code`, `pending`, `status`, `method` FROM `donate_system` WHERE `unique_code` = '" + .@code$ + "' AND `method` = 'CODE' LIMIT 1",
+				.@value, .@product, .@unique_code$, .@pending, .@status, .@method$) == 0) {
+				mes "<b>Código inválido.</b>";
+				end;
+			}
+
+			mes "^979797----------------------------------^000000";
+
+			if (.@status != 0) {
+				mes "<b>Este código já foi resgatado.</b>";
+				end;
+			}
+
+			mes "^979797----------------------------------^000000";
+			query_sql("UPDATE `donate_system` SET `pending` = 0, `status` = 1, `state` = 'claimed' WHERE `unique_code` = '" + .@code$ + "'");
+
+			mes "<b>Código resgatado com sucesso!</b>";
+
+			if (.@method$ == "CODE" && .@product != 0) {
+				getitem .@product, .@pending;
+			} else {
+				.@bonus = 0;
+				if (.have_bonus) {
+					for (.@i = 0; .@i < getarraysize(.bonus); .@i += 2) {
+						if (.@value >= .bonus[.@i]) {
+							.@bonus += (.@pending * .bonus[.@i+1]) / 100;
+						}
+					}
+				}
+				.@total = .@pending + .@bonus;
+				set #CASHPOINTS, #CASHPOINTS + .@total;
+				dispbottom "Você recebeu " + .@total + " créditos (+" + .@bonus + " bônus)";
+			}
+			break;
+		case 4:
+			mes .npc$;
+			if(!#HAVEINFOS && .security > 0){
+				getPlayerData;
+			}
+			mes "Escolha um dos pacotes disponíveis:";
+			.@menu$ = "";
+			for (.@i = 0; .@i < .products_size; .@i++) {
+				.@index = .@i * 4;
+				.@id = .products[.@index];
+				.@item_id = .products[.@index+1];
+				.@item_qtd = .products[.@index+2];
+				.@price = .products[.@index+3];
+				.@menu$ += "- " + .@item_qtd + "x " + .products$[.@i] + " [R$ " + .@price + ",00]";
+				if (.@i < .products_size - 1)
+					.@menu$ += ":";
+			}
+
+			.@choice = select(.@menu$) - 1;
+			if (.@choice < 0 || .@choice >= .products_size) end;
+
+			.@index = .@choice * 4;
+			.@id = .products[.@index];
+			.@item_id = .products[.@index+1];
+			.@item_qtd = .products[.@index+2];
+			.@price = .products[.@index+3];
+
+			mes "Você escolheu o pacote:";
+			mes "^ff0084»^000000 <b>" + .products$[.@choice] + " ^ff0084R$ "+callfunc( "donate", .@price )+",00^000000</b>";
+			mes "^979797----------------------------------^000000";
+
+			// Insere os dados no banco de dados
+			insertDonateData(.@price, "mp", .@code$, .@id, .@coupon$, "1", "0"); 
+
+			// Itera os métodos de pagamento
+			getPaymentMethods(.@code$);
+			break;
+		case 5:
+			dispbottom "= SEU HISTÓRICO DE DOAÇÃO ========== ", 0x40f1f9;
+			.@history = query_sql(
+				"SELECT `value`, `state`, `time`, `method` FROM `donate_system` WHERE `status` > 0 AND `account_id` = '" + getcharid(3) + "' ORDER BY `id` DESC LIMIT 10",
+				.@value, .@state$, .@time, .@method$
+			);
+			for (.@i = 0; .@i < .@history; .@i++) {
+				.@gettimestr$ = gettimestr("%d/%m/%Y %H:%M:%S",21, .@time[.@i]);
+				dispbottom " » Doação de R$"+.@value[.@i]+",00 via "+(.@method$[.@i] == "mp" ? "Mercado Pago":"Código")+" em "+.@gettimestr$, 0x40f1f9;
+			}
+			break;
+	}
+end;
+
+OnPCLoginEvent:
+	ClaimCredits(0);
+end;
+
+	// Função responsável por entregar os créditos e itens
+	function ClaimCredits {
+		.@show_messages = getarg(0);
+
+		if (.gepard)
+			.@gepard = 0;
+
+		.@account_id = getcharid(3);
+		.@char_id = getcharid(0);
+
+		query_sql(
+			"SELECT `id`, `value`, `pending`, `state`, `reference_id`, `status`, `coupon` FROM `donate_system` " +
+			"WHERE `account_id` = " + .@account_id + " AND `status` > 0 AND `pending` > 0 ORDER BY `id` ASC",
+			.@id, .@value, .@pending, .@state$, .@reference$, .@status, .@coupon$
+		);
+
+		.@size = getarraysize(.@id);
+		if (!.@size) {
+			if (.@show_messages) {
+				mes "Você não possui créditos pendentes para resgatar no momento.";
+				end;
+			}
+			return;
+		}
+
+		.@sender$ = "Administração";
+		.@title$ = "Obrigado por sua doação";
+
+		for (.@j = 0; .@j < .@size; .@j++) {
+			.@total = .@pending[.@j];
+			.@bonus = 0;
+
+			for (.@i = 0; .@i < getarraysize(.streamers$); .@i += 3) {
+				if (.@coupon$[.@j] == .streamers$[.@i+1]) {
+					.@bonus += (.@pending[.@j] * .streamers_bonus) / 100;
+					break;
+				}
+}
+
+
+			if (.have_bonus) {
+				for (.@i = 0; .@i < getarraysize(.bonus); .@i += 2) {
+					if (.@value[.@j] >= .bonus[.@i])
+						.@bonus += (.@pending[.@j] * .bonus[.@i+1]) / 100;
+				}
+			}
+
+			.@total += .@bonus;
+
+			if (.@show_messages) {
+				.@body$ = "Olá, " + strcharinfo(0) + "!\r\n"
+						+ "Nós, da equipe " + .server$ + ", agradecemos de coração pela sua doação.\r\n"
+						+ "Seu apoio é essencial para mantermos o servidor ativo e sempre melhorando. Muito obrigado por fazer parte dessa jornada conosco!\r\n"
+						+ "Seus créditos foram creditados com sucesso e já estão disponíveis em sua conta.\r\n\r\n"
+						+ "ID da Transação: " + .@reference$[.@j] + "\r\n"
+						+ "Valor da Transação: R$" + .@value[.@j] + ",00\r\n";
+
+				if (.@coupon$[.@j] != "")
+					.@body$ += "Cupom utilizado: " + .@coupon$[.@j] + "\r\n";
+
+				if (.@bonus > 0)
+					.@body$ += "Bônus recebido: " + .@bonus + " créditos\r\n";
+
+				.@body$ += "Total creditado: " + .@total + " créditos\r\n";
+
+				mail .@char_id, .@sender$, .@title$, .@body$;
+			}
+
+			set #CASHPOINTS, #CASHPOINTS + .@total;
+			query_sql "UPDATE `donate_system` SET `pending` = 0, `unique_id` = '" + .@gepard + "' WHERE `id` = " + .@id[.@j];
+		}
+
+		if (.@show_messages) {
+			mes "Seus créditos foram resgatados com sucesso!";
+			end;
+		}
+	}
+
+	// Função responsável por coletar dados do jogador
+	function getPlayerData {
+		mes "Precisamos de alguns dados antes de continuar com a doação.";
+
+		.@account_id = getcharid(3);
+		.@name$ = ""; .@email$ = ""; .@cpf = 0;
+
+		if (.security >= 1) {
+			mes " ^0084ff»^000000 <b>Digite seu nome completo</b>:";
+			input .@name$;
+			if (getstrlen(.@name$) < 5 || getstrlen(.@name$) > 50) {
+				mes " ^ff0000»^000000 Você deve digitar seu nome completo.";
+				end;
+			}
+		}
+		if (.security >= 2) {
+			mes " ^0084ff»^000000 <b>Digite seu e-mail</b>:";
+			input .@email$;
+			if (getstrlen(.@email$) < 5 || getstrlen(.@email$) > 50) {
+				mes " ^ff0000»^000000 O <b>e-mail</b> digitado <b>não é válido</b>.";
+				end;
+			}
+		}
+		if (.security == 3) {
+			mes " ^0084ff»^000000 <b>Digite seu CPF</b>:";
+			mes " ^ff0000*^000000 Apenas números, sem pontos ou traços.";
+			input .@cpf$;
+			if (getstrlen(.@cpf$) != 11) {
+				mes " ^ff0000»^000000 O <b>CPF</b> digitado <b>não é válido</b>.";
+				end;
+			}
+		}
+
+		query_sql(
+			"INSERT INTO `donate_security` (`account_id`, `name`, `email`, `cpf`) VALUES (" +
+			.@account_id + ", '" + escape_sql(.@name$) + "', '" + escape_sql(.@email$) + "', '" + escape_sql(.@cpf$) + "')" +
+			" ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `email` = VALUES(`email`), `cpf` = VALUES(`cpf`)"
+		);
+
+		#HAVEINFOS = 1;
+		mes "Você agora pode continuar com a doação.";
+		next;
+		mes .npc$;
+	}
+
+	// Função responsável por listar as formas de pagamento
+	function getPaymentMethods {
+		.@size = getarraysize(.payments$);
+
+		for (.@i = 0; .@i < .@size; .@i += 3) {
+			.@name$ = .payments$[.@i];
+			.@method$ = .payments$[.@i + 1];
+			.@bonus$ = .payments$[.@i + 2];
+
+			.@mes$ = "<URL>•" + .@name$ + "<INFO>" + .url$ + "/api/" + .@method$ + "/" + getarg(0) + "</INFO></URL> ";
+
+			if (.@bonus$ != "0")
+				.@mes$ += " <b>+" + .@bonus$ + "% de Bônus</b>";
+
+			mes .@mes$;
+		}
+		sleep2 5000;
+	}
+
+	// Função responsável por inserir os dados de doação no banco de dados
+	function insertDonateData {
+		.@account_id = getcharid(3);
+		.@value = getarg(0);
+		.@method$ = getarg(1);
+		.@reference$ = getarg(2);
+		.@product = getarg(3);
+		.@coupon$ = getarg(4, "");
+		.@ip$ = getarg(5, "0.0.0.0");
+		.@agent$ = getarg(6, "Unknown");
+		
+		if(.@product == 0) {
+			.@cashpoints = .@value * .currency;
+		} else {
+			.@cashpoints = 1;
+		}
+		
+		.@timestamp = gettimetick(2);
+
+		query_sql(
+			"INSERT INTO `donate_system` (`account_id`, `unique_id`, `value`, `product`, `coupon`, `unique_code`, `pending`, `method`, `reference_id`, `status`, `url_validate`, `state`, `time`, `redeem_at`, `ip`, `agent`) " +
+			"VALUES (" +
+				.@account_id + ", 0, " + .@value + ", "+.@product+", '" + escape_sql(.@coupon$) + "', '" + escape_sql(.@reference$) + "', " + .@cashpoints + ", '" + escape_sql(.@method$) + "', '" + escape_sql(.@reference$) + "', 0, NULL, 'pending', " + .@timestamp + ", NULL, '" + escape_sql(.@ip$) + "', '" + escape_sql(.@agent$) + "'" +
+			")"
+		);
+	}
+
+	// Função responsável por gerar o código aleatório
+	function uCode {
+		.@s = getarg(0, 5); 
+		.@rc$ = "";
+
+		.@code_size = getarraysize(.characters_code$);
+
+		for (.@i = 0; .@i < .@s; .@i++)
+			.@rc$ += .characters_code$[rand(.@code_size)];
+
+		.@tick = gettimetick(2);
+		.@tick$ = "" + .@tick;
+
+		while (getstrlen(.@tick$) < 10)
+			.@tick$ = "0" + .@tick$;
+
+		.@rc$ += substr(.@tick$, 5, 9);
+
+		while (getstrlen(.@rc$) < 11)
+			.@rc$ += .characters_code$[rand(.@code_size)];
+
+		return .@rc$;
+	}
+}
+function	script	donate	{
+
+    set .@int,  getarg(0);
+    set .@sep$, getarg(1,",");
+    set .@str$, "";
+    if ( .@int < 0 ) {
+    set .@int, -.@int;
+    set .@neg, 1;
+}
+    set .@len, getstrlen(.@int+"") - .@neg;
+    for ( set .@i,0; .@i<.@len; set .@i,.@i+1 )
+    set .@str$, ( .@i % 3 == 2 && .@i < .@len-1 ? .@sep$ : "" ) + ( .@int / pow(10,.@i) ) % 10 + .@str$;
+    return ( .@neg ? "-" : "" ) + .@str$;
+}

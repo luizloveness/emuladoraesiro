@@ -41,6 +41,6 @@ Header:
 
 Footer:
   Imports:
-  - Path: db/re/laphine_upgrade.yml
-    Mode: Renewal
+  - Path: db/pre-re/laphine_upgrade.yml
+    Mode: Prerenewal
   - Path: db/import/laphine_upgrade.yml

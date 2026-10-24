@@ -1,0 +1,19 @@
+-	script	AesiRO_Aniversario_Repeticao	-1,{
+
+OnPCLoginEvent:
+
+	if (gettime(DT_MONTH) != 6 || gettime(DT_DAYOFMONTH) != 9)
+		end;
+
+	if (#aesiro_bday_2026_extra)
+		end;
+
+	#aesiro_bday_2026_extra = 1;
+
+	getitem 400188,1;
+	getitem 25294,1;
+
+	dispbottom "[Aniversário aesiRO] Você recebeu os presentes de aniversário!";
+	announce "[Aniversário aesiRO]: "+strcharinfo(0)+" recebeu os presentes comemorativos!", bc_self;
+	end;
+}

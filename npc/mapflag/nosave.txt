@@ -33,6 +33,8 @@ job_sage	mapflag	nosave	SavePoint
 // Expanded Classes
 job_star	mapflag	nosave	SavePoint
 job_soul	mapflag	nosave	SavePoint
+gef_dun03	mapflag	nosave	SavePoint
+force_3-3	mapflag	nosave	SavePoint
 
 //============================================================
 // Quest Places
@@ -171,6 +173,8 @@ pvp_n_8-3	mapflag	nosave	SavePoint
 pvp_n_8-4	mapflag	nosave	SavePoint
 pvp_n_8-5	mapflag	nosave	SavePoint
 pvp_2vs2	mapflag	nosave	SavePoint
+amatsu	mapflag	nosave	SavePoint
+
 
 //============================================================
 // WoE:FE Castles

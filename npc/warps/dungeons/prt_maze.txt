@@ -21,7 +21,7 @@ prt_maze01,5,186,0	warp	mazewarp5102	1,1,prt_maze01,182,88	/*To No.1-15*/
 prt_maze01,58,194,0	warp	mazewarp5103	1,1,prt_maze01,23,128	/*To No.1-6*/
 // 1st Floor No.03
 prt_maze01,102,165,0	warp	mazewarp5104	1,1,prt_maze01,99,31	/*To No.1-23*/
-prt_maze01,85,174,0	warp	mazewarp5105	1,1,prt_maze02,93,20
+prt_maze01,85,174,0	warp	mazewarp5105	1,1,prt_maze02,93,25
 // 1st Floor No.04
 prt_maze01,154,181,0	warp	mazewarp5106	1,1,prt_maze01,191,175	/*To No.1-5*/
 prt_maze01,125,171,0	warp	mazewarp5107	1,1,prt_maze01,8,186	/*To No.1-1*/

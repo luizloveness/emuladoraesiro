@@ -1,0 +1,378 @@
+prontera.gat,126,135,5	script	Pac	107,{
+	mes "[Pac]";
+	mes "I like hats...";
+	mes "I like hats more than any other thing in this world!!";
+	mes "Even if you compared hats with eating,";
+	mes "wearing a new hat is far more important";
+	next;
+	mes "[Pac]";
+	mes "Hat, Cap, Holy Bonnet,";
+	mes "Turban, Iron Helm,";
+	mes "Hemmed Sallet, Munak Turban...";
+	mes "I like them all!!";
+	mes "(Wuhoo! Wuhoohoo!!)";
+	next;
+	mes "[Pac]";
+	mes "I have learned the way to modified a hat,";
+	mes "and I am researching";
+	mes "to design the most fashionable hat.";
+	next;
+	switch(select("Party Hat:Straw Hat:Cowboy Hat:Sombrero:Fur Hat")) {
+	case 1: //Party hat [5060]
+		if(countitem(2236) && countitem(7151) > 99 && countitem(7111) > 99) {
+			mes "[Pac]";
+			mes "Party Hat! It is made according to the Santa's Hat,";
+			mes "decorated with some papers.";
+			mes "This is the best Party Hat!! Do you want it?";
+			mes "(Ohhhh, beautiful! So beautiful!)";
+			next;
+			mes "[Pac]";
+			mes "Wait, before I start the production, let's confirm this.";
+			mes "I will use items regarless of whether,";
+			mes "it had been refined or slotted with cards.";
+			mes "So you better just prepare the items required,";
+			mes "and put the others in the storage.";
+			next;
+			mes "[Pac]";
+			mes "You've brought all the materials...";
+			mes "Great! The one who wants a Party Hat,";
+			mes "do you want me to make it for you right now?";
+			next;
+			switch(select("No:Yes")) {
+			case 1:
+				mes "[Pac]";
+				mes "Hmm, is that so...";
+				mes "Let keep wearing your Santa's Hat then.";
+				mes "Hmmmhmmmhmmm....";
+				close;
+			case 2:
+				mes "^3355FFDeteDete ChebenCheben";
+				mes "PotterPotter MeganMegan";
+				mes "PosongPosong ShahaShaha";
+				next;
+				if(countitem(2236) && countitem(7151) > 99 && countitem(7111) > 99) {
+					delitem 2236,1;
+					delitem 7151,100;
+					delitem 7111,100;
+					getitem 5060,1;
+				}
+				mes "[Pac]";
+				mes "Very Good!";
+				mes "Force the birthday fellow to put this on,";
+				mes "then you can play tricks on him. That should be fun...";
+				mes "Please come again too next time~";
+				next;
+				mes "[Pac]";
+				mes "And, this is what's left after the process.";
+				mes "Here, take it!";
+				mes "Maybe it might be useful to you... (Hehehehe)";
+				getitem 949,10;
+				close;
+			}
+		} else {
+			mes "[Pac]";
+			mes "Party Hat! It's a necessity,";
+			mes "for anyone who throws a birthday party.";
+			mes "No matter how serious looking one is,";
+			mes "the hat will make him look cute and funny!";
+			next;
+			mes "[Pac]";
+			mes "In my opinion, it is suitable not only for birthday,";
+			mes "but as well as entertaining event!";
+			mes "This beautiful hat is just suitable for fun.";
+			mes "(...How about organizing a party for adventure?!?)";
+			next;
+			mes "[Pac]";
+			mes "Anyway, the material required are";
+			mes "^3355FFSanta's Hat^000000 x1";
+			mes "^3355FFOil Paper^000000 x100";
+			mes "^3355FFSlick Paper^000000 x100";
+			next;
+			mes "[Pac]";
+			mes "These are what I need.";
+			mes "So don't forget to collect the material, ok?";
+			mes "I will always be around....";
+			mes "So come back only after you have collected them!";
+			close;
+		}
+	case 2: //Straw Hat [5062]
+		if(countitem(2280) && countitem(7197) > 299 && countitem(7150) > 299) {
+			mes "[Mike]";
+			mes "Straw Hat! This hat is based on Sahkkat,";
+			mes "that is make of bamboo and rattan.";
+			mes "Wearing it makes you think that you're going to have a good harvesting year!";
+			mes "(Look, power of farmer!!)";
+			next;
+			mes "[Pac]";
+			mes "Wait, before I start the production, let's confirm this.";
+			mes "I will use items regardless of whether";
+			mes "it had been refined or slotted with cards.";
+			mes "So you better just prepare the items required,";
+			mes "and put the others in the storage.";
+			next;
+			mes "[Pac]";
+			mes "You've brought all the materials...";
+			mes "Great! The one who wants a Straw Hat,";
+			mes "do you want me to make it for you right now?";
+			next;
+			switch(select("No, thanks:Sure")) {
+			case 1:
+				mes "[Pac]";
+				mes "Hmm, is that so...";
+				mes "Let keep wearing your Sahkkat then.";
+				mes "Hmmmhmmmhmmm....";
+				close;
+			case 2:
+				mes "^3355FFSakaSaka WakaWaka";
+				mes "JekaJeka HuyiHuyi";
+				mes "PokaPoka TewuTewu^000000";
+				next;
+				if(countitem(2280) && countitem(7197) > 299 && countitem(7150) > 299) {
+					delitem 2280,1;
+					delitem 7197,300;
+					delitem 7150,300;
+					getitem 5062,1;
+				}
+				mes "[Pac]";
+				mes "HmmHmm! It feels that the harvest of this year shall be good!";
+				mes "I hope next year will be the same too...";
+				mes "Ahahaha, what am I talking about...";
+				mes "Please come again if you want more~";
+				close;
+			}
+		} else {
+			mes "[Pac]";
+			mes "Staw Hat! It gives you energy to work,";
+			mes "even under the heat of the sun";
+			mes "as well as providing shades that give you a cool feeling.";
+			mes "This hat will make you hope for a good harvest this year too!";
+			next;
+			mes "[Pac]";
+			mes "This hat is suitable for the farmers,";
+			mes "who want to plant or cultivate their crops.";
+			mes "You have the feel of a villager when you wear it!";
+			mes "(For your info, I am a city kid!)";
+			next;
+			mes "[Pac]";
+			mes "Anyway, the materials required for production are";
+			mes "^3355FFSakkat^000000 x1";
+			mes "^3355FFTough Vines^000000 x300";
+			mes "^3355FFPiece of Bamboo^000000 x300";
+			next;
+			mes "[Pac]";
+			mes "These are what I need.";
+			mes "So don't forget to collect all the material, ok?";
+			mes "I will always be around....";
+			mes "So come back only after you have collected them!";
+			close;
+		}
+	case 3: //Cowboy Hat [5075]
+		if (countitem(2248) && countitem(7030) > 107 && countitem(7194) > 107 && countitem(7120) > 3) {
+			mes "[Pac]";
+			mes "Cowboy Hat! A hat of western feel,";
+			mes "but looks toughet than Western Grace,";
+			mes "That is suitable for the western's males!";
+			mes "(Qiang... Yeehahaa~...)";
+			next;
+			mes "[Pac]";
+			mes "Wait, before I start the production, let's confirm this.";
+			mes "I will use item regardless of wether";
+			mes "It had been refined or slotted with cards.";
+			mes "So you better just prepare the items required,";
+			mes "and put the others in the storage.";
+			next;
+			mes "[Pac]";
+			mes "You've brought all the materials...";
+			mes "Great! The one who wants a Cowboy Hat,";
+			mes "do you want me to make it for you right now?";
+			switch(select("No:Yes")) {
+			case 1:
+				mes "[Pac]";
+				mes "Hmm,is that so...";
+				mes "Let keep wearing your typical Western Grace then.";
+				mes "Hmmmhmmmhmmm....";
+				close;
+			case 2:
+				mes "^3355FFDudududu bangbangbangbang";
+				mes "TadamTadam BiyongBiyong";
+				mes "Wuuuuu Ahwuwuwuwuw^000000";
+				next;
+				if (countitem(2248) && countitem(7030) > 107 && countitem(7194) > 107 && countitem(7120) > 3) {
+					delitem 2248,1;
+					delitem 7030,108;
+					delitem 7194,108;
+					delitem 7120,4;
+					getitem 5075,1;
+				}
+				mes "[Pac]";
+				mes "HeeeHaH! With that";
+				mes "you can tame even the wildest stiallion!";
+				mes "Please come again if you need more~";
+				close;
+			}
+		} else {
+			mes "[Pac]";
+			mes "Cowboy Hat!A hat of western feel,";
+			mes "where you seem to found the boiling blood of the cowboys...";
+			mes "It's as if you are going to draw something out,";
+			mes "and start shooting!";
+			next;
+			mes "[Pac]";
+			mes "The Cowboy Hat with thefeel of opening a barren land...";
+			mes "It makes guys look cool!";
+			mes "and it makes gals look prettier";
+			mes "(Is tought the new concept of beauty...?)";
+			next;
+			mes "[Pac]";
+			mes "Anyway, the materials required for production are";
+			mes "^3355FFWestern Grace^000000 x1";
+			mes "^3355FFClaw of Desert Wolf^000000 x108";
+			mes "^3355FFSoft Blade of Grass^000000 x108";
+			mes "^3355FFBurning Horseshoe^000000 x4";
+			next;
+			mes "[Pac]";
+			mes "These are what I need.";
+			mes "So don't forget to collect the material, ok?";
+			mes "I will always be around....";
+			mes "So come back only after you have collected them!";
+			close;
+		}
+	case 4: //Sombrero [5067]
+		if (countitem(5062) && countitem(952) > 49 && countitem(1907)) {
+			mes "[Pac]";
+			mes "SipoleiyeahhhhhhWoohohoh!!";
+			mes "Amigo! Adios Amigo!";
+			mes "If you like the sun and happy melody,";
+			mes "this is the right hat for you!!";
+			next;
+			mes "[Pac]";
+			mes "Wait, before I start the production, let's confirm this.";
+			mes "I will use items regardless of wether";
+			mes "it had been refined or slotted with cards.";
+			mes "So you better just prepare the items required";
+			mes "and put the others in the storage";
+			next;
+			mes "[Pac]";
+			mes "You've brought all the materials...";
+			mes "Great! The one who wants a Sombrero,";
+			mes "so you want me to make if for you right now?";
+			switch(select("No:Yes")) {
+			case 1:
+				mes "[Pac]";
+				mes "Hmmm, is that so...";
+				mes "Let keep wearing your shady Straw Hat then.";
+				mes "Hmmmhmmmhmmm....";
+				close;
+			case 2:
+				mes "^3355FFQingkaQinka KiangggQiangkiang";
+				mes "Diringringling kaciangkaciang";
+				mes "Adios Mamamiya^000000";
+				next;
+				if (countitem(5062) && countitem(952) > 49 && countitem(1907)) {
+					delitem 5062,1;
+					delitem 952,50;
+					delitem 1907,1;
+					getitem 5067,1;
+				}
+				mes "[Pac]";
+				mes "If you wear this to the desert,";
+				mes "you'll be Muka's friend too!! Full with joyous tempo and heat!!";
+				mes "Please come again if you want more~";
+				close;
+			}
+		} else {
+			mes "[Pac]";
+			mes "Yibayiba, andeleh andeleh!!";
+			mes "Amigo! Adios, Amigo!";
+			mes "Come again, Morocc!";
+			mes "Astalacista Baby!";
+			next;
+			mes "[Pac]";
+			mes "For you who like the sun and loud music!!";
+			mes "I present you with";
+			mes "the tri-level hat, Sombrero!!";
+			mes "(From Yggdrasil tree trill here!?)";
+			next;
+			mes "[Pac]";
+			mes "Anyway, the materials required for production are";
+			mes "^3355FFStraw Hat^000000 x1,";
+			mes "^3355FFCactus Needle^000000 x50,";
+			mes "^3355FFGuitar^000000 x1";
+			next;
+			mes "[Pac]";
+			mes "These are what I need";
+			mes "So don't forget to collect the material, ok?";
+			mes "I will always be around....";
+			mes "So come back only after you have collected them!";
+			close;
+		}
+	case 5: //fur hat [5076]
+		if (countitem(2226) && countitem(7038) > 499) {
+			mes "[Pac]";
+			mes "Fur Hat! Yo, Man! Check it out!";
+			mes "It's good for keeping warm! But it's fashionable too!";
+			mes "Even if you went to places as cold as Lutie,";
+			mes "you will be ok with this Beanie!!";
+			next;
+			mes "[Pac]";
+			mes "Wait, before I start the productions, let's confirm this.";
+			mes "I will use items regardless of wether";
+			mes "it had been refined or slotted with cards.";
+			mes "So you better just prepare the items required,";
+			mes "and put the others in the storage.";
+			next;
+			mes "[Pac]";
+			mes "You've brought all the materials...";
+			mes "Great! The one who wants a Beanie,";
+			mes "do you want me to make it for you right now?";
+			next;
+			switch(select("No:Yes")) {
+			case 1:
+				mes "[Pac]";
+				mes "Hmm, is that so...";
+				mes "Let keep wearing your Cap that is produce in bundles then.";
+				mes "Hmmmhmmmhmmm....";
+				close;
+			case 2:
+				mes "^3355FFKafokapo Kafokapo";
+				mes "poterpote poterpote";
+				mes "PosongPosong PosongPosong";
+				next;
+				if (countitem(2226) && countitem(7038) > 499) {
+					delitem 2226,1;
+					delitem 7038,500;
+					getitem 5076,1;
+				}
+				mes "[Pac]";
+				mes "Complete! The nicely knitted,";
+				mes "cute white hat! Yeat! Go Go!";
+				mes "Please come again if you need more~";
+				close;
+			}
+		} else {
+			mes "[Pac]";
+			mes "Beanie! Gimme a chocolate!! Right!";
+			mes "No matter who wears it,";
+			mes "you will feel the snowy winter!! Event if you are from Morocc,";
+			mes "you will look more like a traveller from Lutie if you put that on!";
+			next;
+			mes "[Pac]";
+			mes "There was a rumor";
+			mes "people wearing it will pull out his hard and shout Yo without knowing it-";
+			mes "I think we better change a topic...";
+			mes "(Hot weather, the head can't stand the heat?!?)";
+			next;
+			mes "[Pac]";
+			mes "Anyway, the material required for production are";
+			mes "^3355FFCap^000000 x1,";
+			mes "^3355FFYarn^000000 x500.";
+			next;
+			mes "[Pac]";
+			mes "These are what I need.";
+			mes "So don't forget to collect the material, ok?";
+			mes "I will always be around....";
+			mes "So come back only after you have collected them!";
+			close;
+		}
+	}
+}

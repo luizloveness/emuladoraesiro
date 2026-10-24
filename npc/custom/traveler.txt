@@ -1,0 +1,169 @@
+prontera.gat,130,135,6	script	Zac	732,{
+	mes "[Zac]";
+	mes "Ahhh~So boring~ So very boring~";
+	mes "There's noone I need to see, and the weather is so good - ! !";
+	mes "It's so boring that I have nothing to do.";
+	emotion e_gasp; //not sure if this is ET_SCRATCH
+	next;
+	mes "[Zac]";
+	mes "Oh yes, hey there, you!!";
+	mes "Do you want to have a cute and fine hair clip?";
+	mes "For a person as skillful as I am, there's nothing I can't make!! Wa haha!";
+	mes "Clap ! It will be ready just like that!";
+	emotion e_omg; //ET_SURPRISE?
+	next;
+	mes "[Zac]";
+	mes "Lucky I am freerightnow. So, just bring me the materials and I will whoosh! make it for you!";
+	mes "So, any idea of what accessory you would like to have?";
+	emotion e_heh; //ET_SMILE
+	next;
+	switch(select("^3131FFX Hairpin:Giant Band Aid:Flower Hairpin^000000:End conversation.")) {
+	case 1:
+		if (countitem(2294) > 0 && countitem(7220) > 399) {
+			mes "[Arjen]";
+			mes "X Hairpin!";
+			mes "That's very good !!";
+			next;
+			mes "[Zac]";
+			mes "Oh yes!";
+			mes "The Stellar.."; //star dust? that's not refinable, now is it? =X
+			mes "^CE3100During the production, the refine level will disappear, is that ok with you?^000000";
+			next;
+			switch(select("It's ok, just make it for me!:I will come next time.")) {
+			case 1:
+				mes "[Zac]";
+				mes "Oh well- Then,";
+				mes "it's time to show my skill after all this time !?";
+				next;
+				mes "^3131FF - Sha Sha !! - ^000000";
+				mes "^3131FF - Cha Sha Haa !! - ^000000";
+				next;
+				if (countitem(2294) > 0 && countitem(7220) > 399) {
+					delitem 2294,1;
+					delitem 7220,400;
+					getitem 5079,1; //X-Hairping == crossed hair band?
+				}
+				mes "[Zac]";
+				mes " OK - !!";
+				mes "I still have my touch! Wa ha ha!!";
+				mes "How about that? Do you like it?";
+				next;
+				mes "[Zac]";
+				mes "If you have any need, come and find me here anytime!";
+				mes "So, good bye. Good Bye!";
+				close;
+			case 2:
+				mes "[Zac]";
+				mes "Fine, fine, come back after you've made up your mind!";
+				close;
+			}
+		} else {
+			mes "[Zac]";
+			mes "Right - the ^3131FF X Hairpin!^000000";
+			mes "That's simple!";
+			next;
+			mes "[Zac]";
+			mes "^FF0000Stellar x1^000000";
+			mes "^FF0000Ectoplasm x400^000000";
+			mes "If you've prepared all of this, I will help to make it for you!";
+			close;
+		}
+	case 2:
+		if (countitem(970) > 0 && countitem(930) > 499) {
+			mes "[Zac]";
+			mes "Giant Band Aid??..";
+			mes "Oh well- Then,";
+			mes "it's time to show my skill after all this time !?";
+			next;
+			mes "^3131FF - Sha Sha !! - ^000000";
+			mes "^3131FF - Cha Sha Haa !! - ^000000";
+			next;
+			if (countitem(970) > 0 && countitem(930) > 499) {
+				delitem 970,1;
+				delitem 930,500;
+				getitem 5063,1; //another one in wich I love gravity for changing names =X
+			}
+			mes "[Zac]";
+			mes " OK - !!";
+			mes "I still have my touch! Wa ha ha!!";
+			mes "How about that? Do you like it?";
+			next;
+			mes "[Zac]";
+			mes "If you have any need, come and find me here anytime!";
+			mes "So, good bye. Good Bye!";
+			close;
+		} else {
+			mes "[Zac]";
+			mes "Hoho - ^3131FF Plaster !^000000";
+			mes "If anyone asked where this is the Plaster that is used when someone is hurt?";
+			mes "Tell them it is the real Plaster for injured people.";
+			mes "Hmm, isn't that easy?";
+			next;
+			mes "[Zac]";
+			mes "^FF0000Alcohol x1^000000";
+			mes "^FF0000Rotten Bandage x500^000000";
+			mes "If you have prepared all the items, I will help to make it for you now?";
+			close;
+		}
+	case 3:
+		if (countitem(2269) > 0 && countitem(999) > 9 && Zeny > 19999) {
+			mes "[Zac]";
+			mes "Great !! Flower Hairpin ~";
+			mes "it's time to show my skill after all this time !?";
+			next;
+			mes "^3131FF - Sha Sha !! - ^000000";
+			mes "^3131FF - Cha Sha Haa !! - ^000000";
+			next;
+			if (countitem(2269) > 0 && countitem(999) > 9 && Zeny > 19999) {
+				delitem 2269,1;
+				delitem 999,10;
+				set Zeny,Zeny-20000;
+				getitem 5061,1; //finally a non-changed name =X
+			}
+			mes "[Zac]";
+			mes " OK - !!";
+			mes "I still have my touch! Wa ha ha!!";
+			mes "How about it? Do you like it? Here is the stem left from the production. Take it as a souvenir. Haha.";
+			next;
+			mes "[Zac]";
+			mes "If you have any need, come and find me here anytime!";
+			mes "So, good bye. Good Bye!";
+			close;
+		} else {
+			mes "[Zac]";
+			mes "Yes - ^3131FF Flower Hairpin !^000000";
+			mes "Sometimes, I see some strange girls with bare legs and a flower in their mouths.";
+			mes "Looking at them, I get an idea!";
+			next;
+			mes "[Zac]";
+			mes "That is ^3131FFFlower^000000, ^3131FFFlower^000000 !";
+			mes "Wa ha ha, isn't that a perfect match?";
+			mes "Some even equip it on the Orc Warrior, you should be proud of it, right?";
+			mes "Really ~  ~  ~";
+			next;
+			mes "[Zac]";
+			mes "But the process takes a little more effort,";
+			mes "I need to take some process fee.";
+			next;
+			mes "[Zac]";
+			mes "You should know that,";
+			mes "stabilizing a fragile flower on the head";
+			mes "takes a lot of concentration and";
+			mes "very high level of skills!";
+			next;
+			mes "[Zac]";
+			mes "So, please bring,";
+			mes "^FF0000Romantic Flower x1^000000";
+			mes "^FF0000Steel x10^000000";
+			mes "together with ^3131FF 20,000 zeny^000000 !";
+			mes "If you have prepared all of these, I will make it for you right away!";
+			mes "Do you understand that?";
+			close;
+		}
+	case 4:
+		mes "[Zac]";
+		mes "Ha, what? You don't want it?";
+		mes "Rumblerumblerumble";
+		close;
+	}
+}

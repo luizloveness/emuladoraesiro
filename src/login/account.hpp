@@ -151,5 +151,6 @@ struct AccountDB {
 
 void mmo_send_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id);
 void mmo_save_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id);
+bool account_db_shield_save(AccountDB* self, uint32 account_id, const char* shield_hwid, uint64_t shield_unique_id);
 
 #endif /* ACCOUNT_HPP */

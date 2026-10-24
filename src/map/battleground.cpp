@@ -1008,6 +1008,15 @@ void bg_queue_join_solo(const char *name, map_session_data *sd)
 		clif_bg_queue_apply_result(BG_APPLY_INVALID_APP, name, sd);
 		return;
 	}
+	
+		// 🔔 ANNOUNCE – player iniciou busca por BG
+	char output[256];
+	snprintf(output, sizeof(output),
+		"[BG Queue]  %s esta procurando batalha em %s!",
+		sd->status.name, bg->name.c_str());
+
+	clif_broadcast(nullptr, output, strlen(output) + 1, BC_BLUE, ALL_CLIENT);
+
 
 	bg_queue_join_multi(name, sd, { sd }); // Join as solo
 }

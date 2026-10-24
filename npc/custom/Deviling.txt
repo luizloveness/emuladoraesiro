@@ -1,0 +1,379 @@
+// ============================================================
+// aesiRO - CENTRAL DE QUESTS
+// NPC expansível para futuras quests
+// ============================================================
+
+prontera,105,174,4	script	Deviling	1582,{
+
+	mes "[Deviling]";
+	mes "Ora, ora... um aventureiro!";
+	mes "Você tem cara de quem está procurando";
+	mes "problemas... digo, ^00FF00missões^000000!";
+	next;
+
+	mes "[Deviling]";
+	mes "Eu sou o responsável por reunir";
+	mes "as missões mais interessantes";
+	mes "de todo o reino.";
+	next;
+
+	switch(select(
+		"Quero uma missão!",
+		"Ver minha missão atual",
+		"Sair"
+	)) {
+
+		case 1:
+			goto L_QUEST_MENU;
+
+		case 2:
+			goto L_STATUS;
+
+		case 3:
+			mes "[Deviling]";
+			mes "Volte quando estiver preparado";
+			mes "para enfrentar algo realmente interessante!";
+			close;
+	}
+
+
+// ============================================================
+// MENU DE QUESTS
+// ============================================================
+
+L_QUEST_MENU:
+
+	mes "[Deviling]";
+	mes "Muito bem!";
+	mes "Vamos ver o que tenho disponível...";
+	next;
+
+	// Futuramente adicionaremos novas quests aqui.
+	// Exemplo:
+	//
+	// switch(select(
+	//     "Black Helm D",
+	//     "Outra Quest",
+	//     "Outra Quest",
+	//     "Voltar"
+	// ))
+
+
+	switch(select(
+		"Black Helm of Darkness",
+		"Cat on Nine Tails",
+		"Sharingan",
+		"Voltar"
+	)) {
+
+		case 1:
+			goto L_QUEST_BLACK_HELM;
+
+		case 2:
+			goto L_QUEST_CATON;
+		case 3:
+			goto L_QUEST_Sharingan;
+
+		case 4:
+			goto L_END;
+	}
+
+
+// ============================================================
+// QUEST 01 - BLACK HELM D
+// ============================================================
+
+L_QUEST_BLACK_HELM:
+
+	mes "[Deviling]";
+	mes "Hmmmm...";
+	mes "Você escolheu uma missão que";
+	mes "não é para qualquer aventureiro.";
+	next;
+
+	mes "[Deviling]";
+	mes "Preciso de alguns materiais para";
+	mes "forjar um equipamento bastante peculiar.";
+	next;
+
+	mes "[Deviling]";
+	mes "^800080Requisitos:^000000";
+	mes " ";
+	mes "• ^FFD700100x Moeda Deviling^000000";
+	mes " ";
+	mes "• ^8000805x Tintura Preta^000000";
+	next;
+
+	mes "[Deviling]";
+	mes "Se você conseguir trazer tudo isso,";
+	mes "eu poderei preparar algo especial.";
+	next;
+
+	if (countitem(3092) < 100 || countitem(983) < 5) {
+
+		mes "[Deviling]";
+		mes "Hmmm...";
+		mes "Parece que você ainda não possui";
+		mes "todos os materiais necessários.";
+		next;
+
+		mes "[Deviling]";
+		mes "Não se preocupe.";
+		mes "Volte quando tiver:";
+		mes " ";
+		mes "^FFD700100x Moeda Deviling^000000";
+		mes "^8000805x Tintura Preta^000000";
+		close;
+	}
+
+	mes "[Deviling]";
+	mes "OHOHOHO!";
+	mes "Você trouxe tudo!";
+	next;
+
+	mes "[Deviling]";
+	mes "Essas moedas...";
+	mes "Essas tinturas...";
+	mes "Perfeito!";
+	next;
+
+	mes "[Deviling]";
+	mes "Fique parado aí.";
+	mes "Não quero transformar seu cabelo";
+	mes "em roxo durante o processo.";
+	next;
+
+	// Remove os materiais
+	delitem 3092,100;
+	delitem 983,5;
+
+	// Entrega da recompensa
+	getitem 3053,1;
+
+	mes "[Deviling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Deviling]";
+	mes "Você recebeu:";
+	mes "^0000FF1x Black Helm D^000000";
+	next;
+
+	mes "[Deviling]";
+	mes "Não diga que eu não avisei...";
+	mes "esse capacete tem uma aparência";
+	mes "bem mais sombria do que deveria.";
+	next;
+
+	mes "[Deviling]";
+	mes "HAHAHA!";
+	mes "Volte quando quiser outra missão.";
+	close;
+
+
+//Quest 2
+
+L_QUEST_CATON:
+
+	mes "[Deviling]";
+	mes "Hmmmm...";
+	mes "Você escolheu uma missão que";
+	mes "não é para qualquer aventureiro.";
+	next;
+
+	mes "[Deviling]";
+	mes "Preciso de alguns materiais para";
+	mes "forjar um equipamento bastante peculiar.";
+	next;
+
+	mes "[Deviling]";
+	mes "^800080Requisitos:^000000";
+	mes " ";
+	mes "• ^FFD700100x Moeda Deviling^000000";
+	mes " ";
+	mes "• ^80008010x Cartas Cat o' Nine Tails  ^000000";
+	next;
+
+	mes "[Deviling]";
+	mes "Se você conseguir trazer tudo isso,";
+	mes "eu poderei preparar algo especial.";
+	next;
+
+	if (countitem(3092) < 100 || countitem(4290) < 10) {
+
+		mes "[Deviling]";
+		mes "Hmmm...";
+		mes "Parece que você ainda não possui";
+		mes "todos os materiais necessários.";
+		next;
+
+		mes "[Deviling]";
+		mes "Não se preocupe.";
+		mes "Volte quando tiver:";
+		mes " ";
+		mes "^FFD700100x Moeda Deviling^000000";
+		mes "^80008010x Cartas Cat o' Nine Tails^000000";
+		close;
+	}
+
+	mes "[Deviling]";
+	mes "OHOHOHO!";
+	mes "Você trouxe tudo!";
+	next;
+
+	mes "[Deviling]";
+	mes "Essas moedas...";
+	mes "Essas Cartas...";
+	mes "Perfeito!";
+	next;
+
+	mes "[Deviling]";
+	mes "Fique parado aí.";
+	mes "Não quero transformar seu cabelo";
+	mes "em roxo durante o processo.";
+	next;
+
+	// Remove os materiais
+	delitem 3092,100;
+	delitem 4290,10;
+
+	// Entrega da recompensa
+	getitem 3057,1;
+
+	mes "[Deviling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Deviling]";
+	mes "Você recebeu:";
+	mes "^0000FF1x Cat o' Nine Tails Hat^000000";
+	next;
+
+	mes "[Deviling]";
+	mes "Não diga que eu não avisei...";
+	mes "esse capacete tem uma aparência";
+	mes "bem mais sombria do que deveria.";
+	next;
+
+	mes "[Deviling]";
+	mes "HAHAHA!";
+	mes "Volte quando quiser outra missão.";
+
+// ============================================================
+// Quest 3
+// ============================================================
+
+L_QUEST_Sharingan:
+
+	mes "[Deviling]";
+	mes "Hmmmm...";
+	mes "Você escolheu uma missão que";
+	mes "não é para qualquer aventureiro.";
+	next;
+
+	mes "[Deviling]";
+	mes "Preciso de alguns materiais para";
+	mes "forjar um equipamento bastante peculiar.";
+	next;
+
+	mes "[Deviling]";
+	mes "^800080Requisitos:^000000";
+	mes " ";
+	mes "• ^FFD700100x Moeda Deviling^000000";
+	mes " ";
+	mes "• ^80008010x Cartas Bafomet^000000";
+	next;
+
+	mes "[Deviling]";
+	mes "Se você conseguir trazer tudo isso,";
+	mes "eu poderei preparar algo especial.";
+	next;
+
+	if (countitem(3092) < 100 || countitem(4147) < 10) {
+
+		mes "[Deviling]";
+		mes "Hmmm...";
+		mes "Parece que você ainda não possui";
+		mes "todos os materiais necessários.";
+		next;
+
+		mes "[Deviling]";
+		mes "Não se preocupe.";
+		mes "Volte quando tiver:";
+		mes " ";
+		mes "^FFD700100x Moeda Deviling^000000";
+		mes "^80008010x Cartas Bafomet ^000000";
+		close;
+	}
+
+	mes "[Deviling]";
+	mes "OHOHOHO!";
+	mes "Você trouxe tudo!";
+	next;
+
+	mes "[Deviling]";
+	mes "Essas moedas...";
+	mes "Essas Cartas...";
+	mes "Perfeito!";
+	next;
+
+	mes "[Deviling]";
+	mes "Fique parado aí.";
+	mes "Não quero transformar seu cabelo";
+	mes "em roxo durante o processo.";
+	next;
+
+	// Remove os materiais
+	delitem 3092,100;
+	delitem 4147,10;
+
+	// Entrega da recompensa
+	getitem 3080,1;
+
+	mes "[Deviling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Deviling]";
+	mes "Você recebeu:";
+	mes "^0000FF1x Sharingan ^000000";
+	next;
+
+	mes "[Deviling]";
+	mes "Não diga que eu não avisei...";
+	mes "esse capacete tem uma aparência";
+	mes "bem mais sombria do que deveria.";
+	next;
+
+	mes "[Deviling]";
+	mes "HAHAHA!";
+	mes "Volte quando quiser outra missão.";
+// ============================================================
+// STATUS
+// ============================================================
+
+L_STATUS:
+
+	mes "[Deviling]";
+	mes "Por enquanto você não possui";
+	mes "nenhuma missão registrada.";
+	next;
+
+	mes "[Deviling]";
+	mes "Mas isso pode mudar rapidamente...";
+	mes "Tenho planos para você!";
+	close;
+
+
+// ============================================================
+// SAÍDA
+// ============================================================
+
+L_END:
+
+	mes "[Deviling]";
+	mes "Tudo bem.";
+	mes "Quando decidir aceitar um desafio,";
+	mes "é só voltar aqui.";
+	close;
+}

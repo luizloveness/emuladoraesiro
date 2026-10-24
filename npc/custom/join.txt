@@ -1,0 +1,129 @@
+-	script	BG Commands	-1,{
+
+OnInit:
+	bindatcmd "joinbg", strnpcinfo(0)+"::OnJoinBG", 0, 0;
+	bindatcmd "leavebg", strnpcinfo(0)+"::OnLeaveBG", 0, 0;
+	end;
+
+OnJoinBG:
+
+	.@lang = (#langtype == 1);
+
+	// Already in BG?
+	if (strcharinfo(3) == "bat_room") {
+		if (.@lang)
+			dispbottom "You are already inside the Battleground waiting room.";
+		else
+			dispbottom "Você já está na sala de espera do Battleground.";
+		end;
+	}
+
+	// Minimum Level
+	if (BaseLevel < 80) {
+		if (.@lang)
+			dispbottom "Base Level 80 is required.";
+		else
+			dispbottom "É necessário Base Level 80 para participar.";
+		end;
+	}
+
+	// PvP / WoE
+	if (getmapflag(strcharinfo(3),mf_pvp) || getmapflag(strcharinfo(3),mf_gvg)) {
+		if (.@lang)
+			dispbottom "You can't join the queue during PvP or WoE.";
+		else
+			dispbottom "Você não pode entrar na fila durante PvP ou WoE.";
+		end;
+	}
+
+	// Dead
+	if (Hp <= 0) {
+		if (.@lang)
+			dispbottom "You can't join while dead.";
+		else
+			dispbottom "Você não pode entrar morto.";
+		end;
+	}
+
+	// Random Team
+	Bat_Team = rand(2) ? 1 : 2;
+
+	.@menu = select(
+		"Tierra 3x3:"
+		+"Tierra 5x5:"
+		+"KvM 2x2:"
+		+"KvM 3x3:"
+		+"KvM 5x5:"
+		+(.@lang ? "Cancel" : "Cancelar")
+	);
+
+	switch (.@menu) {
+
+		case 1:
+			.@bg_name$ = "Tierra 3x3";
+			warp "bat_room",85,(Bat_Team==1)?224:208;
+			break;
+
+		case 2:
+			.@bg_name$ = "Tierra 5x5";
+			warp "bat_room",85,(Bat_Team==1)?94:77;
+			break;
+
+		case 3:
+			.@bg_name$ = "KvM 2x2";
+			warp "bat_room",197,(Bat_Team==1)?224:208;
+			break;
+
+		case 4:
+			.@bg_name$ = "KvM 3x3";
+			warp "bat_room",253,(Bat_Team==1)?224:208;
+			break;
+
+		case 5:
+			.@bg_name$ = "KvM 5x5";
+			warp "bat_room",225,(Bat_Team==1)?224:208;
+			break;
+
+		default:
+			if (.@lang)
+				dispbottom "Queue cancelled.";
+			else
+				dispbottom "Entrada cancelada.";
+			end;
+	}
+
+	if (.@lang)
+		dispbottom "You joined the "+.@bg_name$+" queue.";
+	else
+		dispbottom "Você entrou na fila da "+.@bg_name$+".";
+
+	announce "[Battleground] "+strcharinfo(0)+" entrou na fila da "+.@bg_name$+"! Procura participantes! Use @joinbg para participar. / joined the "+.@bg_name$+" queue! Looking for players! Use @joinbg to join!", BC_BLUE;
+
+	end;
+
+
+OnLeaveBG:
+
+	.@lang = (#langtype == 1);
+
+	if (strcharinfo(3) != "bat_room") {
+		if (.@lang)
+			dispbottom "You are not inside the Battleground waiting room.";
+		else
+			dispbottom "Você não está na sala de espera do Battleground.";
+		end;
+	}
+
+	Bat_Team = 0;
+
+	announce "[Battleground] "+strcharinfo(0)+" deixou a fila do Battleground. / left the Battleground queue.", BC_BLUE;
+
+	warp getsavepoint(0),getsavepoint(1),getsavepoint(2);
+
+	if (.@lang)
+		dispbottom "You left the Battleground queue.";
+	else
+		dispbottom "Você saiu da fila do Battleground.";
+
+	end;
+}

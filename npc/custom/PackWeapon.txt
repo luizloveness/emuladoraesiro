@@ -1,0 +1,26 @@
+function	script	F_OldYellowBox_Select	{
+
+	mes "[Pack Newbie Weapon]";
+	mes "Select the item you want (7 days rental):";
+	next;
+
+	switch(select(
+		"Infiltrator [1]",
+		"Hunting Spear",
+		"Thorny Staff Of Darkness",
+		"Glorious Guitar",
+		"Glorious Lariat",
+		"Quincy Bown",
+		"Buster Sword"
+	)) {
+		case 1: rentitem 1266, (60*60*24*7); break; // Infiltrator [1]
+		case 2: rentitem 1422, (60*60*24*7); break; // Hunting Spear
+		case 3: rentitem 1664, (60*60*24*7); break; // Thorny Staff Of Darkness
+		case 4: rentitem 1927, (60*60*24*7); break; // Glorious Guitar
+		case 5: rentitem 1981, (60*60*24*7); break; // Glorious Lariat
+		case 6: rentitem 35012, (60*60*24*7); break; // Quincy Bow
+		case 7: rentitem 35013, (60*60*24*7); break; // Buster Sword
+	}
+
+	end;
+}

@@ -1,0 +1,29 @@
+prontera,0,0,0	script	ChooseLanguage	-1,{
+
+OnInit:
+	bindatcmd "language", strnpcinfo(3) + "::OnLanguage";
+	end;
+
+OnLanguage:
+	// Detectar o idioma do jogador
+	if (language == 1) { // 1 = Portugues
+		mes "[Configuração de Idioma]";
+		mes "Escolha seu idioma preferido:";
+	} else { // Outros idiomas (ex: inglês)
+		mes "[Language Settings]";
+		mes "Choose your preferred language:";
+	}
+	next;
+
+	switch(select("^00BB00English^000000:^00BB00Português^000000")) {
+		case 1:
+			atcommand "@langtype EN"; // English
+			mes "Language set to English!";
+			break;
+		case 2:
+			atcommand "@langtype POR"; // Português
+			mes "Idioma alterado para Português!";
+			break;
+	}
+	close;
+}

@@ -1,0 +1,378 @@
+prontera.gat,162,183,4	script	Father Christmas	718,{
+	mes "[Father Christmas]";
+	mes "I come from Father Christmas to aid you.";
+	mes "I can transmute for you many of the Father Christmas items.";
+	mes "Although they require many rare elements to make.";
+	next;
+
+	mes "[Father Christmas]";
+	mes "What would you like?";
+	next;
+
+	menu "Arch Angel",arch_angel,
+	     "Dark Angel",dark_angel,
+	     "Arch Demon",arch_demon,
+	     "Chii Ears",chii_ears,
+	     "Kakashi Head Protector",kakashi,
+	     "Konoha Head Protector",konoha,
+	     "Valkyrie Helm",valkyrie_helm,
+	     "Cat Ears",cat_ears,
+	     "Dowry",dowry,
+	     "Elf King Ears", Elf_king_ears,
+	     "Moonlight Hat", Moonlight_Flower_Hat,
+	     "Face of Death", Face_of_Death,
+	     "Hood of Death", Hood_of_Death,
+	     "Dj Head Set", djheadset,
+	     "Rune of Prophecies", Spell_ring,
+	     "Rune Aura Black", Rune_Aura_Black,
+	     "Rune Aura Raibow", Rune_Aura_Rainbow,
+	     "Cancel",M_Cancel;
+
+arch_angel:
+	mes "[Father Christmas]";
+	mes "For the Arch Angel I will need:";
+	mes "1 Angel Wing.";
+	mes "300 Feather.";
+	mes "200 Feather of Bird.";
+	mes "200 Fluff.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(2254)<1 || countitem(949)<300 || countitem(916)<200 || countitem(914)<200) goto L_NoItem;
+	delitem 2254,1;
+	delitem 949,300;
+	delitem 916,200;
+	delitem 914,200;
+	getitem 35005,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^D6294BArch_Angel^000000.";
+	close;
+
+dark_angel:
+	mes "[Father Christmas]";
+	mes "For the Dark Angel I will need:";
+	mes "1 Evil Wing.";
+	mes "200 Burning Hair.";
+	mes "200 Brigan.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(2255)<1 || countitem(7122)<200 || countitem(7054)<200) goto L_NoItem;
+	delitem 2255,1;
+	delitem 7122,200;
+	delitem 7054,200;
+	getitem 35007,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBADark_Angel^000000.";
+	close;
+
+arch_demon:
+	mes "[Father Christmas]";
+	mes "For the Arch Demon I will need:";
+	mes "1 Ghost Bandana.";
+	mes "300 Wing of Red Bat.";
+	mes "200 Talon.";
+	mes "200 Garlet.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(2274)<1 || countitem(7006)<300 || countitem(917)<200 || countitem(910)<200) goto L_NoItem;
+	delitem 2274,1;
+	delitem 7006,300;
+	delitem 917,200;
+	delitem 910,200;
+	getitem 35006,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBAArch_Demon^000000.";
+	close;
+
+chii_ears:
+	mes "[Father Christmas]";
+	mes "For the Chii Ears I will need:";
+	mes "1 Elven Ears.";
+	mes "200 Alice's Apron.";
+	mes "50 Skirt of Virgin.";
+	mes "20 Steel.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(2286)<1 || countitem(7047)<200 || countitem(1049)<50 || countitem(999)<20) goto L_NoItem;
+	delitem 2286,1;
+	delitem 7047,200;
+	delitem 1049,50;
+	delitem 999,20;
+	getitem 35000,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBAChii_Ears^000000.";
+	close;
+
+kakashi:
+	mes "[Father Christmas]";
+	mes "For the Kakashi Head Protector I will need:";
+	mes "200 Raccoon Leaf.";
+	mes "50 Worn Out Scroll.";
+	mes "1 Pirate Bandana.";
+	mes "1 Gas Mask.";
+	mes "20 Steel.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(945)<200 || countitem(618)<50 || countitem(2287)<1 || countitem(5005)<1 || countitem(999)<20) goto L_NoItem;
+	delitem 945,200;
+	delitem 618,50;
+	delitem 2287,1;
+	delitem 5005,1;
+	delitem 999,20;
+	getitem 35002,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^7D4E31Kakashi_Head_Protect^000000.";
+	close;
+
+konoha:
+	mes "[Father Christmas]";
+	mes "For the Konoha Head Protector I will need:";
+	mes "100 Raccoon Leaf.";
+	mes "50 Amulet.";
+	mes "1 Pirate Bandana.";
+	mes "20 Steel.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(945)<100 || countitem(609)<50 || countitem(2287)<1 || countitem(999)<20) goto L_NoItem;
+	delitem 945,100;
+	delitem 609,50;
+	delitem 2287,1;
+	delitem 999,20;
+	getitem 35003,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^7D4E31Kakashi_Head_Protect^000000.";
+	close;
+
+
+valkyrie_helm:
+	mes "[Father Christmas]";
+	mes "For the Valkyrie Helm I will need:";
+	mes "1 Helm of Angel.";
+	mes "200 Cracked Diamond.";
+	mes "20 Steel.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(5025)<1 || countitem(733)<200 || countitem(999)<20) goto L_NoItem;
+	delitem 5025,1;
+	delitem 733,200;
+	delitem 999,20;
+	getitem 35004,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^8D4178Valkyrie_Helm_c^000000.";
+	close;
+
+cat_ears:
+	mes "[Father Christmas]";
+	mes "For the Cat Ears I will need:";
+	mes "1 Kitty Band.";
+	mes "1 Black Dyestuffs.";
+	mes "200 Fluff.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(2213)<1 || countitem(983)<1 || countitem(914)<200) goto L_NoItem;
+	delitem 2213,1;
+	delitem 983,1;
+	delitem 914,200;
+	getitem 5057,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^7D4E31Cat Ears^000000.";
+	close;
+
+dowry:
+	mes "[Father Christmas]";
+	mes "For the Dowry I will need:";
+	mes "1 Sakkat.";
+	mes "200 Trunk.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(2280)<1 || countitem(1019)<200) goto L_NoItem;
+	delitem 2280,1;
+	delitem 1019,200;
+	getitem 35001,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^7D4E31Dowry^000000.";
+	close;
+Elf_king_ears:
+	mes "[Father Christmas]";
+	mes "For the Elf King Ears I will need:";
+	mes "5 Elven Ears.";
+	mes "400 Huge Leaf .";
+	mes "150 Skirt of Virgin.";
+	mes "1 Chii Ears.";
+	mes "1 Platinum Coin .";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(2286)<5 || countitem(7198)<400 || countitem(1049)<150 || countitem(677)<1 || countitem(35000)<1) goto L_NoItem;
+	delitem 2286,5;
+	delitem 7198,400;
+	delitem 1049,150;
+	delitem 677,1;
+	delitem 35000,1;
+	getitem 35014,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBAElf king ears^000000.";
+	close;
+
+Moonlight_Flower_Hat:
+	mes "[Father Christmas]";
+	mes "For the Moonlight Hat I will need:";
+	mes "8 Moonlight Flower Card.";
+	mes "4 Ninja Suit.";
+	mes "1 Kakashi Head Protector.";
+	mes "4 Angel Wing.";
+	mes "800 Wing of Dragonfly.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(4131)<8 || countitem(2337)<4 || countitem(35002)<1 || countitem(2254)<4 || countitem(7064)<800) goto L_NoItem;
+	delitem 4131,8;
+	delitem 2337,4;
+	delitem 35002,1;
+	delitem 2254,4;
+	delitem 7064,800;
+	getitem 5214,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBAMoonlight Hat^000000.";
+	close;
+
+Face_of_Death:
+	mes "[Father Christmas]";
+	mes "For the Face of Death I will need:";
+	mes "3 Dark Lord Card.";
+	mes "666 Skel Bone.";
+	mes "100 Dead Branch.";
+	mes "5 Soldier Skeleton Card.";
+	mes "2 Goddess of Fortune's Cursed Brooch.";
+	mes "10 Cresent Scythe";
+	mes "3 Hood[1]";
+	mes "1 Assassin Mask";
+	mes "200x Dark Mask";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(4168)<3 || countitem(932)<666 || countitem(604)<100 || countitem(4086)<5 || countitem(2652)<2 || countitem(1466)<10 || countitem(2502)<3 || countitem(5096)<1 ||countitem(7157)<200) goto L_NoItem;
+	delitem 4168,3;
+	delitem 932,666;
+	delitem 604,100;
+	delitem 4086,5;
+	delitem 2652,2;
+	delitem 1466,10;
+	delitem 2502,3;
+	delitem 5096,1;
+	delitem 7157,200;
+	getitem 35027,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBAFace of Death^000000.";
+	close;
+
+Hood_of_Death:
+	mes "[Father Christmas]";
+	mes "For the Hood of Death I will need:";
+	mes "13 Cresent Scythe.";
+	mes "13 Wraith Dead Card.";
+	mes "666 Worn-Out Page.";
+	mes "200 Fabric.";
+	mes "800 Skull.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(1466)<10 || countitem(4189)<13 || countitem(1097)<666 || countitem(1059 )<200 ||countitem(7005)<800) goto L_NoItem;
+	delitem 1466,10;
+	delitem 4189,13;
+	delitem 1097,666;
+	delitem 1059,200;
+	delitem 7005,800;
+	getitem 35026,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBAHood of Death^000000.";
+	close;
+
+djheadset:
+	mes "[Father Christmas]";
+	mes "For the Dj Head Set I will need:";
+	mes "300 Clover.";
+	mes "4 Violin [4].";
+	mes "1 Circlet [1].";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(705)<300 || countitem(1902)<4 ||countitem(2233)<1) goto L_NoItem;
+	delitem 705,300;
+	delitem 1902,4;
+	delitem 2233,1;
+	getitem 35023,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBAHood of Death^000000.";
+	close;
+
+Spell_ring:
+	mes "[Father Christmas]";
+	mes "For the Rune of Prophecies I will need:";
+	mes "1 Arch Angel.";
+	mes "300 Darkness Rune.";
+	mes "300 Red Blood.";
+	mes "300 Soft Feathers.";
+	mes "300 Fluff.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(7511)<300 || countitem(990)<300 || countitem(7063)<300 || countitem(914)<300 ||countitem(35005)<1) goto L_NoItem;
+	delitem 7511,300;
+	delitem 990,300;
+	delitem 7063,300;
+	delitem 914,300;
+	delitem 35005,1;
+	getitem 35030,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBAHood of Death^000000.";
+	close;
+
+Rune_Aura_Black:
+	mes "[Father Christmas]";
+	mes "For the Black Aura I will need:";
+	mes "1 Dark Angel.";
+	mes "500 Darkness Rune.";
+	mes "300 Burning Hair.";
+	mes "300 Soft Feathers.";
+	mes "100 Coração Flamejante.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(7511)<500 || countitem(7122)<300 || countitem(7063)<300 || countitem(994)<100 ||countitem(35007)<1) goto L_NoItem;
+	delitem 7511,500;
+	delitem 7122,300;
+	delitem 7063,300;
+	delitem 994,100;
+	delitem 35007,1;
+	getitem 3044,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBABlack Aura^000000.";
+	close;
+
+Rune_Aura_Rainbow:
+	mes "[Father Christmas]";
+	mes "For the Rainbow Aura I will need:";
+	mes "1 Arch Demon.";
+	mes "600 Talon.";
+	mes "400 Little Evil Wing .";
+	mes "300 Soft Feathers.";
+	mes "300 Wing of Red Bat.";
+	next;
+	menu "Here. Now do your magic!",-,"Cancel",M_Cancel;
+	if(countitem(917)<600 || countitem(1039)<400 || countitem(7063)<300 || countitem(7006)<300 ||countitem(35006)<1) goto L_NoItem;
+	delitem 917,600;
+	delitem 1039,400;
+	delitem 7063,300;
+	delitem 7006,300;
+	delitem 35006,1;
+	getitem 3043,1;
+	mes "[Father Christmas]";
+	mes "^4599A3Abra ^66A73FKa ^C7A82EDabra, ^64826BSim ^E9239ESa ^B7EB01La ^8080C0Bim^000000!! ^45A8C9*poof*^000000 I succeeded! Here take this ^BD3CBARainbow Auara^000000.";
+	close;
+
+M_Cancel:
+	mes "[Father Christmas]";
+	mes "I bid you farewell, try not to catch a cold out here. It's ^5A9FD8freezing out here!^000000.";
+	close;
+
+L_NoItem:
+	mes "[Father Christmas]";
+	mes "I can't cast since you don't seem to have all I need...";
+	close;
+
+
+}
+

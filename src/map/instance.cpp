@@ -69,6 +69,12 @@ uint64 InstanceDatabase::parseBodyNode(const ryml::NodeRef& node) {
 
 		instance = std::make_shared<s_instance_db>();
 		instance->id = instance_id;
+		instance->lobby_min_level = 0;
+		instance->lobby_max_level = 0;
+		instance->lobby_quest_id = 0;
+		instance->lobby_lock_quest_id = 0;
+		instance->lobby_party_limit = 0;
+		instance->lobby_cooldown = 86400;		
 	}
 
 	if (this->nodeExists(node, "Name")) {
@@ -230,6 +236,69 @@ uint64 InstanceDatabase::parseBodyNode(const ryml::NodeRef& node) {
 			instance->enter.y = y;
 		}
 	}
+	if (this->nodeExists(node, "LobbyMod")) {
+		const auto& lobby_node = node["LobbyMod"];
+
+		if (!this->nodeExists(lobby_node, "IdName")) {
+			this->invalidWarning(lobby_node, "LobbyMod requires IdName.\n");
+			return 0;
+		}
+
+		std::string lobby_id;
+
+		if (!this->asString(lobby_node, "IdName", lobby_id) || lobby_id.empty()) {
+			this->invalidWarning(lobby_node["IdName"], "IdName must be a non-empty string.\n");
+			return 0;
+		}
+
+		for (const auto& pair : instance_db) {
+			if (pair.first != instance_id && pair.second->lobby_id == lobby_id) {
+				this->invalidWarning(lobby_node["IdName"], "Lobby IdName %s already exists, skipping.\n", lobby_id.c_str());
+				return 0;
+			}
+		}
+
+		instance->lobby_id = lobby_id;
+
+		if (this->nodeExists(lobby_node, "Min_Level")) {
+			if (!this->asInt32(lobby_node, "Min_Level", instance->lobby_min_level) || instance->lobby_min_level < 0) {
+				this->invalidWarning(lobby_node["Min_Level"], "Min_Level must be zero or greater.\n");
+				return 0;
+			}
+		}
+
+		if (this->nodeExists(lobby_node, "Max_Level")) {
+			if (!this->asInt32(lobby_node, "Max_Level", instance->lobby_max_level) || instance->lobby_max_level < 0) {
+				this->invalidWarning(lobby_node["Max_Level"], "Max_Level must be zero or greater.\n");
+				return 0;
+			}
+
+			if (instance->lobby_max_level != 0 && instance->lobby_max_level < instance->lobby_min_level) {
+				this->invalidWarning(lobby_node["Max_Level"], "Max_Level must be zero or greater than or equal to Min_Level.\n");
+				return 0;
+			}
+		}
+
+		if (this->nodeExists(lobby_node, "Quest_Id") && !this->asInt32(lobby_node, "Quest_Id", instance->lobby_quest_id))
+			return 0;
+
+		if (this->nodeExists(lobby_node, "Lock_Quest_Id") && !this->asInt32(lobby_node, "Lock_Quest_Id", instance->lobby_lock_quest_id))
+			return 0;
+
+		if (this->nodeExists(lobby_node, "Party_Limit")) {
+			if (!this->asInt32(lobby_node, "Party_Limit", instance->lobby_party_limit) || instance->lobby_party_limit < 1) {
+				this->invalidWarning(lobby_node["Party_Limit"], "Party_Limit must be greater than zero.\n");
+				return 0;
+			}
+		}
+
+		if (this->nodeExists(lobby_node, "Instance_Cooldown")) {
+			if (!this->asInt32(lobby_node, "Instance_Cooldown", instance->lobby_cooldown) || instance->lobby_cooldown < 0) {
+				this->invalidWarning(lobby_node["Instance_Cooldown"], "Instance_Cooldown must be zero or greater.\n");
+				return 0;
+			}
+		}
+	}
 
 	if (this->nodeExists(node, "AdditionalMaps")) {
 		const auto& mapNode = node["AdditionalMaps"];
@@ -280,6 +349,20 @@ std::shared_ptr<s_instance_db> instance_search_db_name(const char *instance_name
 	for (const auto &it : instance_db) {
 		if (!strcmp(it.second->name.c_str(), instance_name))
 			return it.second;
+	}
+
+	return nullptr;
+}
+/**
+ * Searches for an instance by the identifier sent by the EntryQueue client UI.
+ * @param lobby_id: EntryQueue BattleFieldName value
+ * @return shared_ptr of instance or nullptr on failure
+ */
+std::shared_ptr<s_instance_db> instance_search_db_lobby_id(const char* lobby_id)
+{
+	for (const auto& pair : instance_db) {
+		if (!pair.second->lobby_id.empty() && pair.second->lobby_id == lobby_id)
+			return pair.second;
 	}
 
 	return nullptr;

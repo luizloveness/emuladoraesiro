@@ -1,0 +1,300 @@
+//===== eAthena Script =====================================
+//= eAthena Script Commands
+//===== Por: ================================================
+//-------------------------------------------------
+//		Cabeçalho
+//-------------------------------------------------
+prontera.gat,159,223,4	script	-=Mayaan=- Quest	718,{
+//-------------------------------------------------
+//		Variaveis
+//-------------------------------------------------
+	set @Zeus$,"[^FF8000-=Mayaan=- Quest^000000]";
+	set @ZenyCost,100000;
+	set @zenyCost2,150000;
+	set @ZenyCost3,200000;
+	set @ZenyCost4,30000;
+//-------------------------------------------------
+//		Introdução
+//-------------------------------------------------
+	show @Zeus$;
+	show "Olá, ^0080C0"+strcharinfo(0)+"^000000.";
+	show "Eu posso te dar os melhores itens do jogo.";
+	show "Mas para isso vou precisar de alguns itens em troca, qual você vai querer?";
+	next;
+	menu "Arch Demon Wings",Arch_Demon,
+//	     "Angel Wings",Angel_Wings,
+	     "White Butterfly Wings",White_Butterfly_Wings,
+	     "Valkyrie Helm",Valkyrie_Helm,
+//	     "Evil Angel Helm",Evil_Angel_Helm,
+	     "Dark Butterfly Wings",Dark_Butterfly_Wings,
+	     "Chii Ears",Chii_Ears,
+//	     "Artic Wings",Artic_Wings,
+//	     "Asura Helm",Asura_Helm,
+//	     "Crystal Wings",Crystal_wings,
+//	     "Dark Angel Helm",Dark_Angel_Helm,
+//	     "Dark Demon Wings",Dark_Demon_Wings,
+//	     "Dark Helm",Dark_Helm,
+//	     "Dark Valkyrie Helm",Dark_Valkyrie_Helm,
+//	     "Deviling Wings",Deviling_Wings,
+//	     "Dowry",Dowry,
+//	     "Fairy Wing",Fairy_Wing,
+//	     "Fire Wing",Fire_Wing,
+//	     "Golden Valkyrie Helm",Golden_Valkyrie_Helm,
+//	     "Kakashi Head Protector",Kakashi_Head_Protector,
+//	     "Phoenix Wings",Phoenix_Wings,
+//	     "Wings",Wings,
+//	     "Samurai Hat",Samurai_Hat,
+//	     "Loki Mask",Loki_Mask,
+//	     "Helm Of Baal",Helm_Of_Baal,
+//	     "Alucard Glasses",Alucard_Glasses,
+//	     "Red Valkyrie Helm",Red_Valkyrie_Helm,
+//	     "White Valkyrie Helm",White_Valkyrie_Helm,
+//	     "Blue Valkyrie Helm",Blue_Valkyrie_Helm,
+//	     "Brown Valkyrie Helm",Brown_Valkyrie_Helm,
+//	     "Green Valkyrie Helm",Green_Valkyrie_Helm,
+//	     "Hyegun Hat",Hyegun_Hat,
+//	     "Hokage Hat",Hokage_Hat,
+//	     "Konoha Head Protector",Konoha_Head_Protector,
+//	     "Naruto Earth Head Protector",Naruto_Earth_Head_Protector,
+//	     "Naruto Lightning Head Protector",Naruto_Lightning_Head_Protector,
+//	     "Naruto Sound Head Protector",Naruto_Sound_Head_Protector,
+//	     "Naruto Water Head Protector",Naruto_Water_Head_Protector,
+//	     "Naruto Wind Head Protector",Naruto_Wind_Head_Protector,
+	     "Nenhum",L_Nenhum;
+
+//-------------------------------------------------
+//		Arch Demon Wings
+//-------------------------------------------------
+Arch_Demon:
+	show @Zeus$;
+	show "^0000FFArch Demon Wings^000000:";
+	show "^FF0000Agi+^000000 5";
+	show "^FF0000Luk+^000000 5";
+        show "^FF0000Def+^000000 0";
+	show "Vai querer esta asa?";
+	next;
+	menu "Eu quero",L_QAdemon,"Não Obrigado",L_Nao;
+L_QAdemon:
+	show @Zeus$;
+	show "Eu preciso dos seguinte itens:";
+	show "1 ^0000FFFaixa de Fantasma^000000";
+	show "1 ^0000FFEvil Wing^000000";
+	show "1 ^0000FFPoring Hat^000000";
+	show "20 ^0000FFEmperium^000000";
+	show "200 ^0000FFBurning Hair^000000";
+	show "1000 ^0000FFZeny^000000";
+	show "Você tem os itens?";
+	next;
+	menu "Sim",L_SAdemon,"Ainda não",L_Anao;
+L_SAdemon:
+	show @Zeus$;
+	if(countitem(2274) < 1) goto faltaitem;
+	if(countitem(2255) < 1) goto faltaitem;
+	if(countitem(5035) < 1) goto faltaitem;
+	if(countitem(714) < 20) goto faltaitem;
+	if(countitem(7122) < 250) goto faltaitem;
+	if(Zeny < @ZenyCost) goto faltazeny;
+	delitem 5025,1;
+	delitem 2255,1;
+	delitem 5035,1;
+	delitem 714,20;
+	delitem 7122,250;
+	set Zeny, Zeny - @ZenyCost;
+	additem 15001,1;
+	show "Aproveite bem o seu item.";
+	show "E tenha um bom jogo.";
+	close;
+
+
+//-------------------------------------------------
+//		White Butterfly Wing
+//-------------------------------------------------
+White_Butterfly_Wings:
+	show @Zeus$;
+	show "^0000FFWhite Butterfly Wing^000000:";
+	show "^FF0000Dex+^000000 5";
+	show "^FF0000Int+^000000 5";
+	show "^FF0000Def+^000000 0";
+	show "Vai querer esta asa?";
+	next;
+	menu "Eu quero.",L_Qwbutter,"Não obrigado",L_Nao;
+L_Qwbutter:
+	show @Zeus$;
+	show "EU preciso dos seguintes Itens.";
+	show "2 ^0000FFAngel Wing^000000";
+	show "200 ^0000FFFeather of the Bird^000000";
+	show "200 ^0000FFFluff^000000";
+	show "400 ^0000FFFeather^000000";
+	show "10000 ^0000FFZeny^000000";
+	show "Você Tem esses itens?";
+	next;
+	menu "Sim",L_Swbutter,"Ainda não",L_Anao;
+L_Swbutter:
+	show @Zeus$;
+	if(countitem(2254) <1) goto faltaitem;
+	if(countitem(916) <400) goto faltaitem;
+	if(countitem(914) <400) goto faltaitem;
+	if(countitem(949) <800) goto faltaitem;
+	if(Zeny <@ZenyCost3) goto faltazeny;
+	delitem 2254,1;
+	delitem 916,400;
+	delitem 914,400;
+	delitem 949,800;
+	set Zeny, Zeny - @ZenyCost3;
+	additem 15003,1;
+	show "Aproveite bem o seu item.";
+	show "E tenha um bom jogo.";
+	close;
+
+//-------------------------------------------------
+//		Valkyrie Helm
+//-------------------------------------------------
+Valkyrie_Helm:
+	show @Zeus$;
+	show "^0000FFValkyrie Helm^000000:";
+	show "^FF0000Todos Status+^000000 1";
+	show "^FF0000Def+^000000 6";
+	show "Vai querer este helm?";
+	next;
+	menu "Eu quero.",L_Qvalky,"Não obrigado",L_Nao;
+L_Qvalky:
+	show @Zeus$;
+	show "Eu preciso dos Seguintes Itens.";
+	show "1 ^0000FFHelm of angel^000000";
+	show "5 ^0000FFBaphomet Doll^000000";
+	show "20 ^0000FFOridecon^000000";
+	show "80 ^0000FFCoal^000000";
+	show "50 ^0000FFSteel^000000";
+	show "5 ^0000FFChyvalry Emblem^000000";
+	show "100 ^0000FFCracked Diamond^000000";
+	show "10000 ^0000FFzeny^000000";
+	show "Você tem os itens?";
+	next;
+	menu "Sim",L_Svalky,"Ainda não",L_Anao;
+	L_Svalky:
+	show @Zeus$;
+	if(countitem(5025) <1) goto faltaitem;
+	if(countitem(750) <5) goto faltaitem;
+	if(countitem(984) <20) goto faltaitem;
+	if(countitem(1003) <80) goto faltaitem;
+	if(countitem(999) <50) goto faltaitem;
+	if(countitem(1004) <5) goto faltaitem;
+	if(countitem(733) <100) goto faltaitem;
+	if(Zeny <@ZenyCost3) goto faltazeny;
+	delitem 5025,1;
+	delitem 750,5;
+	delitem 984,20;
+	delitem 1003,80;
+	delitem 999,50;
+	delitem 1004,5;
+	delitem 733,100;
+	set Zeny, Zeny - @ZenyCost3;
+	additem 15004,1;
+	show "Aproveite bem, Seu item.";
+	show "E tenha um bom jogo.";
+	close;
+
+//-------------------------------------------------
+//		Dark Butterfly Wing
+//-------------------------------------------------
+Dark_Butterfly_Wings:
+	show @Zeus$;
+	show "^0000FFDark Butterfly Wing^000000:";
+	show "^FF0000Str+^000000 5";
+	show "^FF0000Vit+^000000 5";
+	show "^FF0000Def+^000000 0";
+	show "Vai querer essa Asa?";
+	next;
+	menu "Eu quero.",L_Qdbutter,"Não Obrigado",L_Nao;
+L_Qdbutter:
+	show @noemdonpc$;
+	show "Eu preciso dos seguintes Itens.";
+	show "1 ^0000FFEvil Wing^000000";
+	show "200 ^0000FFFeather of Bird^000000";
+	show "200 ^0000FFFluff^000000";
+	show "400 ^0000FFFeather^000000";
+	show "10000 ^0000FFZeny^000000";
+	show "Você tem esses itens?";
+	next;
+	menu "Sim",L_Sdbutter,"Ainda Não",L_Anao;
+L_Sdbutter:
+	show @Zeus$;
+	if(countitem(2255) <1) goto faltaitem;
+	if(countitem(916) <200) goto faltaitem;
+	if(countitem(914) <200) goto faltaitem;
+	if(countitem(949) <400) goto faltaitem;
+	if(Zeny <@ZenyCost3) goto faltazeny;
+	delitem 2255,1;
+	delitem 916,200;
+	delitem 914,200;
+	delitem 949,400;
+	set Zeny, Zeny - @ZenyCost3;
+	additem 15006,1;
+	show "Aproveite bem o seu item.";
+	show "E tenha um bom jogo.";
+	close;
+
+//-------------------------------------------------
+//		Chii Ears
+//-------------------------------------------------
+Chii_Ears:
+	show @Zeus$;
+	show "^0000FFChii Ears^000000:";
+	show "^FF0000int+^000000 3";
+	show "^FF0000dex+^000000 1";
+	show "^FF0000Def+^000000 2";
+	show "Vai querer esse Item?";
+	next;
+	menu "Eu quero.",L_Qchii,"Não Obrigado",L_Nao;
+L_Qchii:
+	show @noemdonpc$;
+	show "Eu preciso dos seguintes Itens.";
+	show "1 ^0000FFElven Ears^000000";
+	show "50 ^0000FFSkirt of Virgin^000000 ";
+	show "10 ^0000FFSteel^000000";
+	show "200 ^0000FFAlice's Apron^000000";
+	show "10000 ^0000FFZeny^000000";
+	show "Você tem esses itens?";
+	next;
+	menu "Sim",L_Schii,"Ainda Não",L_Anao;
+L_Schii:
+	show @Zeus$;
+	if(countitem(2286) <1) goto faltaitem;
+	if(countitem(1049) <50) goto faltaitem;
+	if(countitem(999) <10) goto faltaitem;
+	if(countitem(7047) <200) goto faltaitem;
+	if(Zeny <@ZenyCost2) goto faltazeny;
+	delitem 2286,1;
+	delitem 1049,50;
+	delitem 999,10;
+	delitem 7047,200;
+	set Zeny, Zeny - @ZenyCost2;
+	additem 15007,1;
+	show "Aproveite bem o seu item.";
+	show "E tenha um bom jogo.";
+	close;
+//-------------------------------------------------
+//		Erros e Negações
+//-------------------------------------------------
+L_Nao:
+	show @Zeus$;
+	show "Tudo bem! Você decide.";
+	close;
+L_Anao:
+	show @Zeus$;
+	show "Como não?";
+	show "Então vá juntar os itens.";
+	close;
+L_Nenhum:
+	show @Zeus$;
+	show "O que?";
+	show "Você não sabe o que está perdendo.";
+	close;
+faltaitem:
+	show "Está faltando item. Confira o que está faltando.";
+	close;
+faltazeny:
+	show "Está faltando zeny. Volte quando tiver o dinheiro certo.";
+	close;
+
+}

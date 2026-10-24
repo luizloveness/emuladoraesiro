@@ -1,0 +1,39 @@
+//===== eAthena Script =======================================
+//= Heal Npc
+//===== By: ==================================================
+//= Lotsa People (1.x)
+//===== Current Version: =====================================
+//= 3.0
+//===== Compatible With: =====================================
+//= eAthena 0.1+;
+//===== Description: =========================================
+//= Healer NPC Which Heals For Free
+//===== Additional Comments: =================================
+//= 3.0 By massdriller, Changed and edited the script
+//= added other warp points of maps.
+//= 2.0 By Darkchild, Duplicates And Changed A Bit
+//= you can replace this script file by heal_payment.txt
+//= if you want that players have to pay their healings.
+//============================================================
+
+amatsu.gat,200,80,8	script	healer#h1-1::healer	81,{
+
+	mes "[Healer]";
+	mes "I have amazing healing powers!!";
+	mes "You look like a person who needs them";
+	mes "Want some?";
+	next;
+	menu "Heal",-,"No thanks",CANCEL;
+		L_Heal:
+                    Heal 35000,35000;
+		mes "Wonderfull, You are now healed!.";
+		mes "Have fun adventuring!!";
+		close;
+	CANCEL:
+	mes "[Healer]";
+	mes "Allright, come back if you need a heal.";
+	close;
+}
+
+
+

@@ -1,0 +1,155 @@
+//===== eAthena Script ======================================= 
+//= Valhallen items Quests NPC
+//===== By: ================================================== 
+//= Avaji
+//===== Current Version: ===================================== 
+//= 1.0
+//===== Compatible With: ===================================== 
+//= eAthena 7.15 +
+//===== Description: ========================================= 
+//= All-in-one: Mjollnir,Sleipnir,Brisingammen,Gleipnir,Megingjard
+//===== Additional Comments: ================================= 
+//= Custom quest, ingredients based on official RO FAQ
+//============================================================ 
+
+prontera.gat,132,135,5	script	Valkyrie	811,{
+
+	mes "[Valkyrie]";
+	mes "I come from Valhalla to aid you.";
+	mes "I can transmute for you many of the Valhallen items.";
+	mes "Although they require many rare elements to make.";
+	next;
+	mes "[Valkyrie]";
+	mes "What would you like?";
+	next;
+
+	menu "-Helm of Angel",sM_Angel, 
+	     "-Deviruchi Hat",sM_Devir, 
+	     "-Feather Beret",sM_Feather, 
+	     "-I'll come back later.",M_End;
+
+	// =========================
+	// Helm of Angel
+	// =========================
+	sM_Angel:
+		mes "[Valkyrie]";
+		mes "For the Helm of Angel I will need:";
+		mes "- ^5555FF1 Helm (slotted)^000000.";
+		mes "- ^5555FF1 Angel Wing^000000.";
+		mes "- ^5555FF5 Fang of Garm^000000.";
+		set @HAT, 1;
+		next;
+		goto sL_GetHat;
+
+	// =========================
+	// Deviruchi Hat
+	// =========================
+	sM_Devir:
+		mes "[Valkyrie]";
+		mes "For the Deviruchi Hat I will need:";
+		mes "- ^5555FF600 Little Evil Horn^000000.";
+		mes "- ^5555FF40 Talon of Griffon^000000.";
+		set @HAT, 2;
+		next;
+		goto sL_GetHat;
+
+	// =========================
+	// Feather Beret
+	// =========================
+	sM_Feather:
+		mes "[Valkyrie]";
+		mes "For the Feather Beret I will need:";
+		mes "- ^FF00001 Beret^000000.";
+		mes "- ^FF0000100 Soft Feather^000000.";
+		mes "- ^FF00001 White Dyestuffs^000000.";
+		set @HAT, 3;
+		next;
+		goto sL_GetHat;
+
+	// =========================
+	// Recebendo os itens
+	// =========================
+	sL_GetHat:
+		mes "[Valkyrie]";
+		mes "Wait a moment! Be careful about what items you give me.";
+		mes "I do not distinguish between equipment that has been forged or has cards attached to them.";
+		mes "If you don't want to lose a precious card or piece of equipment, make sure you don't have it equipped.";
+		next;
+		mes "[Valkyrie]";
+		mes "Do you have all of the items needed?";
+		menu "-Give her the items.",sL_Give, "Nevermind.",M_End;
+
+	// =========================
+	// Entrega dos itens
+	// =========================
+	sL_Give:
+		// Helm of Angel
+		if(@HAT == 1) {
+			if(countitem(2229)<1 || countitem(2254)<1 || countitem(7036)<5) goto ssL_NotEnuf;
+			delitem 2229, 1; // Helm [1]
+			delitem 2254, 1; // Angel Wing
+			delitem 7036, 5; // Fang of Garm
+			mes "[Valkyrie]";
+			mes "Here is your Helm of Angel.";
+			getitem 5025, 1;
+			close;
+		}
+		// Deviruchi Hat
+		if(@HAT == 2) {
+			if(countitem(1038)<600 || countitem(7048)<40) goto ssL_NotEnuf;
+			delitem 1038, 600; // Little Evil Horn
+			delitem 7048, 40;  // Talon of Griffon
+			mes "[Valkyrie]";
+			mes "Here is your Deviruchi Hat.";
+			getitem 5038, 1;
+			close;
+		}
+		// Feather Beret
+		if(@HAT == 3) {
+			if(countitem(5172)<1 || countitem(7063)<100 || countitem(982)<1) goto ssL_NotEnuf;
+
+			// Pequena dramatização como no script original
+			mes "[Valkyrie]";
+			mes "Stand still while I craft your hat...";
+			next;
+			mes "- THUD THUD -";
+			mes "- THUD THUD -";
+			mes "- BOOM -";
+			next;
+
+			set .@result, rand(1,10);
+			if(.@result == 4) {
+				delitem 5172,1;
+				delitem 7063,100;
+				delitem 982,1;
+				mes "[Valkyrie]";
+				mes "Oh no... the hat's angle is crooked and I can't give it to you.";
+				mes "Better gather the materials again and we shall try once more.";
+				close;
+			}
+
+			delitem 5172,1; // Beret
+			delitem 7063,100; // Soft Feather
+			delitem 982,1; // White Dyestuffs
+			getitem 5170,1; // Feather Beret
+			mes "[Valkyrie]";
+			mes "Here it is — your Feather Beret!";
+			close;
+		}
+
+	// =========================
+	// Sem itens suficientes
+	// =========================
+	ssL_NotEnuf:
+		mes "[Valkyrie]";
+		mes "You don't have enough items for me to make what you want.";
+		close;
+
+	// =========================
+	// Fim
+	// =========================
+	M_End:
+		mes "[Valkyrie]";
+		mes "Fine then.....";
+		close;
+}

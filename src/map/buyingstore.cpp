@@ -17,9 +17,11 @@
 #include "battle.hpp"  // battle_config.*
 #include "chrif.hpp"
 #include "clif.hpp"  // clif_buyingstore_*
+#include "itemdb.hpp"  // item_db
 #include "log.hpp"  // log_pick_pc, log_zeny
 #include "npc.hpp"
 #include "pc.hpp"  // map_session_data
+#include "searchstore.hpp"  // searchstore_filter_check
 
 //Autotrader
 static DBMap *buyingstore_autotrader_db; /// Holds autotrader info: char_id -> struct s_autotrader
@@ -540,6 +542,47 @@ bool buyingstore_searchall(map_session_data* sd, const struct s_search_store_sea
 
 	if( !sd->state.buyingstore )
 	{// not buying
+		return true;
+	}
+	// Name-based search for buying stores
+	if( s->item_count == 0 && s->search_sd->searchstore.filter.active && s->search_sd->searchstore.filter.name_filter[0] != '\0' ){
+		for( i = 0; i < sd->buyingstore.slots; i++ ){
+			if( !sd->buyingstore.items[i].amount )
+				continue;
+
+			it = &sd->buyingstore.items[i];
+
+			// Name check via item_db
+			std::shared_ptr<item_data> id = item_db.find(it->nameid);
+			if( id == nullptr )
+				continue;
+			if( stristr(id->name.c_str(), s->search_sd->searchstore.filter.name_filter) == nullptr &&
+			    stristr(id->ename.c_str(), s->search_sd->searchstore.filter.name_filter) == nullptr )
+				continue;
+
+			if( s->min_price && s->min_price > (uint32)it->price )
+				continue;
+			if( s->max_price && s->max_price < (uint32)it->price )
+				continue;
+
+			if( s->search_sd->searchstore.items.size() >= (uint32)battle_config.searchstore_maxresults )
+				return false;
+
+			std::shared_ptr<s_search_store_info_item> ssitem = std::make_shared<s_search_store_info_item>();
+
+			ssitem->store_id = sd->buyer_id;
+			ssitem->account_id = sd->status.account_id;
+			safestrncpy( ssitem->store_name, sd->message, sizeof( ssitem->store_name ) );
+			ssitem->nameid = it->nameid;
+			ssitem->amount = it->amount;
+			ssitem->price = it->price;
+			memset(ssitem->card, 0, sizeof(ssitem->card));
+			ssitem->refine = 0;
+			ssitem->enchantgrade = 0;
+			memset(ssitem->option, 0, sizeof(ssitem->option));
+
+			s->search_sd->searchstore.items.push_back( ssitem );
+		}
 		return true;
 	}
 

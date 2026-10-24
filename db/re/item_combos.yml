@@ -24486,7 +24486,7 @@ Body:
          bonus bDefEle,Ele_Holy;
   - Combos:
       - Combo:
-          - Yellow_Scarf     # 5917
+          - Mob_Scarf     # 28502
           - YDragon_SkyWing     # 19104
     Script: |
       if (BaseClass == Job_Archer)

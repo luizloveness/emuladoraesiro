@@ -1,0 +1,850 @@
+//(=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=)
+//(       (c)2006         Banned Presents                     )
+//(    __________                                 .___        )
+//(    \______   \_____    ____   ____   ____   __| _/        )
+//(     |    |  _/\__  \  /    \ /    \_/ __ \ / __ |         )
+//(     |    |   \ / __ \|   |  \   |  \  ___// /_/ |         )
+//(     |______  /(____  /___|  /___|  /\___  >____ |         )
+//(            \/      \/     \/     \/     \/     \/         )
+//(                                                           )
+//(             -- [S] [c] [r] [i] [p] [t] [s] --             )
+//(  _   _   _   _   _   _   _     _   _   _   _   _   _   _  )
+//( / \ / \ / \ / \ / \ / \ / \   / \ / \ / \ / \ / \ / \ / \ )
+//(( e | A | t | h | e | n | a ) ( S | c | r | i | p | t | s ))
+//( \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ )
+//(                                                           )
+//(   Advanced NPCs (c) 2005-2006    The BannedRO Project     )
+//(=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=)
+//===== eAthena Script =======================================
+//= Warper
+//===== By ===================================================
+//= [Banned]
+//===== Version ==============================================
+//= 2.1
+//===== Compatible With ======================================
+//= eAthena SVN and Freya SVN
+//===== Description ==========================================
+//= Warp players
+//===== Comments =============================================
+//= 1.0 - Initial beta release                       [Banned]
+//= 1.1 - All Citys Additioneds			     [Banned]
+//= 1.2 - Get MapUsers Additioned		     [Banned]
+//= 1.3 - Dungeons Additioneds			     [Banned]
+//= 1.4 - All Dungeons Additioneds		     [Banned]
+//= 1.5 - Filds Additioneds			     [Banned]
+//= 1.6 - Gonryu Fild Additioned		     [Banned]
+//= 1.7 - NiflHeim Fild Additioned		     [Banned]
+//= 1.8 - Louyang Fild Additioned		     [Banned]
+//= 1.9 - Einbroch Menu Fixed			     [Banned]
+//= 2.0 - Thanatos Dungeon Additioned		     [Banned]
+//= 2.1 - AbyssLake Dungeon Addditioned		     [Banned]
+//============================================================
+prontera,140,203,5	script	Warper	94,{
+	cutin "kafra_01",2;
+	mes "[Warp NPC]";
+	mes "Hello!";
+	mes "I can teleport you anywhere!";
+	mes "Where do you want to go?";
+	next;
+
+	menu 
+		"Town", Citys,
+		"Dungeon", Dungeon,
+		"PvP", pvp,	
+		"Training Dummys", Training,
+		"Castles", Castle_Menu;
+	end;
+
+pvp:
+	menu
+
+		"PvP", pvp,
+		"Back", -;
+
+	end;
+
+Castle_Menu:
+	menu
+		"Sacred Altar", SacredAltar,
+		"Kriemhild", Kriemhild,
+		"Back", -;
+	end;
+	
+	Citys:
+	mes "[Warp NPC]";
+	mes "Please select your destination.";
+	next;
+	menu 	"Alberta ^FF0000"+"^000000",alberta,
+		"Aldebaran ^FF0000"+"^000000",aldebaran,
+		"Amatsu ^FF0000"+"^000000",amatsu,
+		"Comodo ^FF0000"+"^000000",comodo,
+		"Geffen ^FF0000"+"^000000",geffen,
+		"Gonryun ^FF0000"+"^000000",gonryun,
+		"Hugel ^FF0000"+"^000000",hugel,
+		"Izlude ^FF0000"+"^000000",izlude,
+		"Louyang ^FF0000"+"^000000",louyang,
+		"Lutie ^FF0000"+"^000000",xmas,
+		"Morroc ^FF0000"+"^000000",morroc,
+		"Niflheim ^FF0000"+"^000000",niflheim,
+		"Payon ^FF0000"+"^000000",payon,
+		"Prontera ^FF0000"+"^000000",prontera,
+		"Umbala ^FF0000"+"^000000",umbala,
+		"Valkyrie ^FF0000"+"^000000",valk,
+		"Yuno ^FF0000"+"^000000",yuno;
+
+// ======================== Towns ============================
+alberta:	warp "alberta",	42,	182;	close;
+aldebaran:	warp "aldebaran",	145,	109;	close;
+amatsu:
+	set #last_map$, strcharinfo(3);
+	set #last_x, @lastsave_x;
+	set #last_y, @lastsave_y;
+
+	// Remove todos os buffs e debuffs do personagem
+	sc_end sc_all;
+
+	// Remove o Full Protection (todas as partes)
+	sc_end SC_CP_WEAPON;
+	sc_end SC_CP_SHIELD;
+	sc_end SC_CP_ARMOR;
+	sc_end SC_CP_HELM;
+
+	// Teleporta para Amatsu
+	warp "amatsu",197,86;
+	end;close;
+ayothaya:	warp "ayothaya",	149,	118;	close;
+comodo:		warp "comodo",	188,	161;  	close;
+einbroch:	warp "einbroch",	64, 	200;	close;
+gonryun:	warp "gonryun",	160,  	55; 	close;
+hugel:		warp "hugel",	96,  	145; 	close;
+geffen:		warp "geffen",	119,	66;	close;
+izlude:		warp "izlude",	108,	126;	close;
+jawaii:		warp "jawaii",	175,	170;	Close;
+//juperos:	warp "jupe_gate",	49, 	26;	close;
+light:		warp "lighthalzen",	163,	99;	close;
+louyang:	warp "louyang",	210,	108;	close;
+mining:		warp "einbech",	167,	144;	close;
+morroc:		warp "morocc",	156, 	93;	close;
+niflheim:	warp "niflheim",	35,	161;	close;
+prontera:	warp "prontera",	156,	191;	close;
+payon:		warp "payon",	162,	215;	close;
+umbala:		warp "umbala",	130,  	130; 	close;
+valk:		warp "valkyrie",	50,	36;	close;
+xmas:		warp "xmas",	148,	131;	close;
+yuno:		warp "yuno",	160,	168;  	close;
+// ===========================================================
+
+
+Dungeon:
+	mes "[Warp NPC]";
+	mes "Please select your destination.";
+	next;
+	menu 	"Amatsu Dungeon",dama,
+	"Anthell",dant,
+	"Abyss Lake",wald,
+	"Beach Dungeon",dbea,
+	"Byalan Dungeon",dbylan,
+	"Clock Tower",dclo,
+	"Coal Mines",dcoa,
+	"Culvert",dcul,
+	"Ice Dungeon",dice,	
+	"Gefenia Dungeon",wgef,
+	"Geffen Dungeon",dgeff,
+	"Glast Heim",dgla,
+	"Gonryun Dungeon",dgon,
+	"Hidden Dungeon",dlab,
+//	"Juperos Dungeon",djupe,
+	"Kiel Dungeon",dkiel,
+	"Lighthalzen Dungeon",dlhz,
+	"Louyang Dungeon",dlou,
+	"Magma Dungeon",dmag,
+	"Nameless Island",dnam,
+	"Orcs Dungeon",dorc,
+	"Odin Temple",dodin,
+	"Payon Dungeon",dpay,
+	"Pyramids",dpyr,
+	"Rachel Sanctuary",dsan,
+	"Sphinx",dsph,
+	"Sunken Ship",dsun,
+	"Toy Factory",dtoy,
+	"Turtle Dungeon",dtur,
+	"Thor Volcano",dthor,
+	"Umbala Dungeon",dumb;  // <-- corrigido aqui
+
+dama:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wama1,
+	     "Level 2 ^FF0000"+"^000000",wama2,
+	     "Level 3 ^FF0000"+"^000000",wama3;
+
+dant:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wanthell1,
+	     "Level 2 ^FF0000"+"^000000",wanthell2;
+
+wald:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu 	"Level 1 ^FF0000"+"^000000",wald1,		
+		"Level 2 ^FF0000"+"^000000",wald2,
+		"Level 3 ^FF0000"+"^000000",wald3;
+
+dayo:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wayo1,
+	     "Level 2 ^FF0000"+"^000000",wayo2;
+
+dbea:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wbeach1,
+	     "Level 2 ^FF0000"+"^000000",wbeach2,
+	     "Level 3 ^FF0000"+"^000000",wbeach3;
+
+dbylan:	
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu 	"Level 1 ^FF0000"+"^000000",wbylan1,
+		"Level 2 ^FF0000"+"^000000",wbylan2,
+		"Level 3 ^FF0000"+"^000000",wbylan3,
+		"Level 4 ^FF0000"+"^000000",wbylan4,
+		"Level 5 ^FF0000"+"^000000",wbylan5;
+
+dclo:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wclock1,
+	     "Level 2 ^FF0000"+"^000000",wclock2,
+	     "Level 3 ^FF0000"+"^000000",wclock3,
+	     "Level 4 ^FF0000"+"^000000",wclock4,
+	     "Basement 1 ^FF0000"+"^000000",walde1,
+	     "Basement 2 ^FF0000"+"^000000",walde2,
+	     "Basement 3 ^FF0000"+"^000000",walde3,
+	     "Basement 4 ^FF0000"+"^000000",walde4;
+
+dcoa:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wcoal1,
+	     "Level 2 ^FF0000"+"^000000",wcoal2,
+	     "Level 3 ^FF0000"+"^000000",wcoal3;
+
+dcul:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wculvert1,
+	     "Level 2 ^FF0000"+"^000000",wculvert2,
+	     "Level 3 ^FF0000"+"^000000",wculvert3,
+	     "Level 4 ^FF0000"+"^000000",wculvert4;
+
+dice:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wice1,
+	     "Level 2 ^FF0000"+"^000000",wice2,
+	     "Level 3 ^FF0000"+"^000000",wice3;
+
+
+dein:	
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu 	"Level 1 ^FF0000"+"^000000",weinbech1,
+		"Level 2 ^FF0000"+"^000000",weinbech2;
+
+wgef:	
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu 	"Level 1 ^FF0000"+"^000000",wgefenia1,
+		"Level 2 ^FF0000"+"^000000",wgefenia2,
+		"Level 3 ^FF0000"+"^000000",wgefenia3,
+		"Level 4 ^FF0000"+"^000000",wgefenia4;
+
+dgeff:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wgeffen1,
+	     "Level 2 ^FF0000"+"^000000",wgeffen2,
+	     "Level 3 ^FF0000"+"^000000",wgeffen3,
+	     "Level 4 ^FF0000"+"^000000",wgeffen4;
+
+dgla:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Castle 1 ^FF0000"+"^000000",wglastcast1,
+	     "Castle 2 ^FF0000"+"^000000",wglastcast2,
+	     "Chivalry 1 ^FF0000"+"^000000",wglastchiv1,
+	     "Chivalry 2 ^FF0000"+"^000000",wglastchiv2,
+	     "Churchyard ^FF0000"+"^000000",wglastyard,
+	     "Culvert 1 ^FF0000"+"^000000",wglastcul1,
+	     "Culvert 2 ^FF0000"+"^000000",wglastcul1,
+	     "Culvert 3 ^FF0000"+"^000000",wglastcul3,
+	     "Culvert 4 ^FF0000"+"^000000",wglastcul4,
+	     "St.Abbey ^FF0000"+"^000000",wglastchur,
+	     "Staircase Dungeon ^FF0000"+"^000000",wglaststep,
+	     "Underground Cave 1 ^FF0000"+"^000000",wglastcave1,
+	     "Underground Cave 2 ^FF0000"+"^000000",wglastcave2,
+	     "Underground Prison 1 ^FF0000"+"^000000",wglastpris1,
+	     "Underground Prison 2 ^FF0000"+"^000000",wglastpris2;
+
+dgon:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wgon1,
+	     "Level 2 ^FF0000"+"^000000",wgon2,
+	     "Level 3 ^FF0000"+"^000000",wgon3;
+
+//djupe:	
+//	mes "[Warp NPC]";
+//	mes "Please select the desired path.";
+//	next;
+//	menu 	"Level 1 ^FF0000"+"^000000",wjupe1,
+//		"Level 2 ^FF0000"+"^000000",wjupe2;
+		
+dkiel:	
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu 	"Level 1 ^FF0000"+"^000000",wkiel1,
+		"Level 2 ^FF0000"+"^000000",wkiel2;
+
+dlab:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",whidden1,
+	     "Level 2 ^FF0000"+"^000000",whidden2,
+	     "Level 3 ^FF0000"+"^000000",whidden3;
+
+dlhz:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu 	"Level 1 ^FF0000"+"^000000",wdlhz1,
+		"Level 2 ^FF0000"+"^000000",wdlhz2,
+		"Level 3 ^FF0000"+"^000000",wdlhz3;
+
+dlou:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu 	"Level 1 ^FF0000"+"^000000",wlou1,
+		"Level 2 ^FF0000"+"^000000",wlou2;
+
+
+dmag:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wmagma1,
+	     "Level 2 ^FF0000"+"^000000",wmagma2;
+
+
+dnam:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wnameles1,
+	     "Level 2 ^FF0000"+"^000000",wnameles2,
+	     "Level 3 ^FF0000"+"^000000",wnameles3,
+	     "Level 4 ^FF0000"+"^000000",wnameles4;
+
+dorc:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",worc1,
+	     "Level 2 ^FF0000"+"^000000",worc2;
+
+dodin:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wodin1,
+	     "Level 2 ^FF0000"+"^000000",wodin2,
+	     "Level 3 ^FF0000"+"^000000",wodin3;
+
+dpay:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wpayon1,
+	     "Level 2 ^FF0000"+"^000000",wpayon2,
+	     "Level 3 ^FF0000"+"^000000",wpayon3,
+	     "Level 4 ^FF0000"+"^000000",wpayon4,
+	     "Level 5 ^FF0000"+"^000000",wpayon5;
+
+dpyr:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wpyramids1,
+	     "Level 2 ^FF0000"+"^000000",wpyramids2,
+	     "Level 3 ^FF0000"+"^000000",wpyramids3,
+	     "Level 4 ^FF0000"+"^000000",wpyramids4,
+	     "Basement 1 ^FF0000"+"^000000",wpyramidsb1,
+	     "Basement 2 ^FF0000"+"^000000",wpyramidsb2;
+
+
+dsan:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wrachel1,
+	     "Level 2 ^FF0000"+"^000000",wrachel2,
+	     "Level 3 ^FF0000"+"^000000",wrachel3,
+	     "Level 4 ^FF0000"+"^000000",wrachel4,
+	     "Level 5 ^FF0000"+"^000000",wrachel5;
+
+dsph:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wsphinx1,
+	     "Level 2 ^FF0000"+"^000000",wsphinx2,
+	     "Level 3 ^FF0000"+"^000000",wsphinx3,
+	     "Level 4 ^FF0000"+"^000000",wsphinx4,
+	     "Level 5 ^FF0000"+"^000000",wsphinx5;
+
+dsun:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wsunken1,
+	     "Level 2 ^FF0000"+"^000000",wsunken2;
+
+dtoy:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wtoy1,
+	     "Level 2 ^FF0000"+"^000000",wtoy2;
+
+dtha:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wtha1,
+	     "Level 2 ^FF0000"+"^000000",wtha2,
+	     "Level 3 ^FF0000"+"^000000",wtha3,
+	     "Level 4 ^FF0000"+"^000000",wtha4,
+	     "Level 5 ^FF0000"+"^000000",wtha5,
+	     "Level 6 ^FF0000"+"^000000",wtha6,
+	     "Level 7 ^FF0000"+"^000000",wtha7,
+	     "Level 8 ^FF0000"+"^000000",wtha8,
+	     "Level 9 ^FF0000"+"^000000",wtha9;
+
+dald:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wald1,
+	     "Level 2 ^FF0000"+"^000000",wald2,
+	     "Level 3 ^FF0000"+"^000000",wald3;
+
+
+dtur:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Entrance ^FF0000"+"^000000",wturtleent,
+	     "Level 1 ^FF0000"+"^000000",wturtle1,
+	     "Level 2 ^FF0000"+"^000000",wturtle2,
+	     "Level 3 ^FF0000"+"^000000",wturtle3;
+
+dthor:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Level 1 ^FF0000"+"^000000",wthor1,
+	     "Level 2 ^FF0000"+"^000000",wthor2,
+	     "Level 3 ^FF0000"+"^000000",wthor3;
+
+
+dumb:
+	mes "[Warp NPC]";
+	mes "Please select the desired path.";
+	next;
+	menu "Lojas em arvores ^FF0000"+"^000000",wum1,
+	     "Passagem a um outro mundo ^FF0000"+"^000000",wum2,
+	     "Fonte ^FF0000"+"^000000",wygg1;
+
+
+// ==================== Training =====================
+
+
+	Training:
+	mes "[Warp NPC]";
+	mes "Please select your destination.";
+	next;
+	menu 	"Training ^FF0000"+"^000000",teste;
+teste:    warp "prontera", 220, 70;    close;
+
+
+// ==================== Castle de Payon =====================
+
+
+// MENU SACRED ALTAR
+SacredAltar:
+	mes "[Warp NPC]";
+	mes "Please select your destination.";
+	next;
+	menu 
+		"Sacred Altar ^FF0000"+"^000000", PayCas,
+		"Back", -;
+	end;
+
+PayCas:
+	warp "pay_gld",140,160;
+	end;
+
+
+// MENU KRIEMHILD
+Kriemhild:
+	mes "[Warp NPC]";
+	mes "Please select your destination.";
+	next;
+	menu 
+		"Kriemhild ^FF0000"+"^000000", ProntCast,
+		"Back", -;
+	end;
+
+ProntCast:
+	warp "prt_gld",141,64;
+	end;
+
+
+
+
+pvp:
+	mes "[Warp NPC]";
+	mes "Please select your destination.";
+	next;
+	menu 
+		"PvP ^FF0000"+"^000000", pvp,
+		"Back", -;
+	end;
+
+pvp:
+	
+	// Remove todos os buffs e debuffs do personagem
+	sc_end sc_all;
+
+	// Remove o Full Protection (todas as partes)
+	sc_end SC_CP_WEAPON;
+	sc_end SC_CP_SHIELD;
+	sc_end SC_CP_ARMOR;
+	sc_end SC_CP_HELM;
+
+	// Teleporta para pvp
+	warp "guild_vs3";
+	end;close;
+
+
+// ==================== Dungeons =====================
+wama1:		warp "ama_dun01",228,11;	close;
+wama2:		warp "ama_dun02",34,41;	close;
+wama3:		warp "ama_dun03",119,14;	close;
+wanthell1:	warp "anthell01",35,262;	close;
+wanthell2:	warp "anthell02",168,170;	close;
+wbeach1:	warp "beach_dun",266,67;	close;
+wbeach2:	warp "beach_dun2",255,244;	close;
+wbeach3:	warp "beach_dun3",23,260;	close;
+wbylan1:	warp "iz_dun00",168,168;	close;
+wbylan2:	warp "iz_dun01",41,37;	close;
+wbylan3:	warp "iz_dun02",236,204;	close;
+wbylan4:	warp "iz_dun03",32,63;	close;
+wbylan5:	warp "iz_dun04",26,27;	close;
+walde1:		warp "alde_dun01",297,25;	close;
+walde2:		warp "alde_dun02",127,169;	close;
+walde3:		warp "alde_dun03",277,178;	close;
+walde4:		warp "alde_dun04",268,74;	close;
+wclock1:	warp "c_tower1",199,159;	close;
+wclock2:	warp "c_tower2",148,283;	close;
+wclock3:	warp "c_tower3",65,147;	close;
+wclock4:	warp "c_tower4",56,155;	close;
+wcoal1:		warp "mjo_dun01",52,17;	close;
+wcoal2:		warp "mjo_dun02",381,343;	close;
+wcoal3:		warp "mjo_dun03",302,262;	close;
+wculvert1:	warp "prt_sewb1",131,247;	close;
+wculvert2:	warp "prt_sewb2",19,19;	close;
+wculvert3:	warp "prt_sewb3",180,169;	close;
+wculvert4:	warp "prt_sewb4",100,92;	close;
+wice1:	warp "ice_dun01",158,16;	close;
+wice2:	warp "ice_dun02",151,139;	close;
+wice3:	warp "ice_dun03",149,24;	close;
+weinbech1:	warp "ein_dun01",22,18;	close;
+weinbech2:	warp "ein_dun02",292,290;	close;
+wgefenia1:	warp "gefenia01",59,167;	close;
+wgefenia2:	warp "gefenia02",201,35;	close;
+wgefenia3:	warp "gefenia03",264,236;	close;
+wgefenia4:	warp "gefenia04",33,270;	close;
+wgeffen1:	warp "gef_dun00",104,99;	close;
+wgeffen2:	warp "gef_dun01",115,236;	close;
+wgeffen3:	warp "gef_dun02",106,132;	close;
+wgeffen4:	warp "gef_dun03",203,200;	close;
+wglastcast1:	warp "gl_cas01",199,29;	close;
+wglastcast2:	warp "gl_cas02",104,25;	close;
+wglastchiv1:	warp "gl_knt01",150,15;	close;
+wglastchiv2:	warp "gl_knt02",157,287;	close;
+wglastyard:	warp "gl_chyard",147,15;	close;
+wglastcul1:	warp "gl_sew01",258,255;	close;
+wglastcul2:	warp "gl_sew02",108,291;	close;
+wglastcul3:	warp "gl_sew03",171,283;	close;
+wglastcul4:	warp "gl_sew04",68,277;	close;
+wglastchur:	warp "gl_church",156,7;	close;
+wglaststep:	warp "gl_step",12,7;	close;
+wglastcave1:	warp "gl_dun01",133,271;	close;
+wglastcave2:	warp "gl_dun02",224,274;	close;
+wglastpris1:	warp "gl_prison",14,70;	close;
+wglastpris2:	warp "gl_prison1",150,14;	close;
+//wjupe1:		warp "juperos_01",99,92;	close;
+//wjupe2:		warp "juperos_02",34,59;	close;
+wkiel1:		warp "kh_dun01",11,208;	close;
+wkiel2:		warp "kh_dun02",38,196;	close;
+whidden1:	warp "prt_maze01",176,7;	close;
+whidden2:	warp "prt_maze02",93,21;	close;
+whidden3:	warp "prt_maze03",23,8;	close;
+wdlhz1:		warp "lhz_dun01",151,286;	close;
+wdlhz2:		warp "lhz_dun02",18,148;	close;
+wdlhz3:		warp "lhz_dun03",140,133;	close;
+wlou1:		warp "lou_dun01",218,196;	close;
+wlou2:		warp "lou_dun02",282,20;	close;
+wmagma1:	warp "mag_dun01",126,68;	close;
+wmagma2:	warp "mag_dun02",47,30;	close;
+wnameles1:	warp "nameles_n",165,185;	close;
+wnameles2:	warp "abbey01",51,12;	close;
+wnameles3:	warp "abbey02",149,11;	close;
+wnameles4:	warp "abbey03",119,8;	close;
+worc1:		warp "orcsdun01",32,170;	close;
+worc2:		warp "orcsdun02",21,185;	close;
+wodin1:		warp "odin_tem01",224,149;	close;
+wodin2:		warp "odin_tem02",267,169;	close;
+wodin3:		warp "odin_tem03",266,280;	close;
+wpayon1:	warp "pay_dun00",21,183;	close;
+wpayon2:	warp "pay_dun01",19,33;	close;
+wpayon3:	warp "pay_dun02",19,63;	close;
+wpayon4:	warp "pay_dun03",155,159;	close;
+wpayon5:	warp "pay_dun04",201,204;	close;
+wpyramids1:	warp "moc_pryd01",192,9;	close;
+wpyramids2:	warp "moc_pryd02",10,192;	close;
+wpyramids3:	warp "moc_pryd03",100,92;	close;
+wpyramids4:	warp "moc_pryd04",181,11;	close;
+wpyramidsb1:	warp "moc_pryd05",94,96;	close;
+wpyramidsb2:	warp "moc_pryd06",192,8;	close;
+wrachel1:	warp "ra_san01",139,135;	close;
+wrachel2:	warp "ra_san02",213,149;	close;
+wrachel3:	warp "ra_san03",10,149;	close;
+wrachel4:	warp "ra_san04",35,216;	close;
+wrachel5:	warp "ra_san05",19,150;	close;
+wsphinx1:	warp "in_sphinx1",288,9;	close;
+wsphinx2:	warp "in_sphinx2",149,81;	close;
+wsphinx3:	warp "in_sphinx3",210,54;	close;
+wsphinx4:	warp "in_sphinx4",10,222;	close;
+wsphinx5:	warp "in_sphinx5",100,99;	close;
+wsunken1:	warp "treasure01",69,24;	close;
+wsunken2:	warp "treasure02",102,27;	close;
+wtoy1:		warp "xmas_dun01",205,15;	close;
+wtoy2:		warp "xmas_dun02",129,133;	close;
+wtha1:		warp "tha_t01",150,35;	close;
+wtha2:		warp "tha_t02",150,31;	close;
+wtha3:		warp "tha_t03",220,158;	close;
+wtha4:		warp "tha_t04",59,139;	close;
+wtha5:		warp "tha_t05",62,11;	close;
+wtha6:		warp "tha_t06",119,232;	close;
+wtha7:		warp "tha_t07",29,165;	close;
+wtha8:		warp "tha_t08",106,44;	close;
+wtha9:		warp "tha_t09",88,145;	close;
+wald1:		warp "abyss_01",264,272;	close;
+wald2:		warp "abyss_02",274,269;	close;
+wald3:		warp "abyss_03",116,27;	close;
+wturtleent:	warp "tur_dun01",154,49;	close;
+wturtle1:	warp "tur_dun02",148,261;	close;
+wturtle2:	warp "tur_dun03",132,189;	close;
+wturtle3:	warp "tur_dun04",100,192;	close;
+wthor1:		warp "thor_v01",20,224;		close;
+wthor2:		warp "thor_v02",76,201;		close;
+wthor3:		warp "thor_v03",32,269;		close;
+wgon1:		warp "gon_dun01",153,53;	close;
+wgon2:		warp "gon_dun02",28,113;	close;
+wgon3:		warp "gon_dun03",68,16;	close;
+wum1:		warp "um_dun01",205,16;	close;
+wum2:		warp "um_dun02",48,	30;	close;
+wygg1:		warp "yggdrasil01",40,63;	close;
+// ===================================================
+
+// ================ Fields ===================
+
+
+fama:	warp "ama_fild01",138,201; close; 
+fcmd1:	warp "cmd_fild01",313,134; close;
+fcmd2:	warp "cmd_fild02",218,100; close;
+fcmd3:	warp "cmd_fild03",258,146; close;
+fcmd4:	warp "cmd_fild04",279,142; close;
+fcmd5:	warp "cmd_fild05",118,94; close;
+fcmd6:	warp "cmd_fild06",112,82; close;
+fcmd7:	warp "cmd_fild07",272,59; close;
+fcmd8:	warp "cmd_fild08",187,117; close;
+fcmd9:	warp "cmd_fild09",152,137; close;
+fein3:	warp "ein_fild03",237,190;	close;
+fein4:	warp "ein_fild04",196,246;	close;
+fein6:	warp "ein_fild06",201,141;	close;
+fein7:	warp "ein_fild07",269,227;	close;
+fein8:	warp "ein_fild08",119,180;	close;
+fein9:	warp "ein_fild09",186,311;	close;
+fein10:	warp "ein_fild10",209,296;	close;
+fgef0:	warp "gef_fild00",51,200;	close;
+fgef1:	warp "gef_fild01",212,125; close;
+fgef2:	warp "gef_fild02",307,262; close;
+fgef3:	warp "gef_fild03",51,306; close;
+fgef4:	warp "gef_fild04",311,289; close;
+fgef5:	warp "gef_fild05",77,95;	close;
+fgef6:	warp "gef_fild06",327,330;	close;
+fgef7:	warp "gef_fild07",105,175; close;
+fgef8:	warp "gef_fild08",273,330; close;
+fgef9:	warp "gef_fild09",278,152; close;
+fgef10:	warp "gef_fild10",350,65; close;
+fgef11:	warp "gef_fild11",241,307; close;
+fgef12:	warp "gef_fild12",235,232; close;
+fgef13:	warp "gef_fild13",220,285; close;
+fgef14:	warp "gef_fild14",242,217; close;
+fgon:	warp "gon_fild01",185,228; close;
+fhu1:	warp "hu_fild01",359,190;	close;
+fhu2:	warp "hu_fild02",144,257;	close;
+fhu3:	warp "hu_fild03",255,182;	close;
+fhu4:	warp "hu_fild04",114,41;	close;
+fhu5:	warp "hu_fild05",51,210;	close;
+fhu6:	warp "hu_fild06",48,121;	close;
+flou:	warp "lou_fild01",199,211; close;
+flhz1:	warp "lhz_fild01",240,173;	close;
+flhz2:	warp "lhz_fild02",175,90;	close;
+fxms1:	warp "xmas_fild01",191,98; close;
+fmor1:	warp "moc_fild01",48,31; close;
+fmor2:	warp "moc_fild02",68,106; close;
+fmor3:	warp "moc_fild03",72,66; close;
+fmor4:	warp "moc_fild04",84,55; close;
+fmor5:	warp "moc_fild05",177,273; close;
+fmor6:	warp "moc_fild06",292,212; close;
+fmor7:	warp "moc_fild07",110,357; close;
+fmor8:	warp "moc_fild08",310,328; close;
+fmor9:	warp "moc_fild09",349,345; close;
+fmor10:	warp "moc_fild10",85,61; close;
+fmor11:	warp "moc_fild11",247,97; close;
+fmor12:	warp "moc_fild12",143,245; close;
+fmor13:	warp "moc_fild13",294,62; close;
+fmor14:	warp "moc_fild14",211,177; close;
+fmor15:	warp "moc_fild15",285,311; close;
+fmor16:	warp "moc_fild16",223,232; close;
+fmor17:	warp "moc_fild17",129,247; close;
+fmor18:	warp "moc_fild18",64,160; close;
+fmor19:	warp "moc_fild19",61,142; close;
+fmtj1:	warp "mjolnir_01",156,336; close;
+fmtj2:	warp "mjolnir_02",307,262; close;
+fmtj3:	warp "mjolnir_03",316,143; close;
+fmtj4:	warp "mjolnir_04",123,127; close;
+fmtj5:	warp "mjolnir_05",286,74; close;
+fmtj6:	warp "mjolnir_06",338,48; close;
+fmtj7:	warp "mjolnir_07",234,353; close;
+fmtj8:	warp "mjolnir_08",331,334; close;
+fmtj9:	warp "mjolnir_09",151,323; close;
+fmtj10:	warp "mjolnir_10",358,289; close;
+fmtj11:	warp "mjolnir_11",221,202; close;
+fmtj12:	warp "mjolnir_12",47,20; close;
+fnif1:	warp "nif_fild01",317,315; close;
+fnif2:	warp "nif_fild02",49,136; close;
+fpay1:	warp "pay_fild01",64,115; close;
+fpay2:	warp "pay_fild02",109,170; close;
+fpay3:	warp "pay_fild03",350,63; close;
+fpay4:	warp "pay_fild04",57,274; close;
+fpay5:	warp "pay_fild05",194,166; close;
+fpay6:	warp "pay_fild06",97,296; close;
+fpay7:	warp "pay_fild07",55,97; close;
+fpay8:	warp "pay_fild08",93,260; close;
+fpay9:	warp "pay_fild09",219,319; close;
+fpay10:	warp "pay_fild10",223,102; close;
+fpay11:	warp "pay_fild11",53,286; close;
+fprt0:	warp "prt_fild00",156,170; close;
+fprt1:	warp "prt_fild01",91,120; close;
+fprt2:	warp "prt_fild02",362,262; close;
+fprt3:	warp "prt_fild03",254,168; close;
+fprt4:	warp "prt_fild04",270,277; close;
+fprt5:	warp "prt_fild05",225,323; close;
+fprt6:	warp "prt_fild06",38,138; close;
+fprt7:	warp "prt_fild07",208,208; close;
+fprt8:	warp "prt_fild08",47,108; close;
+fprt9:	warp "prt_fild09",140,66; close;
+fprt10:	warp "prt_fild10",308,184; close;
+fprt11:	warp "prt_fild11",280,198; close;
+fum1:	warp "um_fild01",139,276;	close;
+fum2:	warp "um_fild02",194,141;	close;
+fum3:	warp "um_fild03",162,281;	close;
+fum4:	warp "um_fild04",180,53;	close;
+fyun1:	warp "yuno_fild01",249,145; close;
+fyun2:	warp "yuno_fild02",76,371; close;
+fyun3:	warp "yuno_fild03",339,118; close;
+fyun4:	warp "yuno_fild04",363,107; close;
+fyun5:	warp "yuno_fild05",64,47;	close;
+fyun7:	warp "yuno_fild07",180,342;	close;
+fyun8:	warp "yuno_fild08",226,241;	close;
+fyun9:	warp "yuno_fild09",126,274;	close;
+fyun11:	warp "yuno_fild11",139,191;	close;
+fyun12:	warp "yuno_fild12",214,369;	close;
+}
+// ===========================================
+
+alb2trea,73,101,4	duplicate(Warper)	Warper#1	117
+alberta,31,240,4	duplicate(Warper)	Warper#2	117
+aldebaran,145,118,4	duplicate(Warper)	Warper#3	117
+ayothaya,147,121,4	duplicate(Warper)	Warper#4	117
+ayo_fild02,279,154,4	duplicate(Warper)	Warper#5	117
+//amatsu,192,81,1	duplicate(Warper)	Warper#7	117
+ama_fild01,178,325,1	duplicate(Warper)	Warper#8	117
+comodo,194,158,4	duplicate(Warper)	Warper#9	117
+einbroch,59,205,4	duplicate(Warper)	Warper#10	117
+einbech,135,249,4	duplicate(Warper)	Warper#11	117
+einbech,167,145,4	duplicate(Warper)	Warper#12	117
+geffen,115,66,4	duplicate(Warper)	Warper#13	117
+gef_fild10,71,339,4	duplicate(Warper)	Warper#14	117
+glast_01,370,308,4	duplicate(Warper)	Warper#15	117
+gonryun,156,129,4	duplicate(Warper)	Warper#16	117
+hugel,102,152,4	duplicate(Warper)	Warper#17	859
+izlude,132,119,4	duplicate(Warper)	Warper#18	117
+izlu2dun,104,82,4	duplicate(Warper)	Warper#19	117
+jawaii,175,173,4	duplicate(Warper)	Warper#20	117
+jupe_gate,53,25,4	duplicate(Warper)	Warper#21	117
+lighthalzen,164,101,4	duplicate(Warper)	Warper#22	117
+louyang,216,108,4	duplicate(Warper)	Warper#23	117
+mjolnir_02,85,363,4	duplicate(Warper)	Warper#24	117
+moc_fild04,207,331,4	duplicate(Warper)	Warper#25	117
+moc_fild19,106,97,4	duplicate(Warper)	Warper#26	117
+moc_ruins,64,166,4	duplicate(Warper)	Warper#27	117
+morocc,153,97,4	duplicate(Warper)	Warper#28	117
+niflheim,32,161,4	duplicate(Warper)	Warper#29	117
+pay_arche,39,135,4	duplicate(Warper)	Warper#30	117
+payon,169,229,4	duplicate(Warper)	Warper#31	117
+prt_fild05,273,215,4	duplicate(Warper)	Warper#32	117
+prt_fild01,140,364,4	duplicate(Warper)	Warper#33	117
+tur_dun01,148,239,4	duplicate(Warper)	Warper#34	117
+umbala,132,130,4	duplicate(Warper)	Warper#35	117
+valkyrie,48,35,8	duplicate(Warper)	Warper#36	117
+xmas,150,136,4	duplicate(Warper)	Warper#37	117
+yuno,137,162,4	duplicate(Warper)	Warper#38	117
+yuno_fild03,37,135,4	duplicate(Warper)	Warper#39	117
+que_qsch05,125,124,3	duplicate(Warper)	Warper#40	117

@@ -41,7 +41,7 @@ class status_change;
  * Default value of 8000 effectively results in a minimum ASPD of -200 for players
  */
 #ifndef MIN_ASPD
-	#define MIN_ASPD 8000
+	#define MIN_ASPD 1000
 #endif
 
 /**
@@ -478,6 +478,7 @@ enum sc_type : int16 {
 	SC_SPEED,
 	SC_DEFENCE,
 	SC_INCASPDRATE,
+	SC_SOUCOLLECT,
 	SC_INCFLEE2 = 248,
 	SC_JAILED,
 	SC_ENCHANTARMS,	//250

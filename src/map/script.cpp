@@ -12753,7 +12753,43 @@ BUILDIN_FUNC(homunculus_mutate)
 
 	return SCRIPT_CMD_SUCCESS;
 }
+/*==========================================
+ * Force Homunculus S mutation (NPC use)
+ * No Strange Embryo / Morph requirement.
+ *------------------------------------------*/
+BUILDIN_FUNC(homunculus_mutate_force)
+{
+	uint16 homun_id;
+	TBL_PC *sd;
 
+	if (!script_rid2sd(sd) || sd->hd == nullptr)
+		return SCRIPT_CMD_SUCCESS;
+
+	if (script_hasdata(st, 2))
+		homun_id = script_getnum(st, 2);
+	else
+		homun_id = rnd_value<uint16>(MER_EIRA, MER_ELEANOR);
+
+	int32 m_class = hom_class2mapid(sd->hd->homunculus.class_);
+	int32 m_id = hom_class2mapid(homun_id);
+
+	if (m_class != -1 &&
+		m_id != -1 &&
+		m_class&HOM_EVO &&
+		m_id&HOM_S &&
+		sd->hd->homunculus.level >= 99)
+	{
+		hom_mutate(sd->hd, homun_id);
+
+		script_pushint(st, 1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	clif_emotion(*sd, ET_SWEAT);
+
+	script_pushint(st, 0);
+	return SCRIPT_CMD_SUCCESS;
+}
 /*==========================================
  * Puts homunculus into morph state
  * and gives ITEMID_STRANGE_EMBRYO.
@@ -12992,18 +13028,64 @@ BUILDIN_FUNC(changebase)
 			)
 		return SCRIPT_CMD_SUCCESS;
 	}
+	// BaseClass deve restaurar a classe visual original
+if (vclass == 6) {
+	vclass = sd->status.class_;
+}
 
 	if(!sd->disguise && vclass != sd->vd.class_) {
-		status_set_viewdata(sd, vclass);
+		clif_changelook(sd, LOOK_BODY2, 0);
+status_set_viewdata(sd, vclass);
+
+ShowInfo("REAL class_=%d status.class_=%d vd.class_=%d\n",
+	sd->class_,
+	sd->status.class_,
+	sd->vd.class_);
+
+if (vclass == 4001)
+	sd->vd.body_style = 0;
+
+if (vclass == 22)
+	sd->vd.body_style = 0;
+
 		//Updated client view. Base, Weapon and Cloth Colors.
 		clif_changelook(sd,LOOK_BASE,sd->vd.class_);
 		clif_changelook(sd,LOOK_WEAPON,sd->status.weapon);
-		if (sd->vd.cloth_color)
-			clif_changelook(sd,LOOK_CLOTHES_COLOR,sd->vd.cloth_color);
-		if (sd->vd.body_style)
-			clif_changelook(sd,LOOK_BODY2,sd->vd.body_style);
+	if (sd->vd.cloth_color)
+		clif_changelook(sd,LOOK_CLOTHES_COLOR,sd->vd.cloth_color);
+	if (sd->vd.body_style)
+		clif_changelook(sd,LOOK_BODY2,sd->vd.body_style);
 		clif_skillinfoblock(sd);
 	}
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(changebase_original)
+{
+	TBL_PC *sd = nullptr;
+
+	if( !script_mapid2sd(3, sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(sd->disguise)
+		return SCRIPT_CMD_SUCCESS;
+
+	// Remove body style atual
+	clif_changelook(sd, LOOK_BODY2, 0);
+
+	// Restaura a classe visual salva
+	status_set_viewdata(sd, sd->status.class_);
+
+	clif_changelook(sd, LOOK_BASE, sd->vd.class_);
+	clif_changelook(sd, LOOK_WEAPON, sd->status.weapon);
+
+	if(sd->vd.cloth_color)
+		clif_changelook(sd, LOOK_CLOTHES_COLOR, sd->vd.cloth_color);
+
+	clif_changelook(sd, LOOK_BODY2, sd->vd.body_style);
+
+	clif_skillinfoblock(sd);
+
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -16092,7 +16174,50 @@ BUILDIN_FUNC(getmercinfo)
 
 	return SCRIPT_CMD_SUCCESS;
 }
+BUILDIN_FUNC(gethomsclass)
+{
+	TBL_PC *sd;
 
+	if (!script_rid2sd(sd) || sd->hd == nullptr) {
+		script_pushint(st,0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	// Precisa estar evoluído
+	if (!(hom_class2mapid(sd->hd->homunculus.class_) & HOM_EVO)) {
+		script_pushint(st,0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	switch (sd->hd->homunculus.class_) {
+
+		// Lif_H
+		case 6013:
+			script_pushint(st,MER_EIRA);
+			break;
+
+		// Amistr_H
+		case 6014:
+			script_pushint(st,MER_BAYERI);
+			break;
+
+		// Filir_H
+		case 6015:
+			script_pushint(st,MER_SERA);
+			break;
+
+		// Vanilmirth_H
+		case 6016:
+			script_pushint(st,MER_DIETER);
+			break;
+
+		default:
+			script_pushint(st,0);
+			break;
+	}
+
+	return SCRIPT_CMD_SUCCESS;
+	}
 /*==========================================
  * Shows wether your inventory(and equips) contain
    selected card or not.
@@ -22901,6 +23026,9 @@ BUILDIN_FUNC(setmounting) {
  * Retrieves quantity of arguments provided to callfunc/callsub.
  * getargcount() -> amount of arguments received in a function
  **/
+
+
+
 BUILDIN_FUNC(getargcount) {
 	struct script_retinfo* ri;
 
@@ -28021,6 +28149,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(resethate,"?"),
 	BUILDIN_DEF(skillpointcount,"?"),
 	BUILDIN_DEF(changebase,"i?"),
+	BUILDIN_DEF(changebase_original, ""),	
 	BUILDIN_DEF(changesex,"?"),
 	BUILDIN_DEF(changecharsex,"?"),
 	BUILDIN_DEF(waitingroom,"si?????"),
@@ -28242,6 +28371,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(warpportal,"iisii"),
 	BUILDIN_DEF2(homunculus_evolution,"homevolution",""),	//[orn]
 	BUILDIN_DEF2(homunculus_mutate,"hommutate","?"),
+	BUILDIN_DEF2(homunculus_mutate_force,"hommutateforce","?"),
 	BUILDIN_DEF(morphembryo,""),
 	BUILDIN_DEF2(homunculus_shuffle,"homshuffle",""),	//[Zephyrus]
 	BUILDIN_DEF(checkhomcall,""),

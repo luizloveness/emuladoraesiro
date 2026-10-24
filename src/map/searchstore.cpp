@@ -10,6 +10,7 @@
 
 #include "battle.hpp"  // battle_config.*
 #include "clif.hpp"  // clif_open_search_store_info, clif_search_store_info_*
+#include "itemdb.hpp"  // item_db
 #include "pc.hpp"  // map_session_data
 
 /// Type for shop search function
@@ -267,6 +268,7 @@ void searchstore_clear(map_session_data& sd)
 void searchstore_close(map_session_data& sd)
 {
 	if( sd.searchstore.open ) {
+		searchstore_filter_clear(sd);		
 		searchstore_clear(sd);
 
 		sd.searchstore.uses = 0;
@@ -358,4 +360,82 @@ bool searchstore_queryremote(map_session_data& sd, uint32 account_id)
 void searchstore_clearremote(map_session_data& sd)
 {
 	sd.searchstore.remote_id = 0;
+}
+
+/**
+ * Clears all extended search filters.
+ * @param sd : player requesting
+ */
+void searchstore_filter_clear(map_session_data& sd)
+{
+	sd.searchstore.filter.refine_min = -1;
+	sd.searchstore.filter.card_filters.clear();
+	sd.searchstore.filter.option_filters.clear();
+	sd.searchstore.filter.name_filter[0] = '\0';
+	sd.searchstore.filter.active = false;
+}
+
+/**
+ * Checks if an item passes the extended search filters.
+ * @param filter : extended search filter
+ * @param it : item to check
+ * @param nameid : item name ID
+ * @return true if item passes all filters
+ */
+bool searchstore_filter_check(const struct s_search_store_filter& filter, const struct item& it, t_itemid nameid)
+{
+	if( !filter.active )
+		return true;
+
+	// Refine check
+	if( filter.refine_min >= 0 && it.refine < filter.refine_min )
+		return false;
+
+	// Card filter check (AND logic: all cards must be present)
+	if( !filter.card_filters.empty() ){
+		for( const auto& card_id : filter.card_filters ){
+			bool found = false;
+
+			for( int32 j = 0; j < MAX_SLOTS; j++ ){
+				if( it.card[j] == card_id ){
+					found = true;
+					break;
+				}
+			}
+
+			if( !found )
+				return false;
+		}
+	}
+
+	// Option filter check (AND logic: all options must be present with min value)
+	if( !filter.option_filters.empty() ){
+		for( const auto& opt : filter.option_filters ){
+			bool found = false;
+
+			for( int32 j = 0; j < MAX_ITEM_RDM_OPT; j++ ){
+				if( it.option[j].id == opt.first && it.option[j].value >= opt.second ){
+					found = true;
+					break;
+				}
+			}
+
+			if( !found )
+				return false;
+		}
+	}
+
+	// Name filter check (case-insensitive substring)
+	if( filter.name_filter[0] != '\0' ){
+		std::shared_ptr<item_data> id = item_db.find(nameid);
+
+		if( id == nullptr )
+			return false;
+
+		if( stristr(id->name.c_str(), filter.name_filter) == nullptr &&
+		    stristr(id->ename.c_str(), filter.name_filter) == nullptr )
+			return false;
+	}
+
+	return true;
 }

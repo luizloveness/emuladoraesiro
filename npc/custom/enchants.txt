@@ -1,0 +1,197 @@
+prontera,207,202,5	script	Mysterious Enchanter	654,{
+
+set .@lang, #langtype;
+
+cutin "gl_barmund1",2;
+
+if(.@lang == 0){
+	mes "[Enchanter]";
+	mes "What do you want to do?";
+	next;
+	.@menu = select("Enchant:Reset Enchant:Exit");
+}else{
+	mes "[Encantador]";
+	mes "O que deseja fazer?";
+	next;
+	.@menu = select("Encantar:Resetar Encantamento:Sair");
+}
+
+switch(.@menu){
+
+//==================================================
+// ENCANTAR
+//==================================================
+case 1:
+
+	if (!getequipisequiped(EQI_HEAD_MID)) {
+		if(.@lang == 0) mes "You are not wearing a middle headgear.";
+		else mes "Você não está usando um equipamento do meio.";
+		close2; cutin "",255; end;
+	}
+
+	.@item = getequipid(EQI_HEAD_MID);
+
+	setarray .@allowed[0],2202;
+
+	if (inarray(.@allowed, .@item) == -1) {
+		if(.@lang == 0) mes "This item cannot be enchanted.";
+		else mes "Este item não pode ser encantado.";
+		close2; cutin "",255; end;
+	}
+
+	if (getequiprandomoption(EQI_HEAD_MID,0,ROA_ID)) {
+		if(.@lang == 0) mes "This item is already enchanted.";
+		else mes "Este item já possui encantamento.";
+		close2; cutin "",255; end;
+	}
+
+	if(.@lang == 0){
+		mes "Warning:";
+		mes "Refine and cards will be removed!";
+		mes "Cost: ^FF000025x Bronze Coin^000000";
+		mes "You have: "+countitem(673);
+		next;
+	}else{
+		mes "Atenção:";
+		mes "Refino e cartas serão removidos!";
+		mes "Custo: ^FF000025x Bronze Coin^000000";
+		mes "Você possui: "+countitem(673);
+		next;
+	}
+
+	if (countitem(673) < 25) {
+		if(.@lang == 0) mes "You don't have enough Bronze Coins.";
+		else mes "Você não possui Bronze Coins suficientes.";
+		close2; cutin "",255; end;
+	}
+
+	if(.@lang == 0){
+		if (select("Confirm:Cancel") == 2) { close2; cutin "",255; end; }
+	}else{
+		if (select("Confirmar:Cancelar") == 2) { close2; cutin "",255; end; }
+	}
+
+	delitem 673,25;
+
+	progressbar "#00FF00",2;
+
+	unequip EQI_HEAD_MID;
+	delitem .@item,1;
+
+	getitem .@item,1;
+	equip .@item;
+
+	.@r = rand(100);
+
+	if (.@r >= 91) {
+		specialeffect EF_REPAIRWEAPON;
+		if(.@lang == 0) mes "Failed... sorry.";
+		else mes "Falhou... desculpe.";
+		close2; cutin "",255; end;
+	}
+
+	setarray .@opts[0],
+	RDMOPT_VAR_STRAMOUNT,
+	RDMOPT_VAR_AGIAMOUNT,
+	RDMOPT_VAR_VITAMOUNT,
+	RDMOPT_VAR_INTAMOUNT,
+	RDMOPT_VAR_DEXAMOUNT,
+	RDMOPT_VAR_LUKAMOUNT;
+
+	if (.@r < 50) {
+		.@opt = .@opts[rand(getarraysize(.@opts))];
+		setrandomoption(EQI_HEAD_MID,0,.@opt,1,0);
+		if(.@lang == 0) mes "+1 enchant applied!";
+		else mes "Encantamento +1 aplicado!";
+	}
+	else if (.@r < 80) {
+		.@opt = .@opts[rand(getarraysize(.@opts))];
+		setrandomoption(EQI_HEAD_MID,0,.@opt,2,0);
+		if(.@lang == 0) mes "+2 enchant applied!";
+		else mes "Encantamento +2 aplicado!";
+	}
+	else if (.@r < 90) {
+		for (.@i = 0; .@i < getarraysize(.@opts); .@i++)
+			setrandomoption(EQI_HEAD_MID,.@i,.@opts[.@i],1,0);
+		if(.@lang == 0) mes "ALL STATS +1!";
+		else mes "ALL STATS +1!";
+	}
+	else {
+		for (.@i = 0; .@i < getarraysize(.@opts); .@i++)
+			setrandomoption(EQI_HEAD_MID,.@i,.@opts[.@i],2,0);
+		if(.@lang == 0) mes "ALL STATS +2!";
+		else mes "ALL STATS +2!";
+	}
+
+	specialeffect EF_SUI_EXPLOSION;
+	close2; cutin "",255; end;
+
+
+//==================================================
+// RESET
+//==================================================
+case 2:
+
+	if (!getequipisequiped(EQI_HEAD_MID)) {
+		if(.@lang == 0) mes "You are not wearing a middle headgear.";
+		else mes "Você não está usando um equipamento do meio.";
+		close2; cutin "",255; end;
+	}
+
+	if (!getequiprandomoption(EQI_HEAD_MID,0,ROA_ID)) {
+		if(.@lang == 0) mes "This item has no enchant.";
+		else mes "Este item não possui encantamento.";
+		close2; cutin "",255; end;
+	}
+
+	.@item = getequipid(EQI_HEAD_MID);
+
+	if(.@lang == 0){
+		mes "Reset cost:";
+		mes "^FF00005x Bronze Coin^000000";
+		mes "You have: "+countitem(673);
+		next;
+	}else{
+		mes "Custo para reset:";
+		mes "^FF00005x Bronze Coin^000000";
+		mes "Você possui: "+countitem(673);
+		next;
+	}
+
+	if (countitem(673) < 5) {
+		if(.@lang == 0) mes "You don't have enough Bronze Coins.";
+		else mes "Você não possui Bronze Coins suficientes.";
+		close2; cutin "",255; end;
+	}
+
+	if(.@lang == 0){
+		if (select("Confirm:Cancel") == 2) { close2; cutin "",255; end; }
+	}else{
+		if (select("Confirmar:Cancelar") == 2) { close2; cutin "",255; end; }
+	}
+
+	delitem 673,5;
+
+	progressbar "#FF0000",2;
+
+	unequip EQI_HEAD_MID;
+	delitem .@item,1;
+
+	getitem .@item,1;
+	equip .@item;
+
+	specialeffect EF_REPAIRWEAPON;
+
+	if(.@lang == 0) mes "Enchant removed.";
+	else mes "Encantamento removido.";
+
+	close2; cutin "",255; end;
+
+
+//==================================================
+case 3:
+	close2; cutin "",255; end;
+}
+
+end;
+}

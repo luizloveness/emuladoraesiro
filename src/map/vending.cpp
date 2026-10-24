@@ -24,6 +24,7 @@
 #include "path.hpp"
 #include "pc.hpp"
 #include "pc_groups.hpp"
+#include "searchstore.hpp"
 
 static uint32 vending_nextid = 0; ///Vending_id counter
 static DBMap *vending_db; ///DB holder the vender : charid -> map_session_data
@@ -454,6 +455,42 @@ bool vending_searchall(map_session_data* sd, const struct s_search_store_search*
 
 	if( !sd->state.vending ) // not vending
 		return true;
+	// Name-based search: iterate ALL items when no specific item IDs provided
+	if( s->item_count == 0 && s->search_sd->searchstore.filter.active && s->search_sd->searchstore.filter.name_filter[0] != '\0' ){
+		for( i = 0; i < sd->vend_num; i++ ){
+			it = &sd->cart.u.items_cart[sd->vending[i].index];
+
+			if( s->min_price && s->min_price > sd->vending[i].value )
+				continue;
+			if( s->max_price && s->max_price < sd->vending[i].value )
+				continue;
+
+			// Apply all extended filters (includes name check)
+			if( !searchstore_filter_check(s->search_sd->searchstore.filter, *it, it->nameid) )
+				continue;
+
+			if( s->search_sd->searchstore.items.size() >= (uint32)battle_config.searchstore_maxresults )
+				return false;
+
+			std::shared_ptr<s_search_store_info_item> ssitem = std::make_shared<s_search_store_info_item>();
+
+			ssitem->store_id = sd->vender_id;
+			ssitem->account_id = sd->status.account_id;
+			safestrncpy( ssitem->store_name, sd->message, sizeof( ssitem->store_name ) );
+			ssitem->nameid = it->nameid;
+			ssitem->amount = sd->vending[i].amount;
+			ssitem->price = sd->vending[i].value;
+			for( int32 j = 0; j < MAX_SLOTS; j++ )
+				ssitem->card[j] = it->card[j];
+			ssitem->refine = it->refine;
+			ssitem->enchantgrade = it->enchantgrade;
+			for( int32 j = 0; j < MAX_ITEM_RDM_OPT; j++ )
+				ssitem->option[j] = it->option[j];
+
+			s->search_sd->searchstore.items.push_back( ssitem );
+		}
+		return true;
+	}
 
 	for( idx = 0; idx < s->item_count; idx++ ) {
 		ARR_FIND( 0, sd->vend_num, i, sd->cart.u.items_cart[sd->vending[i].index].nameid == s->itemlist[idx].itemId );
@@ -487,6 +524,12 @@ bool vending_searchall(map_session_data* sd, const struct s_search_store_search*
 				continue;
 			}
 		}
+		// Extended filter check (refine, cards, options, name)
+		if( s->search_sd->searchstore.filter.active ){
+			if( !searchstore_filter_check(s->search_sd->searchstore.filter, *it, it->nameid) ){
+				continue;
+			}
+		}
 
 		// Check if the result set is full
 		if( s->search_sd->searchstore.items.size() >= (uint32)battle_config.searchstore_maxresults ){
@@ -506,6 +549,9 @@ bool vending_searchall(map_session_data* sd, const struct s_search_store_search*
 		}
 		ssitem->refine = it->refine;
 		ssitem->enchantgrade = it->enchantgrade;
+		for( int32 j = 0; j < MAX_ITEM_RDM_OPT; j++ ){
+			ssitem->option[j] = it->option[j];
+		}		
 
 		s->search_sd->searchstore.items.push_back( ssitem );
 	}

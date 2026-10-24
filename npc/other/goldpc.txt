@@ -1,0 +1,67 @@
+// Shop com seus itens e quantidades (preço visual)
+-	shop	Gold_shop	-1,18844:180,20582:200,5121:200,19716:200,19153:200,19154:200,19152:200,5457:200,5464:200,18910:200,18909:200,18908:200,5147:230,5022:250,5491:250,5378:250,5138:250,5237:250,5395:250,5665:250,5601:265,5469:300,18539:300
+
+// NPC principal
+prontera,200,162,5	script	Hourly Point Manager::GOLDPCCAFE	10380,{
+	cutin("ep18_merchant.png", 2);
+	callshop("Gold_shop", 1);
+	npcshopattach("Gold_shop");
+	end;
+
+OnBuyItem:
+	mes("[Hourly Point Manager]");
+	if (!checkweight2(@bought_nameid, @bought_quantity)) {
+		mes("Sorry, you can't carry all these items!");
+		close3;
+	}
+
+	for (.@i = 0; .@i < getarraysize(@bought_nameid); .@i++){
+		.@itemIndex = inarray(.Shop, @bought_nameid[.@i]);
+		.@costs += (.Shop[.@itemIndex + 1] * @bought_quantity[.@i]);
+	}
+
+	if (.@costs > Goldpc_Points) {
+		mes("You don't have enough Hourly Points.");
+		close3;
+	}
+
+	Goldpc_Points -= .@costs;
+	for(.@i = 0; .@i < getarraysize(@bought_nameid); .@i++) {
+		getitem(@bought_nameid[.@i], @bought_quantity[.@i]);
+		dispbottom("Purchased " + @bought_quantity[.@i] + " x " + getitemname(@bought_nameid[.@i]) + ".");
+	}
+
+	mes("Purchase complete!");
+	mes("Remaining Points: ^0000FF" + Goldpc_Points + "^000000.");
+	close3;
+
+OnInit:
+	// Definindo os itens e seus respectivos preços (em Goldpc_Points)
+	setarray(.Shop,
+
+		18844,180,
+		20582,200,
+		5121,200,
+		19716,200,
+		19153,200,
+		19154,200,
+		19152,200,
+		5457,200,
+		5464,200,
+		18910,200,
+		18909,200,
+		18908,200,
+		5147,230,
+		5022,250,
+		5491,250,
+		5378,250,
+		5138,250,
+		5237,250,
+		5665,250,
+		5395,250,
+		5601,265,
+		5469,300,
+		18539,300
+
+	);
+}

@@ -3333,8 +3333,66 @@ int32 mob_dead(struct mob_data *md, struct block_list *src, int32 type)
 			// Announce first, or else ditem will be freed. [Lance]
 			// By popular demand, use base drop rate for autoloot code. [Skotlex]
 			mob_item_drop(md, dlist, ditem, 0, battle_config.autoloot_adjust ? drop_rate : entry->rate, homkillonly || merckillonly);
-		}
+// ================= SAFE DROP ANNOUNCE SYSTEM =================
+if (battle_config.drop_announce_system && sd != nullptr) {
 
+    int rate_percent = drop_rate / 100;
+    if (rate_percent <= battle_config.drop_announce_max_rate) {
+
+        // -------- ANNOUNCE IN GAME --------
+        if (battle_config.drop_announce_ingame) {
+
+            char message[256];
+
+            sprintf(message,
+                msg_txt(sd, 452),
+                sd->status.name,
+                md->name,
+                mapindex_id2name(md->m),
+                it->ename.c_str(),
+                (float)drop_rate / 100.0f
+            );
+
+            intif_broadcast2(
+                message,
+                strlen(message) + 1,
+                battle_config.drop_announce_color,
+                0x190, 12, 0, 0
+            );
+        }
+
+        // -------- LOG IN DATABASE --------
+        if (battle_config.drop_announce_log) {
+
+            char esc_char[NAME_LENGTH * 2 + 1];
+            char esc_mob[NAME_LENGTH * 2 + 1];
+            char esc_item[ITEM_NAME_LENGTH * 2 + 1];
+            char esc_map[MAP_NAME_LENGTH * 2 + 1];
+
+            Sql_EscapeStringLen(mmysql_handle, esc_char, sd->status.name, strlen(sd->status.name));
+            Sql_EscapeStringLen(mmysql_handle, esc_mob, md->name, strlen(md->name));
+            Sql_EscapeStringLen(mmysql_handle, esc_item, it->ename.c_str(), strlen(it->ename.c_str()));
+            Sql_EscapeStringLen(mmysql_handle, esc_map, mapindex_id2name(md->m), strlen(mapindex_id2name(md->m)));
+
+            Sql_Query(mmysql_handle,
+                "INSERT INTO drop_announce_log "
+                "(account_id, char_id, char_name, mob_id, mob_name, item_id, item_name, drop_map, drop_rate) "
+                "VALUES (%d, %d, '%s', %d, '%s', %d, '%s', '%s', %d)",
+                sd->status.account_id,
+                sd->status.char_id,
+                esc_char,
+                md->mob_id,
+                esc_mob,
+                it->nameid,
+                esc_item,
+                esc_map,
+                drop_rate
+            );
+        }
+    }
+}
+
+	}
 		// Ore Discovery (triggers if owner has loot priority, does not require to be the killer)
 		if (first_sd != nullptr && pc_checkskill(first_sd, BS_FINDINGORE) > 0) {
 			std::shared_ptr<s_item_group_entry> entry = itemdb_group.get_random_entry(IG_ORE, 1, GROUP_ALGORITHM_DROP);

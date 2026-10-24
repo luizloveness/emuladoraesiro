@@ -1,0 +1,189 @@
+//============================================================
+// Instance Lobby
+//============================================================
+// Variáveis fornecidas pelo LobbyMod:
+//
+// @instance_idname$
+// @instance_name$
+// @instance_id
+// @min_level
+// @max_level
+// @instance_quest
+// @lock
+// @cooldown
+// @party_limit
+// @type
+//============================================================
+
+
+-	script	InstanceLobby	-1,{
+
+OnJoinInstance:
+	.@instance_name$ = @instance_name$;
+	.@instance_db_id = @instance_id;
+	.@cooldown = @cooldown;
+	.@party_id = getcharid(1);
+
+	// Validação de nível.
+	if (BaseLevel < @min_level ||
+		(@max_level > 0 && BaseLevel > @max_level)) {
+		dispbottom "Seu nível não atende aos requisitos desta instância.", 0xFF0000;
+		end;
+	}
+
+	// Validação de party.
+	if (.@party_id == 0) {
+		dispbottom "Você precisa estar em um grupo para entrar nesta instância.", 0xFF0000;
+		end;
+	}
+
+	// Limite de membros da party.
+	if (@party_limit > 0) {
+		getpartymember .@party_id, 1;
+		if ($@partymembercount > @party_limit) {
+			dispbottom "Esta instância aceita no máximo " + @party_limit + " membros.", 0xFF0000;
+			end;
+		}
+	}
+
+	// Variável de cooldown persistente por personagem e instância.
+	.@cdvar$ = "ilobby_cd_" + .@instance_db_id;
+	.@cooldown_until = getd(.@cdvar$);
+
+	// Primeiro, verifica se existe um retorno pendente.
+	// O retorno tem prioridade sobre o cooldown normal.
+	if (ilobby_return == 1) {
+		if (getcharid(1) != ilobby_party_id ||
+			instance_id(IM_PARTY) != ilobby_instance_id ||
+			ilobby_instance_name$ != .@instance_name$) {
+			dispbottom "A instância original não está mais disponível para retorno.", 0xFF0000;
+
+			// Remove a oportunidade inválida.
+			ilobby_return = 0;
+			ilobby_inside = 0;
+			end;
+		}
+
+		switch (instance_enter(ilobby_instance_name$)) {
+		case IE_OK:
+			// Consome o único retorno após entrada bem-sucedida.
+			ilobby_return = 0;
+			ilobby_return_used = 1;
+			ilobby_inside = 1;
+			dispbottom "Retorno utilizado. Você não terá outra oportunidade de retorno nesta execução.", 0x00AA00;
+			end;
+
+		case IE_NOMEMBER:
+			dispbottom "Você não pertence à party desta instância.", 0xFF0000;
+			end;
+
+		case IE_NOINSTANCE:
+			dispbottom "A instância original não existe mais.", 0xFF0000;
+			ilobby_return = 0;
+			ilobby_inside = 0;
+			end;
+
+		default:
+			dispbottom "Não foi possível retornar à instância.", 0xFF0000;
+			end;
+		}
+	}
+
+	// Sem retorno pendente: verifica o cooldown normal.
+	if (.@cooldown_until > gettimetick(2)) {
+		.@remaining = .@cooldown_until - gettimetick(2);
+		.@hours = .@remaining / 3600;
+		.@minutes = (.@remaining % 3600) / 60;
+
+		dispbottom "Você ainda está no cooldown desta instância: "
+			+ .@hours + "h " + .@minutes + "min.", 0xFF0000;
+		end;
+	}
+
+	// Cria uma instância somente se a party ainda não possuir uma.
+	if (instance_id(IM_PARTY) == 0) {
+		if (!is_party_leader()) {
+			dispbottom "Somente o líder da party pode criar a instância.", 0xFF0000;
+			end;
+		}
+
+		if (instance_create(.@instance_name$, IM_PARTY) < 0) {
+			dispbottom "Falha ao criar " + .@instance_name$ + ".", 0xFF0000;
+			end;
+		}
+	}
+
+	// Guarda o ID real da instância para impedir retorno a outra execução.
+	.@runtime_instance_id = instance_id(IM_PARTY);
+
+	if (.@runtime_instance_id <= 0) {
+		dispbottom "Não foi possível identificar a instância da party.", 0xFF0000;
+		end;
+	}
+
+	// Se for uma execução diferente, prepara o controle de retorno.
+	if (ilobby_instance_id != .@runtime_instance_id) {
+		ilobby_instance_id = .@runtime_instance_id;
+		ilobby_instance_name$ = .@instance_name$;
+		ilobby_party_id = .@party_id;
+		ilobby_return = 0;
+		ilobby_return_used = 0;
+		ilobby_inside = 0;
+	}
+
+	// Só inicia o cooldown se a entrada ocorrer com sucesso.
+	switch (instance_enter(.@instance_name$)) {
+case IE_OK:
+// Registra o cooldown do personagem após a entrada bem-sucedida.
+if (.@cooldown > 0)
+setd .@cdvar$, gettimetick(2) + .@cooldown;
+
+// Registra os dados necessários para o retorno.
+ilobby_instance_id = .@runtime_instance_id;
+ilobby_instance_name$ = .@instance_name$;
+ilobby_party_id = .@party_id;
+ilobby_inside = 1;
+
+// Prepara uma única oportunidade de retorno nesta execução.
+ilobby_return = 0;
+ilobby_return_used = 0;
+end;
+
+	case IE_NOMEMBER:
+		dispbottom "Você não pertence à party desta instância.", 0xFF0000;
+		end;
+
+	case IE_NOINSTANCE:
+		dispbottom "A party não possui uma instância ativa.", 0xFF0000;
+		end;
+
+	default:
+		dispbottom "Falha ao entrar em " + .@instance_name$ + ".", 0xFF0000;
+		end;
+	}
+
+OnPCLogoutEvent:
+	// Libera uma oportunidade de retorno ao desconectar dentro da instância.
+	if (ilobby_inside == 1 && ilobby_return_used == 0) {
+		ilobby_return = 1;
+		ilobby_inside = 0;
+	}
+	end;
+
+OnPCLoadMapEvent:
+	// Identifica quando o personagem está na instância registrada.
+	if (instance_id(IM_CHAR) > 0 &&
+		instance_id(IM_CHAR) == ilobby_instance_id) {
+		ilobby_inside = 1;
+		end;
+	}
+
+	// Se saiu da instância, registra o retorno único.
+	if (ilobby_inside == 1) {
+		ilobby_inside = 0;
+
+		if (ilobby_return_used == 0)
+			ilobby_return = 1;
+	}
+	end;
+}

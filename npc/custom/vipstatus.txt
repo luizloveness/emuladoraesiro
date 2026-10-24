@@ -1,0 +1,16 @@
+-	script	VIP_TIME	-1,{
+OnPCLoginEvent:
+	if (vip_status(1)) {
+		// Exibe a data/hora exata em que o VIP irá expirar
+		dispbottom "Your VIP expires on: " + gettimestr("%Y-%m/%d %H:%M:%S", 21, vip_status(2));
+
+		// Converte os segundos restantes em dias, horas, minutos
+		.@secs = vip_status(3);
+		.@days = .@secs / 86400;
+		.@hours = (.@secs % 86400) / 3600;
+		.@minutes = (.@secs % 3600) / 60;
+
+		dispbottom "Time left: " + .@days + " day(s), " + .@hours + " hour(s), " + .@minutes + " minute(s)";
+	}
+	end;
+}

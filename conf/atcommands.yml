@@ -1497,6 +1497,18 @@ Body:
     Help: |
       Params: <amount>
       Raises WIS by given amount.
+  - Command: ws
+    Aliases:
+      - vendingsearch
+    Help: |
+      Params: <item_id|name> [+refine] [[card_id]] [(opt_id val)]
+      Search vending stores with extended filters.
+  - Command: wb
+    Aliases:
+      - buyingsearch
+    Help: |
+      Params: <item_id|name>
+      Search buying stores with extended filters.      
   - Command: zeny
     Help: |
       Params: <amount> - Gives you desired amount of Zeny.

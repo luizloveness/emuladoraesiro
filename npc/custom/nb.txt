@@ -1,0 +1,192 @@
+prontera,153,113,5	script	Pack Novato	628,{
+
+	mes "[Pack Novato]";
+	mes "Bem-vindo ao servidor!";
+	mes " ";
+	mes "Este NPC entrega um pacote";
+	mes "especial para novos jogadores.";
+	next;
+
+	// =========================================================
+	// 1. Obtém o Account ID
+	// =========================================================
+
+	.@account_id = getcharid(3);
+
+	if (.@account_id <= 0) {
+		mes "[Pack Novato]";
+		mes "Não foi possível identificar";
+		mes "sua conta corretamente.";
+		close;
+	}
+
+	// =========================================================
+	// 2. Obtém a data de criação da conta
+	// =========================================================
+
+	.@reg_date$ = "";
+
+	query_sql(
+		"SELECT DATE_FORMAT(reg_date,'%Y-%m-%d %H:%i:%s') " +
+		"FROM cp_createlog " +
+		"WHERE account_id = " + .@account_id + " " +
+		"ORDER BY reg_date ASC " +
+		"LIMIT 1",
+		.@reg_date$
+	);
+
+	// =========================================================
+	// 3. Se NÃO existe registro na cp_createlog, bloqueia
+	// =========================================================
+
+	if (.@reg_date$ == "") {
+		mes "[Pack Novato]";
+		mes "Sua conta não possui um";
+		mes "registro válido de criação.";
+		mes " ";
+		mes "Por segurança, o Pack Novato";
+		mes "não pode ser entregue.";
+		mes " ";
+		mes "Entre em contato com a administração";
+		mes "caso isso seja um erro.";
+		close;
+	}
+
+	// =========================================================
+	// 4. Verifica se a conta foi criada HOJE
+	// =========================================================
+
+	.@is_new = 0;
+
+	query_sql(
+		"SELECT COUNT(*) " +
+		"FROM cp_createlog " +
+		"WHERE account_id = " + .@account_id + " " +
+		"AND DATE(reg_date) = CURDATE()",
+		.@is_new
+	);
+
+	if (.@is_new <= 0) {
+		mes "[Pack Novato]";
+		mes "Este pacote é exclusivo";
+		mes "para contas novas.";
+		mes " ";
+		mes "Sua conta não foi criada hoje.";
+		close;
+	}
+
+	// =========================================================
+	// 5. Obtém o Unique ID pelo Odin
+	// =========================================================
+
+	.@unique_id$ = "";
+
+	query_sql(
+		"SELECT unique_id " +
+		"FROM odin_auth " +
+		"WHERE account_id = " + .@account_id + " " +
+		"AND unique_id IS NOT NULL " +
+		"AND unique_id != '' " +
+		"LIMIT 1",
+		.@unique_id$
+	);
+
+	if (.@unique_id$ == "") {
+		mes "[Pack Novato]";
+		mes "Não foi possível identificar";
+		mes "seu dispositivo corretamente.";
+		mes " ";
+		mes "Por favor, entre em contato";
+		mes "com a administração.";
+		close;
+	}
+
+	// =========================================================
+	// 6. Verifica se ESTE Unique ID já recebeu o Pack
+	// =========================================================
+
+	.@already_claimed = 0;
+
+	query_sql(
+		"SELECT COUNT(*) " +
+		"FROM novice_pack_claims " +
+		"WHERE unique_id = '" + .@unique_id$ + "'",
+		.@already_claimed
+	);
+
+	if (.@already_claimed > 0) {
+		mes "[Pack Novato]";
+		mes "Este computador já recebeu";
+		mes "o Pack Novato anteriormente.";
+		mes " ";
+		mes "O pacote pode ser recebido";
+		mes "apenas uma vez por computador.";
+		close;
+	}
+
+	// =========================================================
+	// 7. Confirmação
+	// =========================================================
+
+	mes "[Pack Novato]";
+	mes "Parabéns!";
+	mes " ";
+	mes "Sua conta foi aprovada.";
+	mes "Você receberá:";
+	mes " ";
+	mes "^FF0000•^000000 Item Armadura KVM";
+	mes "^FF0000•^000000 Item Manto KVM";
+	mes "^FF0000•^000000 Item Sapato KVM";
+	mes "^FF0000•^000000 Item Carta Sting";
+	mes "^FF0000•^000000 Item Carta Skel Prisoner";
+	mes "^FF0000•^000000 Item Carta Ghostring";
+	mes "^FF0000•^000000 Item 4 Manual de XP";
+	mes "^FF0000•^000000 Item 15 Dias VIP";
+	mes "^FF0000•^000000 Item Asas de Anjo";
+	next;
+
+	// =========================================================
+	// 8. Verifica peso
+	// =========================================================
+
+	if (Weight + 100 > MaxWeight) {
+		mes "[Pack Novato]";
+		mes "Você não possui peso suficiente";
+		mes "para receber o pacote.";
+		mes " ";
+		mes "Esvazie um pouco seu inventário";
+		mes "e tente novamente.";
+		close;
+	}
+
+	// =========================================================
+	// 9. Entrega os itens
+	// =========================================================
+
+	getitem 2394,1;
+	getitem 2549,1;
+	getitem 2444,1;
+	getitem 4226,1;
+	getitem 4222,1;
+	getitem 4047,1;
+	getitem 35005,1;
+	getitem 12208,4;
+	getitem 42012,1;
+
+	// =========================================================
+	// 10. Registra o recebimento
+	// =========================================================
+
+	query_sql(
+		"INSERT INTO novice_pack_claims " +
+		"(account_id, unique_id, claim_date) VALUES (" +
+		.@account_id + ", '" +
+		.@unique_id$ + "', NOW())"
+	);
+
+	mes "[Pack Novato]";
+	mes "Seu pacote foi entregue!";
+	mes " ";
+	mes "Bom jogo!";
+	close;
+}

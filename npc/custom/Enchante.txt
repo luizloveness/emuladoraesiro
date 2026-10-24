@@ -1,0 +1,53 @@
+que_qsch05,120,133,5	script	Enchante Elemental  	762,{
+OnBuffs:
+	// Restringir uso do comando em mapas PvP ou GvG
+	if (getmapflag(strcharinfo(3), mf_pvp) || getmapflag(strcharinfo(3), mf_gvg)) {
+		message strcharinfo(0), "You cannot use @encantar in PvP or GvG maps.";
+		end;
+	}
+
+	disable_items;
+
+	// Verifica se o jogador tem permissão (VIP)
+	if(getgroupid() <= 4) {
+		message strcharinfo(0),"Failed, you don't have VIP.";
+		end;
+	}
+
+	if (@STAT_BUFF_DELAY > gettimetick(2))
+		end;
+
+	@STAT_BUFF_DELAY = gettimetick(2) + 2; // 2 segundos de delay
+
+	// Verifica se o item necessário está equipado
+	if(!isequipped(4263)) {
+		.@i = select(.menu$) -1;
+		if (.@i < 0) {
+			message strcharinfo(0),"Invalid selection!";
+			end;
+		}
+		sc_start .elements[.@i], 180000, 5;  // 3 minutos
+		message strcharinfo(0), "You have activated the enchantment: " + .buffs$[.@i];
+		end;
+	}
+
+	message strcharinfo(0), "Does not work with Samurai Incantation equipped.";
+	end;
+OnInit:
+	setarray .buffs$, "Poison Weapon", "Aspersio", "Darkness", 
+		"Enchant with Wind", "Enchant with Frost", "Enchant with Flame", 
+		"Enchant with Earthquake";
+
+	setarray .elements, 26, 37, 144, 98, 97, 96, 99;
+
+	// Registro do comando "@encantar" para o NPC
+	bindatcmd("encantar",strnpcinfo(3) + "::OnBuffs", 0, 99);
+	bindatcmd("enchant",strnpcinfo(3) + "::OnBuffs", 0, 99);
+
+	// Montagem do menu de encantamentos
+	.menu$ = "";
+	for( .@i = 0; .@i < getarraysize(.buffs$); .@i++){
+		.menu$ = .menu$ + .buffs$[.@i] + ":";
+	}
+	end;
+}

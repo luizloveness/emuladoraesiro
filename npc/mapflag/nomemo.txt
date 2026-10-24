@@ -83,6 +83,8 @@ ve_in	mapflag	nomemo
 ve_in02	mapflag	nomemo
 thor_camp	mapflag	nomemo
 moc_para01	mapflag	nomemo
+gef_dun03	mapflag	nomemo
+force_3-3	mapflag	nomemo
 
 //============================================================
 // Airport
@@ -638,6 +640,7 @@ pvp_n_8-3	mapflag	nomemo
 pvp_n_8-4	mapflag	nomemo
 pvp_n_8-5	mapflag	nomemo
 pvp_2vs2	mapflag	nomemo
+amatsu	mapflag	nomemo
 
 //============================================================
 // Aldebaran Turbo Track

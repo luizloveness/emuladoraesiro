@@ -1,0 +1,37 @@
+que_qsch05,120,139,4	script	Mudança de Sexo	766,{
+
+mes "[^FF0000Mudança de Sexo^000000]";
+if (getgmlevel()<1) goto naovip;
+mes "Olá! ^FF0000"+strcharinfo(0)+"^000000.";
+mes "Gostaria de mudar seu sexo?";
+menu "Sim, vamos lá.",l_yep,"Não, nem pensar!!",l_nop;
+
+l_yep:
+next;
+mes "[^FF0000Mudança de Sexo^000000]";
+mes "Você tem certeza disso??";
+menu "Bem, axo melhor não.",l_nop,"Tenho sim. Mãos na massa!!",l_ok;
+
+l_ok:
+next;
+mes "[^FF0000Mudança de Sexo^000000]";
+mes "Então, que assim seja.";
+next;
+changesex;
+mes "Caso queira retornar ao sexo anterior,";
+mes "basta fala comigo novamente.";
+close;
+
+l_nop:
+next;
+mes "[^FF0000Mudança de Sexo^000000]";
+mes "Entendo. Realmente é uma decisão muito dificil.";
+mes "Caso mude de ideia, volte a falar comigo.";
+close;
+
+naovip:
+mes "Lamento, mas você não é vip";
+mes "Acesse o site e veja como ser VIP!";
+close;
+
+}

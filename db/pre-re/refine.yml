@@ -702,6 +702,10 @@ Body:
                 Rate: 10000
                 Price: 10000
                 Material: Elunium
+              - Type: HD
+                Rate: 10000
+                Price: 10000
+                Material: HD_Elunium
               - Type: Enriched
                 Rate: 10000
                 Price: 10000
@@ -712,6 +716,10 @@ Body:
                 Rate: 10000
                 Price: 10000
                 Material: Elunium
+              - Type: HD
+                Rate: 10000
+                Price: 10000
+                Material: HD_Elunium
               - Type: Enriched
                 Rate: 10000
                 Price: 10000
@@ -722,6 +730,10 @@ Body:
                 Rate: 10000
                 Price: 10000
                 Material: Elunium
+              - Type: HD
+                Rate: 10000
+                Price: 10000
+                Material: HD_Elunium
               - Type: Enriched
                 Rate: 10000
                 Price: 10000
@@ -732,6 +744,10 @@ Body:
                 Rate: 10000
                 Price: 10000
                 Material: Elunium
+              - Type: HD
+                Rate: 10000
+                Price: 10000
+                Material: HD_Elunium
               - Type: Enriched
                 Rate: 10000
                 Price: 10000
@@ -743,6 +759,11 @@ Body:
                 Price: 10000
                 Material: Elunium
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 6000
+                Price: 10000
+                Material: HD_Elunium
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 9000
                 Price: 10000
@@ -755,6 +776,11 @@ Body:
                 Price: 10000
                 Material: Elunium
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 4000
+                Price: 10000
+                Material: HD_Elunium
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 7000
                 Price: 10000
@@ -767,42 +793,68 @@ Body:
                 Price: 10000
                 Material: Elunium
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 4000
+                Price: 10000
+                Material: HD_Elunium
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 7000
                 Price: 10000
                 Material: Enriched_Elunium
                 BreakingRate: 10000
           - Level: 8
+            Bonus: 6400
+            BlacksmithBlessingAmount: 1
             Chances:
               - Type: Normal
                 Rate: 2000
                 Price: 10000
                 Material: Elunium
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 2000
+                Price: 10000
+                Material: HD_Elunium
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 4000
                 Price: 10000
                 Material: Enriched_Elunium
                 BreakingRate: 10000
           - Level: 9
+            Bonus: 7200
+            BlacksmithBlessingAmount: 2
             Chances:
               - Type: Normal
                 Rate: 2000
                 Price: 10000
                 Material: Elunium
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 2000
+                Price: 10000
+                Material: HD_Elunium
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 4000
                 Price: 10000
                 Material: Enriched_Elunium
                 BreakingRate: 10000
           - Level: 10
+            Bonus: 8000
+            BlacksmithBlessingAmount: 4
             Chances:
               - Type: Normal
                 Rate: 900
                 Price: 10000
                 Material: Elunium
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 900
+                Price: 10000
+                Material: HD_Elunium
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 2000
                 Price: 10000
@@ -818,6 +870,10 @@ Body:
                 Rate: 10000
                 Price: 10000
                 Material: Oridecon
+              - Type: HD
+                Rate: 10000
+                Price: 10000
+                Material: HD_Oridecon
               - Type: Enriched
                 Rate: 10000
                 Price: 10000
@@ -828,6 +884,10 @@ Body:
                 Rate: 10000
                 Price: 10000
                 Material: Oridecon
+              - Type: HD
+                Rate: 10000
+                Price: 10000
+                Material: HD_Oridecon
               - Type: Enriched
                 Rate: 10000
                 Price: 10000
@@ -838,6 +898,10 @@ Body:
                 Rate: 10000
                 Price: 10000
                 Material: Oridecon
+              - Type: HD
+                Rate: 10000
+                Price: 10000
+                Material: HD_Oridecon
               - Type: Enriched
                 Rate: 10000
                 Price: 10000
@@ -848,6 +912,10 @@ Body:
                 Rate: 10000
                 Price: 10000
                 Material: Oridecon
+              - Type: HD
+                Rate: 10000
+                Price: 10000
+                Material: HD_Oridecon
               - Type: Enriched
                 Rate: 10000
                 Price: 10000
@@ -859,6 +927,11 @@ Body:
                 Price: 10000
                 Material: Oridecon
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 6000
+                Price: 10000
+                Material: HD_Oridecon
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 9000
                 Price: 10000
@@ -871,6 +944,11 @@ Body:
                 Price: 10000
                 Material: Oridecon
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 4000
+                Price: 10000
+                Material: HD_Oridecon
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 7000
                 Price: 10000
@@ -883,42 +961,68 @@ Body:
                 Price: 10000
                 Material: Oridecon
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 4000
+                Price: 10000
+                Material: HD_Oridecon
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 7000
                 Price: 10000
                 Material: Enriched_Oridecon
                 BreakingRate: 10000
           - Level: 8
+            Bonus: 6400
+            BlacksmithBlessingAmount: 1
             Chances:
               - Type: Normal
                 Rate: 2000
                 Price: 10000
                 Material: Oridecon
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 2000
+                Price: 10000
+                Material: HD_Oridecon
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 4000
                 Price: 10000
                 Material: Enriched_Oridecon
                 BreakingRate: 10000
           - Level: 9
+            Bonus: 7200
+            BlacksmithBlessingAmount: 2
             Chances:
               - Type: Normal
                 Rate: 2000
                 Price: 10000
                 Material: Oridecon
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 2000
+                Price: 10000
+                Material: HD_Oridecon
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 4000
                 Price: 10000
                 Material: Enriched_Oridecon
                 BreakingRate: 10000
           - Level: 10
+            Bonus: 8000
+            BlacksmithBlessingAmount: 4
             Chances:
               - Type: Normal
                 Rate: 900
                 Price: 10000
                 Material: Oridecon
                 BreakingRate: 10000
+              - Type: HD
+                Rate: 900
+                Price: 10000
+                Material: HD_Oridecon
+                DowngradeAmount: 1
               - Type: Enriched
                 Rate: 2000
                 Price: 10000

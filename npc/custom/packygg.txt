@@ -1,0 +1,64 @@
+//===== rAthena Script =======================================
+//= NPC - Ticket and Yggdrasil Berry Exchange (with weight check)
+//============================================================
+
+prontera,138,192,5	script	TicketYggTrader#1	532,{
+
+	mes "[Ticket & Ygg Trader]";
+	mes "What would you like to do?";
+	next;
+
+	switch(select(
+		"Exchange 1 Ticket for 100 Yggdrasil Berries:"
+		+"Exchange 100 Yggdrasil Berries for 1 Ticket:"
+		+"Leave"
+	)) {
+
+		case 1:
+
+
+			if (countitem(42014) < 1) {
+				mes "[Ticket & Ygg Trader]";
+				mes "You don't have any ^FF0000Ticket^000000 (ID 42014).";
+				close;
+			}
+			// Check if player can carry 100 Yggdrasil Berries
+			if (!checkweight(607,100)) {
+				mes "[Ticket & Ygg Trader]";
+				mes "You're carrying too much weight! Reduce your inventory weight before exchanging.";
+				close;
+			}
+			delitem 42014,1;
+			getitem 607,100;
+			mes "[Ticket & Ygg Trader]";
+			mes "You exchanged 1 Ticket for 100 Yggdrasil Berries!";
+			close;
+
+		case 2:
+
+
+			if (countitem(607) < 100) {
+				mes "[Ticket & Ygg Trader]";
+				mes "You don't have ^FF0000100 Yggdrasil Berries^000000 (ID 607).";
+				close;
+			}
+			// Check if player can carry 1 Ticket
+			if (!checkweight(42014,1)) {
+				mes "[Ticket & Ygg Trader]";
+				mes "You're carrying too much weight! Reduce your inventory weight before exchanging.";
+				close;
+			}
+			delitem 607,100;
+			getitem 42014,1;
+			mes "[Ticket & Ygg Trader]";
+			mes "You exchanged 100 Yggdrasil Berries for 1 Ticket!";
+			close;
+
+		default:
+			mes "[Ticket & Ygg Trader]";
+			mes "Come back anytime!";
+			close;
+	}
+
+
+}

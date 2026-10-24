@@ -23,9 +23,9 @@
 	mes "Welcome to Prontera.";
 	close;
 }
-prontera,223,99,1	duplicate(prtguard)	Guard#2pront	105
-prontera,229,104,5	duplicate(prtguard)	Guard#3pront	105
-prontera,47,339,5	duplicate(prtguard)	Guard#4pront	105
+prontera,224,87,4	duplicate(prtguard)	Guard#2pront	105
+prontera,231,87,5	duplicate(prtguard)	Guard#3pront	105
+prontera,57,297,5	duplicate(prtguard)	Guard#4pront	105
 
 prontera,101,288,3	script	Shuger#pront	98,{
 	mes "[Shuger]";
@@ -72,7 +72,7 @@ prontera,106,116,6	script	Merideth#pront	91,{
 	close;
 }
 
-prontera,160,133,2	script	YuPi#pront	102,{
+prontera,164,64,2	script	YuPi#pront	102,{
 	mes "[YuPi]";
 	mes "Although many monsters may look the same, be careful! There are variations among monsters that have the same basic form.";
 	next;
@@ -84,7 +84,7 @@ prontera,160,133,2	script	YuPi#pront	102,{
 	close;
 }
 
-prontera,149,202,2	script	YuNa#pront	700,{
+prontera,147,161,2	script	YuNa#pront	700,{
 	mes "[YuNa]";
 	mes "Behold...";
 	mes "Mighty Odin!";

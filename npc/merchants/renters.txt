@@ -28,7 +28,7 @@
 
 // PecoPeco Breeder (for Knights) :: breeder
 //============================================================
-prontera,55,350,5	script	Peco Peco Breeder#knt	105,{
+prontera,65,305,5	script	Peco Peco Breeder#knt	105,{
 	if(Upper==0) set .@price,2500; //Normal Peco - default price
 	if(Upper==1) set .@price,2500; //Armored Peco
 	if(Upper==2) set .@price,2500; //Baby Peco
@@ -92,7 +92,7 @@ prontera,55,350,5	script	Peco Peco Breeder#knt	105,{
 
 // Grand PecoPeco Breeder (for Crusaders)
 //============================================================
-prontera,232,318,3	script	Peco Peco Breeder#cru	105,{
+prontera,243,267,5	script	Peco Peco Breeder#cru	105,{
 	if(Upper==0) set .@price,3500; //Normal Peco - default price
 	if(Upper==1) set .@price,3500; //Armored Peco
 	if(Upper==2) set .@price,3500; //Baby Peco

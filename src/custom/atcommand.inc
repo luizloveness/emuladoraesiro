@@ -17,3 +17,10 @@
 //	clif_specialeffect(&sd->bl, EF_HEARTCASTING, AREA);
 //	return 0;
 //}
+
+/**
+ * @hidepet - Hides all pets except the player's pet.
+ * @hidepetall - Hides all pets, including the player's pet.
+ * [Daegaladh]
+ */
+

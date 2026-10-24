@@ -1,0 +1,471 @@
+// ============================================================
+// aesiRO - CENTRAL DE MISSÕES
+// NPC 01
+// ============================================================
+//
+// QUEST 01
+// 100x Angeling Coin - ID 3090
+// 5x Tintura Vermelha - ID 975
+// Recompensa: Red Helm of Darkness - ID 3077
+//
+// QUEST 02
+// 100x Angeling Coin - ID 3090
+// 5x Tintura Vermelha - ID 975
+// 100x Burnt Tree - ID 7068
+// Recompensa: Hokage Hat - ID 3065
+//
+// QUEST 03
+// 100x Angeling Coin - ID 3090
+// 5x Tintura Vermelha - ID 975
+// 100x Burnt Tree - ID 7068
+// Recompensa: Golden dragon helm - ID 3062
+// ============================================================
+
+prontera,202,174,4	script	Angeling	1766,{
+
+	mes "[Angeling]";
+	mes "Ora, ora... um aventureiro!";
+	mes "Você tem cara de quem está procurando";
+	mes "problemas... digo, ^00FF00missões^000000!";
+	next;
+
+	mes "[Angeling]";
+	mes "Eu sou responsável por reunir";
+	mes "algumas das missões mais interessantes";
+	mes "de todo o reino.";
+	next;
+
+	mes "[Angeling]";
+	mes "Se você estiver procurando um desafio,";
+	mes "talvez eu tenha algo para você.";
+	next;
+
+	switch(select(
+		"Quero uma missão!",
+		"Ver minha missão atual",
+		"Sair"
+	)) {
+
+		case 1:
+			goto L_QUEST_MENU;
+
+		case 2:
+			goto L_STATUS;
+
+		case 3:
+			mes "[Angeling]";
+			mes "Volte quando estiver preparado.";
+			mes "Sempre existe uma nova missão esperando";
+			mes "por algum aventureiro corajoso.";
+			close;
+	}
+
+
+// ============================================================
+// MENU DE QUESTS
+// ============================================================
+
+L_QUEST_MENU:
+
+	mes "[Angeling]";
+	mes "Muito bem!";
+	mes "Vamos ver o que tenho disponível...";
+	next;
+
+	switch(select(
+		"Red Helme of Darkness",
+		"Hokage Hat",
+		"Golden Dragon Helm",
+		"Voltar"
+	)) {
+
+		case 1:
+			goto L_QUEST_BLACK_HELM;
+
+		case 2:
+			goto L_QUEST_HOKAGE_HAT;
+
+		case 3:
+			goto L_QUEST_Golden_Dragon;
+
+		case 4:
+			goto L_END;
+	}
+
+
+// ============================================================
+// QUEST 01 - RED HELM OF DARKNESS
+// ============================================================
+
+L_QUEST_BLACK_HELM:
+
+	mes "[Angeling]";
+	mes "Então você escolheu esta missão...";
+	mes "Interessante.";
+	next;
+
+	mes "[Angeling]";
+	mes "Preciso de alguns materiais especiais";
+	mes "para preparar um equipamento bastante raro.";
+	next;
+
+	mes "[Angeling]";
+	mes "^800080Requisitos da missão:^000000";
+	mes " ";
+	mes "• ^FFD700100x Angeling Coin^000000";
+	mes " ";
+	mes "• ^FF00005x Tintura Vermelha^000000";
+	next;
+
+	mes "[Angeling]";
+	mes "Traga todos os materiais para mim";
+	mes "e eu cuidarei do restante.";
+	next;
+
+	// ========================================================
+	// VERIFICAÇÃO DOS MATERIAIS
+	// ========================================================
+
+	if (countitem(3090) < 100 || countitem(975) < 5) {
+
+		mes "[Angeling]";
+		mes "Hmmm...";
+		mes "Parece que ainda falta alguma coisa.";
+		next;
+
+		mes "[Angeling]";
+		mes "Você precisa trazer:";
+		mes " ";
+		mes "^FFD700100x Angeling Coin^000000";
+		mes "^FF00005x Tintura Vermelha^000000";
+		next;
+
+		mes "[Angeling]";
+		mes "Volte quando estiver com tudo.";
+		close;
+	}
+
+	// ========================================================
+	// CONFIRMAÇÃO
+	// ========================================================
+
+	mes "[Angeling]";
+	mes "OHOHOHO!";
+	mes "Você conseguiu reunir tudo!";
+	next;
+
+	mes "[Angeling]";
+	mes "Essas Angeling Coins...";
+	mes "e essas tinturas vermelhas...";
+	next;
+
+	mes "[Angeling]";
+	mes "Perfeito!";
+	mes "Exatamente o que eu precisava.";
+	next;
+
+	mes "[Angeling]";
+	mes "Agora fique parado aí.";
+	mes "Vou preparar seu equipamento.";
+	next;
+
+	// ========================================================
+	// REMOVE OS MATERIAIS
+	// ========================================================
+
+	delitem 3090,100;
+	delitem 975,5;
+
+	// ========================================================
+	// ENTREGA DA RECOMPENSA
+	// ========================================================
+
+	getitem 3077,1;
+
+	mes "[Angeling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Angeling]";
+	mes "Você recebeu:";
+	mes " ";
+	mes "^0000FF1x Red Helm of Darkness^000000";
+	next;
+
+	mes "[Angeling]";
+	mes "Espero que você goste.";
+	mes "Mas não venha reclamar comigo";
+	mes "se alguém fugir quando olhar para você.";
+	next;
+
+	mes "[Angeling]";
+	mes "HAHAHAHA!";
+	mes "Volte quando quiser encarar";
+	mes "uma nova missão!";
+	close;
+
+
+// ============================================================
+// QUEST 02 - HOKAGE HAT
+// ============================================================
+
+L_QUEST_HOKAGE_HAT:
+
+	mes "[Angeling]";
+	mes "Então você escolheu esta missão...";
+	mes "Interessante.";
+	next;
+
+	mes "[Angeling]";
+	mes "Preciso de alguns materiais especiais";
+	mes "para preparar um equipamento bastante raro.";
+	next;
+
+	mes "[Angeling]";
+	mes "^800080Requisitos da missão:^000000";
+	mes " ";
+	mes "• ^FFD700100x Angeling Coin^000000";
+	mes " ";
+	mes "• ^FF00005x Tintura Vermelha^000000";
+	mes " ";
+	mes "• ^FF0000100x Burnt Tree^000000";
+	next;
+
+	mes "[Angeling]";
+	mes "Traga todos os materiais para mim";
+	mes "e eu cuidarei do restante.";
+	next;
+
+	// ========================================================
+	// VERIFICAÇÃO DOS MATERIAIS
+	// ========================================================
+
+	if (countitem(3090) < 100 || countitem(975) < 5 || countitem(7068) < 100) {
+
+		mes "[Angeling]";
+		mes "Hmmm...";
+		mes "Parece que ainda falta alguma coisa.";
+		next;
+
+		mes "[Angeling]";
+		mes "Você precisa trazer:";
+		mes " ";
+		mes "^FFD700100x Angeling Coin^000000";
+		mes "^FF00005x Tintura Vermelha^000000";
+		mes "^FF0000100x Burnt Tree^000000";
+		next;
+
+		mes "[Angeling]";
+		mes "Volte quando estiver com tudo.";
+		close;
+	}
+
+	// ========================================================
+	// CONFIRMAÇÃO
+	// ========================================================
+
+	mes "[Angeling]";
+	mes "OHOHOHO!";
+	mes "Você conseguiu reunir tudo!";
+	next;
+
+	mes "[Angeling]";
+	mes "Essas Angeling Coins...";
+	mes "e essas tinturas vermelhas...";
+	next;
+
+	mes "[Angeling]";
+	mes "Perfeito!";
+	mes "Exatamente o que eu precisava.";
+	next;
+
+	mes "[Angeling]";
+	mes "Agora fique parado aí.";
+	mes "Vou preparar seu equipamento.";
+	next;
+
+	// ========================================================
+	// REMOVE OS MATERIAIS
+	// ========================================================
+
+	delitem 3090,100;
+	delitem 975,5;
+	delitem 7068,100;
+
+	// ========================================================
+	// ENTREGA DA RECOMPENSA
+	// ========================================================
+
+	getitem 3065,1;
+
+	mes "[Angeling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Angeling]";
+	mes "Você recebeu:";
+	mes " ";
+	mes "^0000FF1x Hokage Hat^000000";
+	next;
+
+	mes "[Angeling]";
+	mes "Espero que você goste.";
+	mes "Mas não venha reclamar comigo";
+	mes "se alguém fugir quando olhar para você.";
+	next;
+
+	mes "[Angeling]";
+	mes "HAHAHAHA!";
+	mes "Volte quando quiser encarar";
+	mes "uma nova missão!";
+	close;
+
+// ============================================================
+// QUEST 03 - Golden Dragon Helm
+// ============================================================
+
+L_QUEST_Golden_Dragon:
+
+	mes "[Angeling]";
+	mes "Então você escolheu esta missão...";
+	mes "Interessante.";
+	next;
+
+	mes "[Angeling]";
+	mes "Preciso de alguns materiais especiais";
+	mes "para preparar um equipamento bastante raro.";
+	next;
+
+	mes "[Angeling]";
+	mes "^800080Requisitos da missão:^000000";
+	mes " ";
+	mes "• ^FFD700100x Angeling Coin^000000";
+	mes " ";
+	mes "• ^FF00005x Tintura Amarela^000000";
+	mes " ";
+	mes "• ^FF0000300x Escama de Dragão^000000";
+	next;
+
+	mes "[Angeling]";
+	mes "Traga todos os materiais para mim";
+	mes "e eu cuidarei do restante.";
+	next;
+
+	// ========================================================
+	// VERIFICAÇÃO DOS MATERIAIS
+	// ========================================================
+
+	if (countitem(3090) < 100 || countitem(976) < 5 || countitem(1036) < 300) {
+
+		mes "[Angeling]";
+		mes "Hmmm...";
+		mes "Parece que ainda falta alguma coisa.";
+		next;
+
+		mes "[Angeling]";
+		mes "Você precisa trazer:";
+		mes " ";
+		mes "^FFD700100x Angeling Coin^000000";
+		mes "^FF00005x Tintura Amarela^000000";
+		mes "^FF0000300x Escama de Dragão^000000";
+		next;
+
+		mes "[Angeling]";
+		mes "Volte quando estiver com tudo.";
+		close;
+	}
+
+	// ========================================================
+	// CONFIRMAÇÃO
+	// ========================================================
+
+	mes "[Angeling]";
+	mes "OHOHOHO!";
+	mes "Você conseguiu reunir tudo!";
+	next;
+
+	mes "[Angeling]";
+	mes "Essas Angeling Coins...";
+	mes "e essas tinturas vermelhas...";
+	next;
+
+	mes "[Angeling]";
+	mes "Perfeito!";
+	mes "Exatamente o que eu precisava.";
+	next;
+
+	mes "[Angeling]";
+	mes "Agora fique parado aí.";
+	mes "Vou preparar seu equipamento.";
+	next;
+
+	// ========================================================
+	// REMOVE OS MATERIAIS
+	// ========================================================
+
+	delitem 3090,100;
+	delitem 976,5;
+	delitem 1036,300;
+
+	// ========================================================
+	// ENTREGA DA RECOMPENSA
+	// ========================================================
+
+	getitem 3062,1;
+
+	mes "[Angeling]";
+	mes "Prontinho!";
+	next;
+
+	mes "[Angeling]";
+	mes "Você recebeu:";
+	mes " ";
+	mes "^0000FF1x Golden Dragon Helm^000000";
+	next;
+
+	mes "[Angeling]";
+	mes "Espero que você goste.";
+	mes "Mas não venha reclamar comigo";
+	mes "se alguém fugir quando olhar para você.";
+	next;
+
+	mes "[Angeling]";
+	mes "HAHAHAHA!";
+	mes "Volte quando quiser encarar";
+	mes "uma nova missão!";
+	close;
+
+// ============================================================
+// STATUS
+// ============================================================
+
+L_STATUS:
+
+	mes "[Angeling]";
+	mes "Por enquanto, você não possui";
+	mes "nenhuma missão registrada.";
+	next;
+
+	mes "[Angeling]";
+	mes "Mas não se preocupe...";
+	mes "isso pode mudar muito em breve.";
+	next;
+
+	mes "[Angeling]";
+	mes "Tenho várias ideias guardadas";
+	mes "para aventureiros como você.";
+	close;
+
+
+// ============================================================
+// SAÍDA
+// ============================================================
+
+L_END:
+
+	mes "[Angeling]";
+	mes "Tudo bem.";
+	mes "Volte quando quiser aceitar";
+	mes "um novo desafio.";
+	close;
+}

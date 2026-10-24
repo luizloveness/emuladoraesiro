@@ -1,0 +1,98 @@
+prontera,126,126,6	script	Professor Oak	902,{
+
+	mes "[Professor Oak]";
+	mes "Olá, jovem treinador!";
+	mes "Bem-vindo ao Laboratório Pokémon!";
+	next;
+
+	switch(select("Trocar UP Coin por Pokémon:Quest UP Coin:Cancelar")) {
+
+	//===============================
+	// Troca da UP Coin
+	//===============================
+	case 1:
+
+		mes "[Professor Oak]";
+		mes "Esta moeda possui uma energia misteriosa...";
+		mes "Ela pode se transformar em um ^FF0000Chapéu Pokémon Visual^000000 completamente aleatório!";
+		next;
+
+		if (countitem(3046) < 1) {
+			mes "[Professor Oak]";
+			mes "Você não possui nenhuma ^0000FFUP Coin^000000.";
+			close;
+		}
+
+		if (select("Abrir minha Pokébola!:Cancelar") == 2)
+			close;
+
+		delitem 3046,1;
+
+		// Pokémon aleatório
+		.@pokemon = rand(3019,3042);
+
+		getitem .@pokemon,1;
+
+		specialeffect EF_LEVEL99;
+		soundeffect "pokemon\\item.wav",0;
+
+		mes "[Professor Oak]";
+		mes "Incrível!";
+		mes "Sua Pokébola brilhou intensamente!";
+		mes "Você recebeu um Pokémon Visual!";
+		close;
+
+
+	//===============================
+	// Quest da UP Coin
+	//===============================
+	case 2:
+
+		mes "[Professor Oak]";
+		mes "Vejo que deseja fabricar uma ^0000FFUP Coin^000000.";
+		next;
+
+		mes "[Professor Oak]";
+		mes "Para isso preciso de alguns materiais para minhas pesquisas.";
+		next;
+
+		mes "^0055FFItens Necessários:^000000";
+		mes "^FF990015^000000 x aesiRO Coin";
+		mes "^FF9900100^000000 x Bronze Coin";
+		mes "^FF9900300^000000 x Tabela de Pesquisa";
+		next;
+
+		if(select("Entregar os materiais.:Cancelar") == 2)
+			close;
+
+		if (countitem(671) < 15 ||
+		    countitem(673) < 100 ||
+		    countitem(7347) < 300) {
+
+			mes "[Professor Oak]";
+			mes "Hmm...";
+			mes "Você ainda não possui todos os materiais.";
+			close;
+		}
+
+		delitem 671,15;
+		delitem 673,100;
+		delitem 7347,300;
+
+		getitem 3046,1;
+
+		specialeffect EF_LEVELUP;
+
+		mes "[Professor Oak]";
+		mes "Excelente trabalho!";
+		mes "Com esses materiais consegui produzir uma ^0000FFUP Coin^000000.";
+		mes "Agora converse comigo novamente e descubra qual Pokémon será seu companheiro!";
+		close;
+
+
+	default:
+		mes "[Professor Oak]";
+		mes "Volte quando quiser iniciar sua jornada Pokémon!";
+		close;
+	}
+}

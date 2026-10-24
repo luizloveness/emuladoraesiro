@@ -3648,6 +3648,9 @@ Body:
     Refineable: true
     Script: |
       bonus bDefRatioAtkClass,Class_All;
+      bonus2 bAddRace,RC_DemiHuman,50;
+      bonus2 bAddRace,RC_Player_Human,50;
+
   - Id: 1231
     AegisName: Bazerald
     Name: Bazerald
@@ -11127,6 +11130,7 @@ Body:
       Knight: true
       Merchant: true
       Swordman: true
+      Acolyte: true
     Locations:
       Right_Hand: true
     WeaponLevel: 4
@@ -79801,6 +79805,7 @@ Body:
       Knight: true
       Merchant: true
       Swordman: true
+      Monk: true
     Locations:
       Right_Hand: true
     WeaponLevel: 4

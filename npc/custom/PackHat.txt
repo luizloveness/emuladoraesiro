@@ -1,0 +1,29 @@
+function	script	F_boxnewbieHat_Select	{
+
+	mes "[Pack Newbie Hat]";
+	mes "Select the item you want (7 days rental):";
+	next;
+
+	switch(select(
+		"Alice Doll",
+		"Orc Successor Helm",
+		"Mob Scarf",
+		"Novice Suit",
+		"Giant Magestic Goat",
+		"Kakashi Head Protector",
+		"Elf King Ears",
+		"Moonlight Flower Hat"
+	)) {
+		case 1: rentitem 5137, (60*60*24*7); break; // Alice doll
+		case 2: rentitem 400006, (60*60*24*7); break; // Orc Successor helm
+		case 3: rentitem 28502, (60*60*24*7); break; // Mob Scarf
+		case 4: rentitem 35011, (60*60*24*7); break; // Novice Suit
+		case 5: rentitem 5518, (60*60*24*7); break; // Giant Magestic Goat
+		case 6: rentitem 35002, (60*60*24*7); break; // Kakashi
+		case 7: rentitem 35014, (60*60*24*7); break; // Elf King ears
+		case 8: rentitem 5214, (60*60*24*7); break; // Moonlight
+
+	}
+
+	end;
+}

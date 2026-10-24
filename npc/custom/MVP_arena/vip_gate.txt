@@ -1,0 +1,21 @@
+// npc: vip_gate.txt
+prontera,150,180,5	script	Porteiro VIP	403,{
+	mes "[VIP concierge]";
+	if (#VIP != 1) {
+		mes "Sorry, this area is restricted to VIP players only.";
+		close;
+	}
+	mes "Welcome, noble VIP player!";
+	mes "Do you want to enter the VIP Lounge?";
+	next;
+	switch(select("Yes:No")) {
+		case 1:
+			mes "Have a good time in the VIP Lounge!";
+			close2;
+			warp "que_avan01; // Altere o mapa/destino conforme necessário
+			end;
+		case 2:
+			mes "It's okay. I'll be here if you change your mind.";
+			close;
+	}
+}

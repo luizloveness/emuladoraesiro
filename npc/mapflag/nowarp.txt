@@ -17,10 +17,29 @@
 ama_test	mapflag	nowarp
 gon_test	mapflag	nowarp
 que_ba	mapflag	nowarp
-
+amatsu	mapflag	nowarp
 //============================================================
 // WoE:FE Castles
 //============================================================
+new_1-1	mapflag	nowarp
+sec_pri	mapflag	nowarp
+lighthalzen	mapflag	nowarp
+hugel	mapflag	nowarp
+rachel	mapflag	nowarp
+veins	mapflag	nowarp
+moscovia	mapflag	nowarp
+mid_camp	mapflag	nowarp
+brasilis	mapflag	nowarp
+dicastes01	mapflag	nowarp
+mora	mapflag	nowarp
+dewata	mapflag	nowarp
+malangdo	mapflag	nowarp
+malaya	mapflag	nowarp
+eclage	mapflag	nowarp
+lasagna	mapflag	nowarp
+//prontera	mapflag	nowarp
+//alberta	mapflag	nowarp
+//aldebaran	mapflag	nowarp
 aldeg_cas01	mapflag	nowarp
 aldeg_cas02	mapflag	nowarp
 aldeg_cas03	mapflag	nowarp
@@ -119,3 +138,23 @@ poring_w02	mapflag	nowarp
 2012rwc_06	mapflag	nowarp
 2012rwc_07	mapflag	nowarp
 2012rwc_08	mapflag	nowarp
+
+//============================================================
+// OLD Glast Hein
+//============================================================
+1@gl_k	mapflag	nowarp
+2@gl_k	mapflag	nowarp
+//============================================================
+// PVP
+//============================================================
+guild_vs3	mapflag	nowarp
+//============================================================
+// Horror Toy Factory Memorial Dungeon
+//============================================================
+1@xm_d	mapflag	nowarp
+1@xm_d	mapflag	nowarp
+//============================================================
+// Torre sem fim
+//============================================================
+1@tower	mapflag	nowarp
+

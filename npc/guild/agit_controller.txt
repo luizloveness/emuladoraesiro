@@ -1,79 +1,550 @@
 //===== rAthena Script =======================================
-//= War of Emperium - Auto-Start
+//= Euphy's WOE Controller
 //===== By: ==================================================
-//= kalen (1.0)
-//= 1.1 by Akaru and ho|yAnge|
+//= Euphy
 //===== Current Version: =====================================
-//= 2.0
+//= 1.5
 //===== Compatible With: =====================================
-//= rAthena Project; RO Episode 4+
+//= rAthena SVN r16958+
 //===== Description: =========================================
-//= Auto-start for War of Emperium FE.
-//= For instructions, see doc/woe_time_explanation.txt.
+//= A controller for War of Emperium designed for
+//= simplicity and ease of use.
+//= Many concepts taken from ToastOfDoom's script,
+//= and "rewards" function originally by Goddameit.
 //===== Additional Comments: =================================
-//= 1.1a changed OnInit to OnAgitInit.[kobra_k88]
-//= 1.2 added gettime checks. removed $AgitStarted var.[kobra_k88]
-//= 1.3 Moved treasure spawn time here.[kobra_k88]
-//= 1.3a Implemented Shadowlady's idea to allow for different
-//=     start/stop times on different days.[kobra_k88]
-//= 1.4 Fixed treasure chests spawn! We had to unroll some loops
-//=     Now they appear in castles from 00:01 to 00:24. [Lupus]
-//= 1.5 Fixed WOE end messages on non-WOE days, by Avaj
-//= 1.5a missing tabs [KarLaeda]
-//= 1.6 Corrected multiple "WoE has begun" announces [ultramage]
-//= 1.7 Commented out the WoE start and end announces. [L0ne_W0lf]
-//= 1.8 Castle owners displayed when WoE starts and finished. [L0ne_W0lf]
-//= 1.8a Will now report unoccupied castles at start/end. [L0ne_W0lf]
-//= 1.8b Whoops. Fixed a mistake :D [L0ne_W0lf]
-//= 1.9 Rearranged the time-checks so they no longer use goto. [L0ne_W0lf]
-//=     Removed treasure spawning function calls. (No longer needed)
-//= 2.0 Added WoE Battle Log support for broadcasts. [L0ne_W0lf]
+//= Be sure to disable the default agit controllers!
+//== npc\guild\agit_controller.txt
+//== npc\guild2\agit_start_se.txt
 //============================================================
 
--	script	Agit_Event	-1,{
+// Information NPC
+//============================================================
+prontera,145,154,2	script	WOE informação	835,{
+	doevent "WOE_CONTROL::OnMenu";
 	end;
+OnAgitStart:
 
-OnClock2100:	//start time for Tuesday and Thursday
-OnClock2300:	//end time for Tuesday and Thursday
-OnClock1600:	//start time for Saturday
-OnClock1800:	//end time for Saturday
-
-OnAgitInit:
-	// starting time checks
-	if((gettime(DT_DAYOFWEEK)==TUESDAY) && (gettime(DT_HOUR)>=21 && gettime(DT_HOUR)<23) ||
-	   (gettime(DT_DAYOFWEEK)==THURSDAY) && (gettime(DT_HOUR)>=21 && gettime(DT_HOUR)<23) ||
-	   (gettime(DT_DAYOFWEEK)==SATURDAY) && (gettime(DT_HOUR)>=16 && gettime(DT_HOUR)<18)) {
-		if (!agitcheck()) {
-			AgitStart;
-			callsub S_DisplayOwners;
-		}
-		end;
-	}
-
-	// end time checks
-	if ((gettime(DT_DAYOFWEEK)==TUESDAY) && (gettime(DT_HOUR)==23) ||
-	    (gettime(DT_DAYOFWEEK)==THURSDAY) && (gettime(DT_HOUR)==23) ||
-	    (gettime(DT_DAYOFWEEK)==SATURDAY) && (gettime(DT_HOUR)==18)) { 
-		if (agitcheck()) {
-			AgitEnd;
-			callsub S_DisplayOwners;
-		}
-		end;
-	}
-	end;
-
-S_DisplayOwners:
-	setarray .@maps$[0],"aldeg_cas01","aldeg_cas02","aldeg_cas03","aldeg_cas04","aldeg_cas05";
-	setarray .@maps$[5],"gefg_cas01","gefg_cas02","gefg_cas03","gefg_cas04","gefg_cas05";
-	setarray .@maps$[10],"payg_cas01","payg_cas02","payg_cas03","payg_cas04","payg_cas05";
-	setarray .@maps$[15],"prtg_cas01","prtg_cas02","prtg_cas03","prtg_cas04","prtg_cas05";
-	for( set .@i, 0; .@i <= 19; set .@i, .@i+1 ) {
-		if (GetCastleData(.@maps$[.@i],1)) {
-			Announce "The [" + GetCastleName(.@maps$[.@i]) + "] castle has been conquered by the [" + GetGuildName(GetCastleData(.@maps$[.@i],1)) + "] guild.",bc_all|bc_woe;
-		}
-		else {
-			Announce "The [" + GetCastleName(.@maps$[.@i]) + "] castle is currently unoccupied.",bc_all|bc_woe;
-		}
-	}
 	end;
 }
+
+// Script Core
+//============================================================
+-	script	WOE_CONTROL	-1,{
+function Disp_Owner; function Add_Zero;
+
+OnInit:
+
+// -----------------------------------------------------------
+//  Configuration settings.
+// -----------------------------------------------------------
+
+	set .CastleWarp,0;		// 1: Always enable all castle warps. | 0: Warp only to active castles.
+	set .AutoKick,1;		// Automatically kick players from inactive castles during WOE? (1:yes / 0:no)
+	set .NoOwner,0; 		// Automatically kick players from unconquered castles outside of WOE? (1:yes / 0:no)
+	set .ExitWarp,0;		// Warp all players from castles when WOE ends? (1:yes / 0:no)
+	set .GMAccess,99;		// GM level required to access Session Manager.
+
+// -----------------------------------------------------------
+//  Reward options.
+// -----------------------------------------------------------
+
+//  [1] Enable rewards.
+//  [2] Mail all rewards.
+//      - If not set, players receive items in their inventory.
+//      - Only ONE item can be sent via mail, plus Zeny.
+//      - Note that offline players do NOT receive rewards.
+//  [4] Only reward Guild Masters.
+//      - If not set, all guild members are rewarded.
+//      - If mailing is enabled (option 2), offline Guild Masters WILL receive rewards.
+//  [8] Duplicate IP check.
+//      - Members in a guild with the same IP address are not rewarded.
+//      - If Guild Masters is enabled (option 4), this feature is not used.
+// -----------------------------------------------------------
+
+	// Combine values as needed (e.g. 1|8 = 1+8 = 9).
+	set .Options, 1|8;
+
+	// Rewards per castle.
+	// -- when given directly: <itemID>,<amount>{,<itemID>,<amount>,...}
+	// -- via mail (option 2): <itemID>,<amount>,<Zeny>
+	setarray .Reward[0],14001,1;
+
+// -----------------------------------------------------------
+//  Constants (leave this section alone).
+// -----------------------------------------------------------
+
+	setarray .Castles$[0],
+		"prtg_cas01","prtg_cas02","prtg_cas03","prtg_cas04","prtg_cas05",
+		"payg_cas01","payg_cas02","payg_cas03","payg_cas04","payg_cas05",
+		"gefg_cas01","gefg_cas02","gefg_cas03","gefg_cas04","gefg_cas05",
+		"aldeg_cas01","aldeg_cas02","aldeg_cas03","aldeg_cas04","aldeg_cas05",
+		"arug_cas01","arug_cas02","arug_cas03","arug_cas04","arug_cas05",
+		"schg_cas01","schg_cas02","schg_cas03","schg_cas04","schg_cas05";
+	setarray .EndLabel$[0],"ar01","ar02","ar03","ar04","ar05","sc01","sc02","sc03","sc04","sc05";
+	setarray .Days$[0],"Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sabado";
+	setarray .Regions$[0],"Prontera","Payon","Geffen","Aldebaran","Arunafeltz","Schwaltzvalt";
+	setarray .Map$[0],"prt_gld","pay_gld","gef_fild13","alde_gld","aru_gld","sch_gld";
+	setarray .MapX[0],134,240,153,111,208,121,295,317,140,204,214,308,143,193,305,48, 95,142,239,264,158,83, 68,299,292,293,288, 97,137, 71;
+	setarray .MapY[0], 65,128,137,240,240,233,116,293,160,266, 75,240,240,278, 87,83,249, 85,242, 90,272,47,155,345,107,100,252,196, 90,315;
+
+// -----------------------------------------------------------
+
+	set .Size, getarraysize($WOE_CONTROL);
+if (.AutoKick || .NoOwner) {
+    for (set .@i, 0; .@i < 30; set .@i, .@i + 1) {
+        if (.@i != 0 && .@i != 2 && .@i != 8)
+            continue;
+
+        setmapflag .Castles$[.@i], mf_loadevent;
+        setd "."+.Castles$[.@i], .@i;
+    }
+}
+	if (!agitcheck() && !agitcheck2()) sleep 4000;
+	set .Init,1;
+	
+OnMinute00:
+
+	freeloop(1);
+
+// -----------------------------------------------------------
+// AESIRO - GUILD PACKAGE POINTS
+// -----------------------------------------------------------
+// Toda segunda-feira às 00:00.
+//
+// O sistema verifica os 30 castelos configurados neste NPC.
+// Cada castelo que possuir uma guild concede +1 ponto.
+//
+// Exemplo:
+// Guild A possui 1 castelo = +1 ponto
+// Guild B possui 3 castelos = +3 pontos
+// Guild C não possui castelo = +0 pontos
+//
+// Os pontos são adicionados ao campo pack_point da tabela guild.
+//
+// IMPORTANTE:
+// Esta lógica NÃO está dentro do OnReward.
+// Portanto os pontos NÃO são entregues a cada WoE.
+// Eles são distribuídos somente uma vez por semana.
+// -----------------------------------------------------------
+
+	if (gettime(4) == 1 && gettime(3) == 0) {
+
+		// Segunda-feira às 00:00.
+		// Percorre todos os castelos configurados.
+		for(set .@i,0; .@i<30; set .@i,.@i+1) {
+
+			// Pega o Guild ID que atualmente possui o castelo.
+			set .@gid, getcastledata(.Castles$[.@i],1);
+
+			// Se o castelo não possui dono, ignora.
+			if (!.@gid)
+				continue;
+
+			// 1 castelo = 1 Guild Package Point.
+			query_sql "UPDATE `guild` SET `pack_point` = `pack_point` + 1 WHERE `guild_id` = "+.@gid;
+
+			// Log no console para facilitar o teste.
+			debugmes "[AESIRO WOE POINTS] Guild ID "+.@gid+" recebeu +1 Guild Package Point pelo castelo "+.Castles$[.@i];
+		}
+
+		announce "[aesiRO] Os Guild Package Points semanais foram distribuídos!",bc_all;
+	}
+
+// -----------------------------------------------------------
+// Fim da lógica de Guild Package Points
+// -----------------------------------------------------------
+
+	if (agitcheck() || agitcheck2()) {
+		for(set .@i,0; .@i<.Size; set .@i,.@i+4)
+			if (gettime(4) == $WOE_CONTROL[.@i] && gettime(3) == $WOE_CONTROL[.@i+2]) {
+			OnWOEEnd:
+				announce "A Guerra do Emperium terminou!",bc_all|bc_woe;
+				AgitEnd; AgitEnd2;
+				sleep 1000;
+				for(set .@j,0; .@j<30; set .@j,.@j+1) {
+					if (.Active[0]&(1<<.@j)) Disp_Owner(.Castles$[.@j],1);
+					if (.ExitWarp) maprespawnguildid .Castles$[.@j],0,3;
+				}
+				if (.Options&1 && .Active[0] && .ForceEnd != 2) callsub OnReward, .Active[0];
+				deletearray .Active[0],2;
+				if (.ForceEnd) { set .ForceEnd,0; end; }
+				break;
+			}
+	}
+	if ((!agitcheck() && !agitcheck2()) || .Init) {
+		if (!agitcheck() && !agitcheck2()) set .Init,0;
+		for(set .@i,0; .@i<.Size; set .@i,.@i+4)
+			if (gettime(4) == $WOE_CONTROL[.@i] && gettime(3) >= $WOE_CONTROL[.@i+1] && gettime(3) < $WOE_CONTROL[.@i+2]) {
+				deletearray .Active[0],2;
+				set .Active[0], $WOE_CONTROL[.@i+3];
+				if (.Init) { AgitEnd; AgitEnd2; }
+				else announce "A Guerra do Emperium começou!",bc_all|bc_woe;
+				sleep 1000;
+				AgitStart; AgitStart2;
+				for(set .@j,0; .@j<30; set .@j,.@j+1) {
+					if (.Active[0]&(1<<.@j)) {
+						if (!.Init) Disp_Owner(.Castles$[.@j],0);
+						set .Active[1], .Active[1] | (1<<((.@j/5)+1));
+} else {
+    // AESIRO: executar limpeza somente nos 3 castelos utilizados.
+    if (.@j != 0 && .@j != 2 && .@j != 8)
+        continue;
+
+    if (.@j < 20) {
+        donpcevent "Agit#"+.Castles$[.@j]+"::OnAgitEnd";
+        killmonster .Castles$[.@j], "Agit#"+.Castles$[.@j]+"::OnAgitBreak";
+    } else {
+        donpcevent "Manager#"+.Castles$[.@j]+"::OnAgitEnd2";
+        killmonster .Castles$[.@j], "Steward#"+.EndLabel$[.@j-20]+"::OnStartArena";
+    }
+}
+				}
+				break;
+			}
+	}
+	set .Init,0;
+	end;
+
+function Disp_Owner {
+	set .@o, getcastledata(getarg(0),1);
+	if (.@o) announce "The ["+getcastlename(getarg(0))+"] castle "+((getarg(1))?"has been conquered":"is currently held")+" by the ["+getguildname(.@o)+"] guild.",bc_all|bc_woe;
+	else announce "The ["+getcastlename(getarg(0))+"] castle is currently unoccupied.",bc_all|bc_woe;
+	return;
+}
+
+function Add_Zero {
+	return ((getarg(0)<10)?"0":"")+getarg(0)+(getarg(1,0)?".":":")+"00";
+}
+
+OnReward:
+	set .@sql$, ((.Options&4)?"position = 0":"online = 1");
+	if (.Options&2) set .@str$,gettimestr("%B %d, %Y",21);
+	freeloop(1);
+
+	for(set .@i,0; .@i<30; set .@i,.@i+1)
+		if (getarg(0)&(1<<.@i)) {
+
+			set .@gid, getcastledata(.Castles$[.@i],1);
+			if (!.@gid) continue;
+
+			set .@size, query_sql(
+				"SELECT c.account_id, gm.char_id "+
+				"FROM `guild_member` gm "+
+				"INNER JOIN `char` c ON c.char_id = gm.char_id "+
+				"WHERE gm.guild_id = '"+.@gid+"' AND "+.@sql$,
+				.@aid,.@cid
+			);
+
+			for(set .@j,0; .@j<.@size; set .@j,.@j+1) {
+
+				if (.Options&8 && !(.Options&4)) {
+					set .@ip$, replacestr(getcharip(.@aid[.@j]),".","a");
+					if (getd(".@ip_"+.@i+"_"+.@ip$)) continue;
+					setd ".@ip_"+.@i+"_"+.@ip$,1;
+				}
+
+				if (.Options&2) {
+					query_sql(
+						"INSERT INTO `mail` (send_name,dest_id,title,message,nameid,amount,identify,zeny,time) VALUES ("+
+						"'no-reply',"+.@cid[.@j]+",'** Siege Reward: "+getcastlename(.Castles$[.@i])+" **',"+
+						"'Brave one,% % Congratulations!% Your guild has successfully occupied% territory in the War of Emperium on% "+.@str$+".% % % % % [ Your reward is attached. ]',"+
+						.Reward[0]+","+.Reward[1]+",0,"+.Reward[2]+",UNIX_TIMESTAMP(NOW()))"
+					);
+
+					if (!getd(".@str_"+.@cid[.@j]) && isloggedin(.@aid[.@j],.@cid[.@j])) {
+						setd ".@str_"+.@cid[.@j],1;
+						message rid2name(.@aid[.@j]),"You've got mail! Please re-login to update your mailing list.";
+					}
+
+				} else if (isloggedin(.@aid[.@j])) {
+
+					for(set .@k,0; .@k<getarraysize(.Reward); set .@k,.@k+2)
+						getitem .Reward[.@k], .Reward[.@k+1], .@aid[.@j];
+
+					message rid2name(.@aid[.@j]),
+						"You have been rewarded for conquering "+getcastlename(.Castles$[.@i])+".";
+				}
+			}
+		}
+
+	if (.Options&2)
+		query_sql("UPDATE `mail` SET message = REPLACE(message,'%',CHAR(13)) WHERE send_name = 'no-reply'");
+
+	return;
+
+
+OnPCLoadMapEvent:
+	if (!compare(strcharinfo(3),"g_cas")) end;
+	if (((.AutoKick && .Active[0]) || (.NoOwner && !getcastledata(strcharinfo(3),1))) && !(.Active[0]&(1<<getd("."+strcharinfo(3))))) {
+		if (getcharid(2) && getcastledata(strcharinfo(3),1) == getcharid(2)) end;
+		sleep2 1000;
+		message strcharinfo(0), getcastlename(strcharinfo(3))+" is currently inactive.";
+		sleep2 5000;
+		if (compare(strcharinfo(3),"g_cas")) warp "SavePoint",0,0;
+	}
+	end;
+
+OnMenu:
+while(1) {
+	mes "[WOE Informação]";
+	if (agitcheck() || agitcheck2()) {
+		if (.Active[0]) {
+			for(set .@i,0; .@i<.Size; set .@i,.@i+4)
+				if (gettime(4) == $WOE_CONTROL[.@i] && gettime(3) >= $WOE_CONTROL[.@i+1] && gettime(3) < $WOE_CONTROL[.@i+2]) {
+					set .@i, $WOE_CONTROL[.@i+2];
+					break;
+				}
+			mes "A Guerra do Emperium está ^0055FFativa^000000 until ^FF0000"+Add_Zero(.@i)+"^000000 nas seguintes regiões:";
+			mes " ";
+			for(set .@i,0; .@i<6; set .@i,.@i+1)
+				if (.Active[1]&(1<<(.@i+1))) mes " > ^777777"+.Regions$[.@i]+"^000000";
+		} else
+			mes "A Guerra do Emperium está ^0055FFativa^000000.";
+	} else {
+		for(set .@i,0; .@i<.Size; set .@i,.@i+4)
+			if ((gettime(4) == $WOE_CONTROL[.@i] && gettime(3) <= $WOE_CONTROL[.@i+1]) || gettime(4) < $WOE_CONTROL[.@i]) {
+				setarray .@time[0],$WOE_CONTROL[.@i],$WOE_CONTROL[.@i+1];
+				break;
+			}
+		if (!getarraysize(.@time))
+			setarray .@time[0],$WOE_CONTROL[0],$WOE_CONTROL[1];
+		mes "A Guerra do Emperium está ^777777inativa^000000.";
+		if (.Size) {
+			mes " ";
+			mes "A próxima sessão vai começar";
+			mes "on ^0055FF"+.Days$[.@time[0]]+"^000000 at "+Add_Zero(.@time[1])+"^000000.";
+		}
+	}
+	next;
+	switch(select(""+((.CastleWarp || .Active[1])?" ~ Ir para o castelo...":"")+": ~ Confira a programação...: ~ Ver os donos dos castelos...:"+((getgmlevel()<.GMAccess || !getgmlevel())?"":" ~ Gerenciar sessões...")+": ~ ^777777Cancel^000000")) {
+	case 1:
+		if (.CastleWarp) set .@clr$,"^0055FF";
+		set .@menu$,"";
+		for(set .@i,0; .@i<6; set .@i,.@i+1) {
+			if (.CastleWarp || .Active[1]&(1<<(.@i+1)))
+				set .@menu$, .@menu$+" ~ "+((.Active[1]&(1<<(.@i+1)))?.@clr$:"^777777")+.Regions$[.@i]+" Castles^000000";
+			set .@menu$, .@menu$+":";
+		}
+		set .@i, select(.@menu$)-1;
+		set .@menu$,"";
+		for(set .@j,.@i*5; .@j<(.@i*5)+5; set .@j,.@j+1) {
+			if (.CastleWarp || .Active[0]&(1<<.@j))
+				set .@menu$, .@menu$+" ~ "+((.Active[0]&(1<<.@j))?.@clr$:"^777777")+getcastlename(.Castles$[.@j])+"^000000";
+			set .@menu$, .@menu$+":";
+		}
+		set .@j, select(.@menu$)-1;
+		warp .Map$[.@i],.MapX[(.@i*5)+.@j],.MapY[(.@i*5)+.@j];
+		close;
+
+	case 2:
+		mes "[Schedule]";
+		if (.Size) {
+			freeloop(1);
+			for(set .@i,0; .@i<.Size; set .@i,.@i+4) {
+				mes "> ^FF0000"+.Days$[$WOE_CONTROL[.@i]]+" ("+Add_Zero($WOE_CONTROL[.@i+1])+"-"+Add_Zero($WOE_CONTROL[.@i+2])+")^000000";
+				for(set .@j,0; .@j<30; set .@j,.@j+1)
+					if ($WOE_CONTROL[.@i+3]&(1<<.@j)) mes "  ~ "+getcastlename(.Castles$[.@j])+" ^777777("+.Castles$[.@j]+")^000000";
+				if (.@i+4 < .Size) mes " ";
+			}
+			freeloop(0);
+		} else
+			mes "No times are configured.";
+		next;
+		break;
+
+	case 3:
+		mes "[Castle Ownership]";
+		for(set .@i,0; .@i<6; set .@i,.@i+1) {
+			set .@k, .@i*5;
+			mes "> ^FF0000"+.Regions$[.@i]+"^000000";
+			for(set .@j,.@k; .@j<(.@k+5); set .@j,.@j+1) { 
+				set .@t, getcastledata(.Castles$[.@j],1);
+				mes "  ~ "+getcastlename(.Castles$[.@j])+": "+((.@t)?"^0055FF"+getguildname(.@t):"^777777unoccupied")+"^000000";
+			}
+			if (.@i < 5) mes " ";
+		}
+		next;
+		break;
+
+	case 4:
+	while(1) {
+		mes "[Session Manager]";
+		mes "Existem ^0055FF"+(.Size/4)+" Guerra(s)^000000 configurada.";
+		mes "O que você gostaria de fazer?";
+		next;
+		switch(select(" ~ Adicionar uma sessão...: ~ Deletar uma sessão...: ~ Reiniciar configurações...:"+((agitcheck() || agitcheck2())?" ~ Finalizar a WOE atual...":"")+": ~ ^777777Voltar^000000")) {
+		case 1:
+			mes "[Nova sessão]";
+			if (.Size > 127) {
+				mes "Você já atingiu o máximo de 32 sessões.";
+				next;
+				break;
+			}
+			mes "Escolha um dia.";
+			next;
+			set .@Day, select(" ~ "+implode(.Days$,": ~ "))-1;
+			mes "[Nova sessão]";
+			mes "Escolha a hora de início para a WOE de ^0055FF"+.Days$[.@Day]+"^000000.";
+			next;
+			set .@menu$,"";
+			for(set .@i,0; .@i<23; set .@i,.@i+1)
+				set .@menu$, .@menu$+" ~ "+Add_Zero(.@i,1)+":";
+			set .@Start, select(.@menu$)-1;
+			mes "[Nova sessão]";
+			mes "Escolha um horário de término para WOE de ^0055FF"+.Days$[.@Day]+"^000000.";
+			next;
+			set .@menu$,"";
+			for(set .@i,.@Start+1; .@i<24; set.@i,.@i+1)
+				set .@menu$, .@menu$+" ~ "+Add_Zero(.@i,1)+":";
+			set .@End, select(.@menu$)+.@Start;
+			for(set .@i,0; .@i<.Size; set .@i,.@i+4)
+				if (.@Day == $WOE_CONTROL[.@i] &&
+				   ((.@Start >= $WOE_CONTROL[.@i+1] && .@Start < $WOE_CONTROL[.@i+2]) ||
+				    (.@End > $WOE_CONTROL[.@i+1] && .@End <= $WOE_CONTROL[.@i+2]) ||
+				    (.@Start <= $WOE_CONTROL[.@i+1] && .@End >= $WOE_CONTROL[.@i+2]))) {
+					mes "[Nova sessão]";
+					mes "Os horários escolhidos coincidem com uma sessão existente.";
+					next;
+					set .@d,1;
+					break;
+				}
+			if (.@d) { set .@d,0; break; }
+			set .@Castle,0;
+			while(1) {
+				mes "[Nova sessão]";
+				mes "^0055FF"+.Days$[.@Day]+" ("+Add_Zero(.@Start)+"-"+Add_Zero(.@End)+")^000000";
+				mes " > Castelos:";
+				if (!.@Castle)
+					mes "   ~ ^777777(Nenhum selecionado)^000000";
+				else for(set .@i,0; .@i<30; set .@i,.@i+1)
+					if (.@Castle&(1<<.@i)) mes "   ~ "+getcastlename(.Castles$[.@i])+" ("+.Castles$[.@i]+")";
+				next;
+				set .@menu$,((.@Castle)?" ~ ^FF0000Finished...^000000":"")+":";
+				for(set .@i,0; .@i<30; set .@i,.@i+1)
+					set .@menu$, .@menu$+" ~ "+((.@Castle&(1<<.@i))?"^0055FF":"")+getcastlename(.Castles$[.@i])+" ("+.Castles$[.@i]+")^000000:";
+				set .@i, select(.@menu$)-1;
+				if (.@i)
+					set .@Castle, .@Castle^(1<<(.@i-1));
+				else {
+					mes "[Nova sessão]";
+					mes "Você tem certeza?";
+					next;
+					switch(select(" ~ ^0055FFAdicionar sessão...^000000: ~ Continuar selecionando castelos...: ~ ^777777Cancel^000000")) {
+					case 1:
+						for(set .@i,0; .@i<.Size; set .@i,.@i+4)
+							if ((.@Day == $WOE_CONTROL[.@i] && .@End <= $WOE_CONTROL[.@i+1]) || .@Day < $WOE_CONTROL[.@i]) {
+								set .@d,1;
+								break;
+							}
+						if (!.@d) { set .@d,1; set .@i,.Size; }
+						copyarray $WOE_CONTROL[.@i+4], $WOE_CONTROL[.@i], .Size-.@i;
+						setarray $WOE_CONTROL[.@i], .@Day, .@Start, .@End, .@Castle;
+						set .Size, getarraysize($WOE_CONTROL);
+					case 3:
+						mes "[Nova sessão]";
+						mes ((.@d)?"Sessão adicionada.":"Cancelado.");
+						next;
+						set .@d,1;
+					case 2:
+						break;
+					}
+					if (.@d) { set .@d,0; break; }
+				}
+			}
+			break;
+
+		case 2:
+			mes "[Remover sessão]";
+			if (!.Size) {
+				mes "Não há sessões configuradas.";
+				next;
+				break;
+			}
+			mes "Selecione uma sessão.";
+			next;
+			set .@menu$,"";
+			for(set .@i,0; .@i<.Size; set .@i,.@i+4)
+				set .@menu$, .@menu$+" ~ "+.Days$[$WOE_CONTROL[.@i]]+" ("+Add_Zero($WOE_CONTROL[.@i+1],1)+"-"+Add_Zero($WOE_CONTROL[.@i+2],1)+"):";
+			set .@menu$, .@menu$+" ~ ^777777Cancel^000000";
+			set .@i, select(.@menu$)-1;
+			if (.@i == (.Size/4)) break;
+			mes "[Remover sessão]";
+			mes "Excluir ^0055FF"+.Days$[$WOE_CONTROL[.@i*4]]+"'s^000000 sessão?";
+			mes "Esta ação não pode ser desfeita.";
+			next;
+			set .@j, select(" ~ ^FF0000Excluir sessão...^000000: ~ ^777777Cancel^000000");
+			mes "[Remover sessão]";
+			if (.@j == 2)
+				mes "Cancelado.";
+			else {
+				deletearray $WOE_CONTROL[.@i*4],4;
+				set .Size, getarraysize($WOE_CONTROL);
+				mes "Sessão excluida.";
+			}
+			next;
+			break;
+
+		case 3:
+			mes "[Reiniciar configurações]";
+			mes "Reiniciar todas as configurações atualmente adicionadas.";
+			if (agitcheck() || agitcheck2()) {
+				mes " ";
+				mes "Esteja ciente que isso vai reiniciar até a WOE atualmente ativas.";
+			}
+			next;
+			set .@i, select(" ~ ^0055FFReiniciar configurações...^000000: ~ ^777777Cancel^000000");
+			mes "[Reiniciar configurações]";
+			if (.@i == 2) mes "Cancelado.";
+			else {
+				set .Init,1;
+				donpcevent "WOE_CONTROL::OnMinute00";
+				mes "As variáveis foram reinicializadas.";
+			}
+			next;
+			break;
+
+		case 4:
+			mes "[Force Agit End]";
+			if (!agitcheck() && !agitcheck2())  {
+				mes "WOE has already ended.";
+				next;
+				break;
+			}
+			mes "This command will safely execute all AgitEnd events.";
+			mes " ";
+			mes "Kill the current WOE session?";
+			next;
+			set .@i, select(" ~ ^FF0000End session...^000000:"+((.Options&1)?" ~ ^FF0000End session without rewards...^000000":"")+": ~ ^777777Cancel^000000");
+			mes "[Force Agit End]";
+			if (.@i == 3)
+				mes "Cancelled.";
+			else {
+				set .ForceEnd, .@i;
+				donpcevent "WOE_CONTROL::OnWOEEnd";
+				mes "WOE session terminated.";
+			}
+			next;
+			break;
+
+		case 5:
+			set .@d,1; break;
+		}
+		if (.@d) { set .@d,0; break; }
+	}
+	break;
+
+	case 5:
+		close;
+	}
+}
+}
+
+// ===========================================
+// NPCs duplicados de informação
+// ===========================================
+alberta,39,250,4	duplicate(WOE informação)	WOE informação#1	835
+aldebaran,133,115,4	duplicate(WOE informação)	WOE informação#2	835
+morocc,169,87,4	duplicate(WOE informação)	WOE informação#3	835
+geffen,124,69,4	duplicate(WOE informação)	WOE informação#4	835
+gonryun,153,115,4	duplicate(WOE informação)	WOE informação#5	835
+comodo,192,141,4	duplicate(WOE informação)	WOE informação#6	835

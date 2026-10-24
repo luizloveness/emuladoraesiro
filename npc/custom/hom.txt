@@ -1,0 +1,183 @@
+prt_in,89,72,5	script	Homunculus S 	989,{
+
+	.@lang = #langtype;
+
+	if (.@lang) {
+		mes "[Pesquisadora de Homúnculos]";
+		mes "Posso realizar a mutação do seu Homúnculo.";
+	} else {
+		mes "[Homunculus Researcher]";
+		mes "I can mutate your Homunculus.";
+	}
+
+	next;
+
+	if (checkhomcall() == -1) {
+		if (.@lang)
+			mes "Você não possui um Homúnculo.";
+		else
+			mes "You do not have a Homunculus.";
+		close;
+	}
+
+	if (countitem(6415) < 1) {
+		if (.@lang)
+			mes "Você precisa de um ^0000FFEmbrião Misterioso^000000.";
+		else
+			mes "You need a ^0000FFStrange Embryo^000000.";
+		close;
+	}
+
+	if (.@lang) {
+		switch(select(
+			"Escolher Homunculus S (20.000.000 Zeny + Embrião):Mutação Aleatória (Somente Embrião):Cancelar")) {
+
+		case 1:
+			.@premium = 1;
+			break;
+
+		case 2:
+			.@premium = 0;
+			break;
+
+		default:
+			close;
+		}
+	} else {
+		switch(select(
+			"Choose Homunculus S (20,000,000 Zeny + Embryo):Random Mutation (Embryo Only):Cancel")) {
+
+		case 1:
+			.@premium = 1;
+			break;
+
+		case 2:
+			.@premium = 0;
+			break;
+
+		default:
+			close;
+		}
+	}
+
+	//==============================
+	// ESCOLHA
+	//==============================
+
+	if (.@premium) {
+
+		if (Zeny < 20000000) {
+			if (.@lang)
+				mes "Você precisa de 20.000.000 Zeny.";
+			else
+				mes "You need 20,000,000 Zeny.";
+			close;
+		}
+
+		if (.@lang) {
+			switch(select(
+				"Eira:Bayeri:Sera:Dieter:Eleanor:Cancelar")) {
+
+			case 1: .@class = MER_EIRA;     .@name$ = "Eira"; break;
+			case 2: .@class = MER_BAYERI;   .@name$ = "Bayeri"; break;
+			case 3: .@class = MER_SERA;     .@name$ = "Sera"; break;
+			case 4: .@class = MER_DIETER;   .@name$ = "Dieter"; break;
+			case 5: .@class = MER_ELEANOR;  .@name$ = "Eleanor"; break;
+			default: close;
+			}
+
+			mes "[Pesquisadora de Homúnculos]";
+			mes "Transformar seu Homúnculo em ^0055FF"+.@name$+"^000000?";
+			next;
+
+			if(select("Sim:Não") == 2)
+				close;
+
+		} else {
+
+			switch(select(
+				"Eira:Bayeri:Sera:Dieter:Eleanor:Cancel")) {
+
+			case 1: .@class = MER_EIRA;     .@name$ = "Eira"; break;
+			case 2: .@class = MER_BAYERI;   .@name$ = "Bayeri"; break;
+			case 3: .@class = MER_SERA;     .@name$ = "Sera"; break;
+			case 4: .@class = MER_DIETER;   .@name$ = "Dieter"; break;
+			case 5: .@class = MER_ELEANOR;  .@name$ = "Eleanor"; break;
+			default: close;
+			}
+
+			mes "[Homunculus Researcher]";
+			mes "Transform your Homunculus into ^0055FF"+.@name$+"^000000?";
+			next;
+
+			if(select("Yes:No") == 2)
+				close;
+		}
+
+		delitem 6415,1;
+		Zeny -= 20000000;
+
+		if (hommutateforce(.@class)) {
+			if (.@lang)
+				mes "Mutação realizada com sucesso!";
+			else
+				mes "Mutation completed successfully!";
+		} else {
+			getitem 6415,1;
+			Zeny += 20000000;
+
+			if (.@lang)
+				mes "A mutação falhou.";
+			else
+				mes "The mutation failed.";
+		}
+
+		close;
+	}
+
+	//==============================
+	// ALEATÓRIO
+	//==============================
+
+	switch(rand(5)) {
+		case 0: .@class = MER_EIRA;     .@name$ = "Eira"; break;
+		case 1: .@class = MER_BAYERI;   .@name$ = "Bayeri"; break;
+		case 2: .@class = MER_SERA;     .@name$ = "Sera"; break;
+		case 3: .@class = MER_DIETER;   .@name$ = "Dieter"; break;
+		case 4: .@class = MER_ELEANOR;  .@name$ = "Eleanor"; break;
+	}
+
+	if (.@lang) {
+		mes "[Pesquisadora de Homúnculos]";
+		mes "Seu Homúnculo sofrerá uma mutação aleatória.";
+		mes "Resultado: ^0055FF"+.@name$+"^000000.";
+		next;
+		if(select("Continuar:Cancelar") == 2)
+			close;
+	} else {
+		mes "[Homunculus Researcher]";
+		mes "Your Homunculus will mutate randomly.";
+		mes "Result: ^0055FF"+.@name$+"^000000.";
+		next;
+		if(select("Continue:Cancel") == 2)
+			close;
+	}
+
+	delitem 6415,1;
+
+	if (hommutateforce(.@class)) {
+		if (.@lang)
+			mes "A mutação foi concluída!";
+		else
+			mes "Mutation completed!";
+	} else {
+		getitem 6415,1;
+
+		if (.@lang)
+			mes "A mutação falhou.";
+		else
+			mes "The mutation failed.";
+	}
+
+	close;
+}

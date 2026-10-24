@@ -1,0 +1,23 @@
+-	script	stop_die_kill	-1,{
+
+OnInit:
+	bindatcmd "die",  strnpcinfo(3) + "::OnDie";
+	bindatcmd "kill", strnpcinfo(3) + "::OnKill";
+	end;
+
+OnDie:
+	if (getmapflag(strcharinfo(3), mf_pvp) && getgmlevel() < 10) {
+		dispbottom "You can't use @die on PvP maps.";
+		end;
+	}
+	atcommand "@die";
+	end;
+
+OnKill:
+	if (getmapflag(strcharinfo(3), mf_pvp) && getgmlevel() < 10) {
+		dispbottom "You can't use @kill on PvP maps.";
+		end;
+	}
+	atcommand "@kill";
+	end;
+}

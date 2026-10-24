@@ -17,7 +17,7 @@
 
 // Black Marketeer (Buy Licenses - Non-Merchant Classes) :: qskill_buy_store
 //============================================================ 
-que_job01,68,84,1	script	Black Marketeer#Buying	881,{
+que_qsch05,143,147,5	script	Black Marketeer#Buying	881,{
 	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2400) {
 		mes "[Mr. Jass]";
 		mes "You're too greedy, even compared to someone like me!";

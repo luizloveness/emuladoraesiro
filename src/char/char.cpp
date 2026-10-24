@@ -344,20 +344,21 @@ int32 char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p){
 		(p->mother != cp->mother) || (p->child != cp->child) ||
  		(p->karma != cp->karma) || (p->manner != cp->manner) ||
 		(p->fame != cp->fame) || (p->inventory_slots != cp->inventory_slots) ||
-		(p->body_direction != cp->body_direction) || (p->disable_call != cp->disable_call) || (p->disable_partyinvite != cp->disable_partyinvite)
+		(p->body_direction != cp->body_direction) || (p->disable_call != cp->disable_call) || (p->disable_partyinvite != cp->disable_partyinvite) ||
+		(p->disable_showcostumes != cp->disable_showcostumes)
 	)
 	{
 		if( SQL_ERROR == Sql_Query(sql_handle, "UPDATE `%s` SET `class`='%d',"
 			"`hair`='%d', `hair_color`='%d', `clothes_color`='%d', `body`='%d',"
 			"`partner_id`='%u', `father`='%u', `mother`='%u', `child`='%u',"
 			"`karma`='%d',`manner`='%d', `fame`='%d', `inventory_slots`='%hu',"
-			"`body_direction`='%d',`disable_call`='%d',`disable_partyinvite`='%d'"
+			"`body_direction`='%d',`disable_call`='%d',`disable_partyinvite`='%d',`disable_showcostumes`='%d'"
 			" WHERE  `account_id`='%d' AND `char_id` = '%d'",
 			schema_config.char_db, p->class_,
 			p->hair, p->hair_color, p->clothes_color, p->body,
 			p->partner_id, p->father, p->mother, p->child,
 			p->karma, p->manner, p->fame, p->inventory_slots,
-			p->body_direction, p->disable_call, p->disable_partyinvite,
+			p->body_direction, p->disable_call, p->disable_partyinvite, p->disable_showcostumes,
 			p->account_id, p->char_id) )
 		{
 			Sql_ShowDebug(sql_handle);
@@ -921,7 +922,7 @@ int32 char_mmo_chars_fromsql(struct char_session_data* sd, uint8* buf, uint8* co
 		"`robe`,`moves`,`unban_time`,`font`,`uniqueitem_counter`,`sex`,`hotkey_rowshift`,`title_id`,`show_equip`,"
 		"`hotkey_rowshift2`,"
 		"`max_ap`,`ap`,`trait_point`,`pow`,`sta`,`wis`,`spl`,`con`,`crt`,"
-		"`inventory_slots`,`body_direction`,`disable_call`,`disable_partyinvite`"
+		"`inventory_slots`,`body_direction`,`disable_call`,`disable_partyinvite`,`disable_showcostumes`"
 		" FROM `%s` WHERE `account_id`='%d' AND `char_num` < '%d'", schema_config.char_db, sd->account_id, MAX_CHARS)
 	||	SQL_ERROR == stmt.Execute()
 	||	SQL_ERROR == stmt.BindColumn( 0,  SQLDT_INT32,    &p.char_id, 0, nullptr, nullptr)
@@ -983,6 +984,7 @@ int32 char_mmo_chars_fromsql(struct char_session_data* sd, uint8* buf, uint8* co
 	||	SQL_ERROR == stmt.BindColumn( 56, SQLDT_UINT8,  &p.body_direction, 0, nullptr, nullptr)
 	||	SQL_ERROR == stmt.BindColumn( 57, SQLDT_UINT16, &p.disable_call, 0, nullptr, nullptr)
 	||	SQL_ERROR == stmt.BindColumn( 58, SQLDT_UINT8, &p.disable_partyinvite, 0, nullptr, nullptr)
+	||	SQL_ERROR == stmt.BindColumn( 59, SQLDT_UINT8, &p.disable_showcostumes, 0, nullptr, nullptr)	
 	)
 	{
 		SqlStmt_ShowDebug(stmt);
@@ -1038,7 +1040,7 @@ int32 char_mmo_char_fromsql(uint32 char_id, struct mmo_charstatus* p, bool load_
 		"`save_map`,`save_x`,`save_y`,`partner_id`,`father`,`mother`,`child`,`fame`,`rename`,`delete_date`,`robe`, `moves`,"
 		"`unban_time`,`font`,`uniqueitem_counter`,`sex`,`hotkey_rowshift`,`clan_id`,`title_id`,`show_equip`,`hotkey_rowshift2`,"
 		"`max_ap`,`ap`,`trait_point`,`pow`,`sta`,`wis`,`spl`,`con`,`crt`,"
-		"`inventory_slots`,`body_direction`,`disable_call`,`last_instanceid`,`disable_partyinvite`"
+		"`inventory_slots`,`body_direction`,`disable_call`,`last_instanceid`,`disable_partyinvite`,`disable_showcostumes`"
 		" FROM `%s` WHERE `char_id`=? LIMIT 1", schema_config.char_db)
 	||	SQL_ERROR == stmt.BindParam(0, SQLDT_INT32, &char_id, 0)
 	||	SQL_ERROR == stmt.Execute()
@@ -1119,6 +1121,7 @@ int32 char_mmo_char_fromsql(uint32 char_id, struct mmo_charstatus* p, bool load_
 	||	SQL_ERROR == stmt.BindColumn(74, SQLDT_UINT8,	&p->disable_call, 0, nullptr, nullptr)
 	||	SQL_ERROR == stmt.BindColumn(75, SQLDT_INT32,    &p->last_point_instanceid, 0, nullptr, nullptr)
 	||	SQL_ERROR == stmt.BindColumn(76, SQLDT_UINT8,	&p->disable_partyinvite, 0, nullptr, nullptr)
+	||	SQL_ERROR == stmt.BindColumn(77, SQLDT_UINT8,	&p->disable_showcostumes, 0, nullptr, nullptr)	
 	)
 	{
 		SqlStmt_ShowDebug(stmt);
@@ -1492,13 +1495,19 @@ int32 char_make_new_char( struct char_session_data* sd, char* name_, int32 str, 
 	}
 #endif
 
+#if PACKETVER >= 20231220
+	int32 body = start_job;
+#else
+	int32 body = 0;
+#endif
+
 	//Insert the new char entry to the database
 	if( SQL_ERROR == Sql_Query(sql_handle, "INSERT INTO `%s` (`account_id`, `char_num`, `name`, `class`, `zeny`, `status_point`, `str`, `agi`, `vit`, `int`, `dex`, `luk`, `max_hp`, `hp`,"
-		"`max_sp`, `sp`, `hair`, `hair_color`, `last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`, `sex`, `last_instanceid`) VALUES ("
-		"'%d', '%d', '%s', '%d', '%d',  '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%u', '%u', '%u', '%u', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%d', '%c', '0')",
+		"`max_sp`, `sp`, `hair`, `hair_color`, `last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`, `sex`, `last_instanceid`, `body`) VALUES ("
+ 		"'%d', '%d', '%s', '%d', '%d',  '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%u', '%u', '%u', '%u', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%d', '%c', '0', '%d')",
 		schema_config.char_db, sd->account_id , slot, esc_name, start_job, charserv_config.start_zeny, status_points, str, agi, vit, int_, dex, luk,
 		(40 * (100 + vit)/100) , (40 * (100 + vit)/100 ),  (11 * (100 + int_)/100), (11 * (100 + int_)/100), hair_style, hair_color,
-		tmp_start_point[start_point_idx].map, tmp_start_point[start_point_idx].x, tmp_start_point[start_point_idx].y, tmp_start_point[start_point_idx].map, tmp_start_point[start_point_idx].x, tmp_start_point[start_point_idx].y, sex ) )
+		tmp_start_point[start_point_idx].map, tmp_start_point[start_point_idx].x, tmp_start_point[start_point_idx].y, tmp_start_point[start_point_idx].map, tmp_start_point[start_point_idx].x, tmp_start_point[start_point_idx].y, sex, body ) )
 	{
 		Sql_ShowDebug(sql_handle);
 		return -2; //No, stop the procedure!
@@ -2318,7 +2327,7 @@ bool char_checkdb(void){
 		"`moves`,`unban_time`,`font`,`sex`,`hotkey_rowshift`,`clan_id`,`last_login`,`title_id`,`show_equip`,"
 		"`hotkey_rowshift2`,"
 		"`max_ap`,`ap`,`trait_point`,`pow`,`sta`,`wis`,`spl`,`con`,`crt`,"
-		"`inventory_slots`,`body_direction`,`disable_call`,`last_instanceid`,`disable_partyinvite`"
+		"`inventory_slots`,`body_direction`,`disable_call`,`last_instanceid`,`disable_partyinvite`,`disable_showcostumes`"
 		" FROM `%s` LIMIT 1;", schema_config.char_db) ){
 		Sql_ShowDebug(sql_handle);
 		return false;

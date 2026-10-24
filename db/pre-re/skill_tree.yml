@@ -1754,22 +1754,16 @@ Body:
         Requires:
           - Name: GS_GLITTERING
             Level: 4
-          - Name: GS_GATLINGFEVER
-            Level: 10
       - Name: GS_ADJUSTMENT
         MaxLevel: 1
         Requires:
           - Name: GS_GLITTERING
             Level: 4
-          - Name: GS_DISARM
-            Level: 5
       - Name: GS_INCREASING
         MaxLevel: 1
         Requires:
           - Name: GS_GLITTERING
             Level: 2
-          - Name: GS_SNAKEEYE
-            Level: 10
       - Name: GS_MAGICALBULLET
         MaxLevel: 1
         Requires:
@@ -2484,9 +2478,6 @@ Body:
             Level: 3
       - Name: ST_REJECTSWORD
         MaxLevel: 5
-        Requires:
-          - Name: RG_STRIPWEAPON
-            Level: 1
       - Name: ST_PRESERVE
         MaxLevel: 1
         Requires:

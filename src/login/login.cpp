@@ -138,7 +138,7 @@ struct auth_node* login_add_auth_node( struct login_session_data* sd, uint32 ip 
 
 	node->account_id = sd->account_id;
 	node->login_id1 = sd->login_id1;
-	node->login_id2 = sd->login_id2;
+	node->login_id2 = sd->login_id2;	
 	node->sex = sd->sex;
 	node->ip = ip;
 	node->clienttype = sd->clienttype;

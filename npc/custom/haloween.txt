@@ -1,0 +1,44 @@
+niflheim,201,186,3	script	Halloween Quest	650,{
+	cutin "gl_himel1",2;
+	mes "[Halloween Spirit]";
+	mes "Boo~! Do you want to exchange your Halloween Tickets for a reward?";
+	next;
+	switch(select("Costume Grim Reaper Protection:Halloween Box:Cancel")) {
+		case 1:
+			mes "[Halloween Spirit]";
+			mes "To craft ^FF5500Costume Grim Reaper Protection^000000, you will need:";
+			mes " - 1 Halloween Ticket";
+			mes " - 100 Needle Packet";
+			next;
+			if (countitem(7941) >= 1 && countitem(7213) >= 100) {
+				delitem 7941,1;
+				delitem 7213,100;
+				getitem 20798,1; // Costume Grim Reaper Protection
+				mes "Here is your protection! Happy Halloween!";
+			} else {
+				mes "You don’t have all the required items...";
+			}
+			break;
+
+		case 2:
+			mes "[Halloween Spirit]";
+			mes "For each ^FF55001 Halloween Ticket^000000, you can receive a ^8800FFHalloween Box^000000.";
+			next;
+			if (countitem(7941) >= 1) {
+				delitem 7941,1;
+				getitem 22669,1; // Halloween G Box
+				mes "Here is your Halloween Box! Good luck!";
+			} else {
+				mes "You don’t have a Halloween Ticket.";
+			}
+			break;
+
+		case 3:
+			mes "[Halloween Spirit]";
+			mes "Come back if you change your mind. Happy Halloween!";
+			break;
+	}
+	close2;
+	cutin "",255;
+	end;
+}

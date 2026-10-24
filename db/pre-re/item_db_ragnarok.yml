@@ -1,0 +1,1761 @@
+# This file is a part of rAthena.
+#   Copyright(C) 2021 rAthena Development Team
+#   https://rathena.org - https://github.com/rathena
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+###########################################################################
+# Item Database
+###########################################################################
+#
+# Item Settings
+#
+###########################################################################
+# - Id                      Item ID.
+#   AegisName               Server name to reference the item in scripts and lookups, should use no spaces.
+#   Name                    Name in English for displaying as output.
+#   Type                    Item type. (Default: Etc)
+#   SubType                 Weapon, Ammo or Card type. (Default: 0)
+#   Buy                     Buying price. When not specified, becomes double the sell price. (Default: 0)
+#   Sell                    Selling price. When not specified, becomes half the buy price. (Default: 0)
+#   Weight                  Item weight. Each 10 is 1 weight. (Default: 0)
+#   Attack                  Weapon's attack. (Default: 0)
+#   MagicAttack             Weapon's magic attack. (Default: 0)
+#   Defense                 Armor's defense. (Default: 0)
+#   Range                   Weapon's attack range. (Default: 0)
+#   Slots                   Available slots in item. (Default: 0)
+#   Jobs                    Jobs that can equip the item. (Map default is 'All: true')
+#   Classes                 Upper class types that can equip the item. (Map default is 'All: true')
+#   Gender                  Gender that can equip the item. (Default: Both)
+#   Locations               Equipment's placement. (Default: None)
+#   WeaponLevel             Weapon level. (Default: 1 for Weapons)
+#   ArmorLevel              Armor level. (Default: 1 for Armors)
+#   EquipLevelMin           Minimum required level to equip. (Default: 0)
+#   EquipLevelMax           Maximum level that can equip. (Default: 0)
+#   Refineable              If the item can be refined. (Default: false)
+#   Gradable                If the item can be graded. (Default: false)
+#   View                    View sprite of an item. (Default: 0)
+#   AliasName               Another item's AegisName that will be sent to the client instead of this item's AegisName. (Default: null)
+#   Flags:                  Item flags. (Default: null)
+#     BuyingStore           If the item is available for Buyingstores. (Default: false)
+#     DeadBranch            If the item is a Dead Branch. (Default: false)
+#     Container             If the item is part of a container. (Default: false)
+#     UniqueId              If the item is a unique stack. (Default: false)
+#     BindOnEquip           If the item is bound to the character upon equipping. (Default: false)
+#     DropAnnounce          If the item has a special announcement to self on drop. (Default: false)
+#     NoConsume             If the item is consumed on use. (Default: false)
+#     DropEffect            If the item has a special effect on the ground when dropped by a monster. (Default: None)
+#   Delay:                  Item use delay. (Default: null)
+#     Duration              Duration of delay in seconds.
+#     Status                Status Change used to track delay. (Default: None)
+#   Stack:                  Item stack amount. (Default: null)
+#     Amount                Maximum amount that can be stacked.
+#     Inventory             If the stack is applied to player's inventory. (Default: true)
+#     Cart                  If the stack is applied to the player's cart. (Default: false)
+#     Storage               If the stack is applied to the player's storage. (Default: false)
+#     GuildStorage          If the stack is applied to the player's guild storage. (Default: false)
+#   NoUse:                  Conditions when the item is unusable. (Default: null)
+#     Override              Group level to override these conditions. (Default: 100)
+#     Sitting               If the item can not be used while sitting. (Default: false)
+#   Trade:                  Trade restrictions. (Default: null)
+#     Override              Group level to override these conditions. (Default: 100)
+#     NoDrop                If the item can not be dropped. (Default: false)
+#     NoTrade               If the item can not be traded. (Default: false)
+#     TradePartner          If the item can not be traded to the player's partner. (Default: false)
+#     NoSell                If the item can not be sold. (Default: false)
+#     NoCart                If the item can not be put in a cart. (Default: false)
+#     NoStorage             If the item can not be put in a storage. (Default: false)
+#     NoGuildStorage        If the item can not be put in a guild storage. (Default: false)
+#     NoMail                If the item can not be put in a mail. (Default: false)
+#     NoAuction             If the item can not be put in an auction. (Default: false)
+#   Script                  Script to execute when the item is used/equipped. (Default: null)
+#   EquipScript             Script to execute when the item is equipped. (Default: null)
+#   UnEquipScript           Script to execute when the item is unequipped or when a rental item expires. (Default: null)
+###########################################################################
+
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  - Id: 35000
+    AegisName: Chii_Ears
+    Name: Chii Ears
+    Type: Armor
+    Weight: 60
+    Defense: 0
+    Slots: 0
+    Locations:
+      Head_Mid: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    Script: |
+      bonus bDex,1;
+      bonus bInt,2;
+    View: 3500
+  - Id: 35001
+    AegisName: Dowry
+    Name: Dowry
+    Type: Armor
+    Weight: 1
+    Defense: 0
+    Slots: 0
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    Refineable: false
+    Script: |
+      bonus bAgi,3;
+    View: 3501
+  - Id: 35002
+    AegisName: Kakashi_Head_Protector
+    Name: Kakashi Head
+    Type: Armor
+    Weight: 1
+    Defense: 0
+    Slots: 0
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    Refineable: false
+    Script: |
+      bonus bDex,3;
+      bonus bAgi,3;
+      bonus bLuk,3;
+    View: 3502
+  - Id: 35003
+    AegisName: Konoha_Head_Protector
+    Name: Konoha Head
+    Type: Armor
+    Weight: 1
+    Defense: 0
+    Slots: 0
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    Refineable: false
+    Script: |
+      bonus bDex,2;
+      bonus bAgi,3;
+      bonus bLuk,4;
+    View: 3503
+  - Id: 35004
+    AegisName: Valkyrie_Helm_c
+    Name: Valkyrie Helm
+    Type: Armor
+    Weight: 1
+    Defense: 0
+    Slots: 1
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    Refineable: false
+    Script: |
+      bonus bAllStats,1;
+    View: 3504
+  - Id: 35005
+    AegisName: Arch_Angel
+    Name: Arch Angel
+    Type: Armor
+    Weight: 30
+    Defense: 0
+    Slots: 0
+    Locations:
+      Head_Low: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    Script: |
+      bonus bDex,5;
+      bonus bInt,5;
+    View: 3505
+  - Id: 35006
+    AegisName: Arch_Demon
+    Name: Arch Demon
+    Type: Armor
+    Weight: 30
+    Defense: 0
+    Slots: 0
+    Locations:
+      Head_Low: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    Script: |
+      bonus bLuk,5;
+      bonus bAgi,5;
+    View: 3506
+  - Id: 35007
+    AegisName: Dark_Angel
+    Name: Dark Angel
+    Type: Armor
+    Weight: 30
+    Defense: 0
+    Slots: 0
+    Locations:
+      Head_Low: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    Script: |
+      bonus bStr,5;
+      bonus bVit,5;
+    View: 3507
+  - Id: 35011
+    AegisName: false_apprentice
+    Name: Novice Suit
+    Type: Armor
+    Buy: 43000
+    Weight: 500
+    Slots: 1
+    Defense: 2
+    Jobs:
+      All: true
+      Novice: false
+      SuperNovice: false
+    Locations:
+      Both_Accessory: true
+    ArmorLevel: 1
+    Refineable: true
+    Script: |
+      bonus bMdef,15;
+      changebase 4001;
+    UnEquipScript: |
+      changebase_original;
+    View: 3511
+  - Id: 35012
+    AegisName: Quincy_bow
+    Name: Rosary Quincy bow
+    Type: Weapon
+    SubType: Bow
+    Buy: 20
+    Weight: 100    
+    Attack: 200
+    Range: 8
+    Slots: 3    
+    Jobs:
+      Archer: true
+      Hunter: true
+      Rogue: true
+      Thief: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 3
+    EquipLevelMin: 50
+    Refineable: true
+    Script: |
+      if (getrefine() >= 7) {
+      bonus2 bSubRace,RC_DemiHuman,30;
+      bonus2 bSubRace,RC_Player_Human,30;
+      }
+      bonus bLuk,10;
+      bonus2 bAddEle,Ele_Ghost,15;    
+  - Id: 35013
+    AegisName: Buster_sword
+    Name: Buster Sword
+    Type: Weapon
+    SubType: 2hSword
+    Buy: 20
+    Weight: 2200
+    Attack: 350
+    Range: 2
+    Slots: 3
+    Jobs:
+      Crusader: true
+      Knight: true
+      Swordman: true
+    Classes:
+      Upper: true
+      All_Third: true
+      Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 4
+    EquipLevelMin: 80
+    Refineable: true
+    Script: |
+      if (getrefine() >= 7) {
+      bonus bAspdRate,20;
+      }
+      bonus3 bAutoSpell,"WZ_METEOR",3,30;
+      bonus3 bAutoSpell,"WZ_FROSTNOVA",5,50;
+      bonus3 bAutoSpell,"WZ_METEOR",5,30;
+      autobonus "{ bonus bIgnoreDefClass,Class_Normal; specialeffect2 EF_ENHANCE; }",50,5000;
+      bonus2 bAddRace,RC_DemiHuman,15;
+      bonus2 bAddRace,RC_Player_Human,15;
+      bonus bAtkEle,Ele_Dark;
+  - Id: 35014
+    AegisName: long_elven_ears
+    Name: Elf King Ears
+    Type: Armor
+    Weight: 80
+    Defense: 0
+    Slots: 0
+    Locations:
+      Head_Mid: true
+    ArmorLevel: 1
+    EquipLevelMin: 80
+    Script: |
+      bonus bDex,3;
+      skill "AL_HEAL",5;
+      if (getskilllv("AL_HEAL") >= 10) {
+      bonus2 bSkillAtk,"AL_HEAL",2; // aumenta em +2 níveis (10 -> 12)
+      }
+    View: 3514
+  - Id: 35016
+    AegisName: Tuxedo_Coletor
+    Name: Tuxedo
+    Type: Armor
+    Weight: 10
+    Defense: 13
+    Buy: 43000
+    Slots: 1
+    Jobs:
+      All: true
+      Novice: false
+      SuperNovice: false
+    Locations:
+      Armor: true
+    ArmorLevel: 1
+    Refineable: true
+    Script: |
+      bonus bUnbreakableArmor;
+      bonus bUnbreakableArmor;
+      bonus bMdef,40;
+      bonus2 bSubRace,RC_Player_Doram,2;
+      bonus2 bSubRace,RC_Player_Human,2;
+      .@r = getrefine();
+      if (.@r>5) {
+         bonus bFlee,5;
+         bonus bLongAtkDef,15;
+      }
+      if (.@r>8) {
+         bonus bMaxHP,1000;
+         bonus bMaxSP,650;
+      }
+      changebase 22;
+    UnEquipScript: |
+      changebase Class; 
+    View: 3516  
+  - Id: 35017
+    AegisName: summer
+    Name: summer
+    Type: Armor
+    Weight: 10
+    Defense: 10
+    Buy: 50000
+    Slots: 1
+    Jobs:
+      All: true
+      Novice: false
+      SuperNovice: false
+    Gender: Male      
+    Locations:
+      Armor: true
+    ArmorLevel: 1
+    Refineable: true
+    Script: |
+      bonus bMdef,10;
+      setlook LOOK_BASE, JOB_SUMMER;
+    UnEquipScript: |
+      setlook LOOK_BASE, Class;
+    View: 3517 
+  - Id: 35018
+    AegisName: alucard_sunglasses
+    Name: Alucard Sunglasses
+    Type: Armor
+    Weight: 10
+    Defense: 0
+    Slots: 1
+    Locations:
+      Head_Mid: true
+    ArmorLevel: 1
+    EquipLevelMin: 40
+    Script: |
+      bonus bDex,1;
+      bonus bAgi,2;
+    View: 3523
+  - Id: 35019
+    AegisName: Black_Flame
+    Name: Black Flame
+    Type: Armor
+    Locations:
+      Costume_Head_Low: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubRace,RC_DemiHuman,5;
+      bonus2 bSubRace,RC_Player_Human,5;  
+    View: 3524
+  - Id: 35020
+    AegisName: Blue_Flame
+    Name: Blue Flame
+    Type: Armor
+    Locations:
+      Costume_Head_Low: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubRace,RC_DemiHuman,5;
+      bonus2 bSubRace,RC_Player_Human,5;  
+    View: 3525   
+  - Id: 35021
+    AegisName: Red_Flame
+    Name: Red Flame
+    Type: Armor
+    Locations:
+      Costume_Head_Low: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubRace,RC_DemiHuman,5;
+      bonus2 bSubRace,RC_Player_Human,5;  
+    View: 3529    
+  - Id: 35022
+    AegisName: darkfairywings
+    Name: Dark Fairy wings
+    Type: Armor
+    Locations:
+      Costume_Head_Low: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubRace,RC_DemiHuman,5;
+      bonus2 bSubRace,RC_Player_Human,5;
+    View: 3531     
+  - Id: 35023
+    AegisName: djheadset
+    Name: DJ head set
+    Type: Armor
+    Weight: 35
+    Defense: 0
+    Slots: 1
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    Script: |
+      bonus2 bSkillAtk,"CG_ARROWVULCAN",20;
+    View: 3526  
+  - Id: 35024
+    AegisName: Saiyan_Tail
+    Name: Saiyan tail
+    Type: Armor
+    Locations:
+      Costume_Garment: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bIgnoreDefRaceRate,RC_DemiHuman,10;
+      bonus2 bIgnoreDefRaceRate,RC_Player_Human,10;
+    View: 1031   
+  - Id: 35027
+    AegisName: face_of_death
+    Name: Face Of Death
+    Type: Armor
+    Weight: 35
+    Defense: 0
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    Script: |
+      skill 375,1;
+    View: 3532
+  - Id: 35026
+    AegisName: hood_of_death
+    Name: Hood Of Death
+    Type: Armor
+    Weight: 35
+    Defense: 0
+    Locations:
+      Head_Mid: true
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    Script: |
+      bonus bCritical,10;
+      bonus bAgi,-5;  
+      bonus bInt,-5;       
+    View: 3528 
+  - Id: 35030
+    AegisName: Spell_Ring
+    Name: Spell Ring
+    Type: Armor
+    Weight: 35
+    Defense: 1
+    Locations:
+      Head_Low: true
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    Script: |
+      bonus bDex,6;
+      bonus bInt,6;      
+      if (BaseClass == Job_Mage){
+         bonus bInt,5;
+         bonus bMatkRate,5;
+      }
+      else if  (BaseClass == Job_Swordman) {
+         bonus bBaseAtk,30;  
+         bonus bHit,20;   
+      }
+      else if (BaseClass == Job_Merchant) {
+         bonus bStr,5; 
+         bonus bBaseAtk,20;  
+      }         
+      else if (BaseClass == Job_Thief) {
+         bonus bAspdRate,10; 
+      }   
+      else if (BaseClass == Job_Archer) {
+         bonus bDex,5;   
+      }   
+      else if (BaseClass == Job_Acolyte) {
+         bonus bInt,5; 
+         bonus bMaxSP,200;         
+      }   
+    View: 3535      
+  - Id: 35037
+    AegisName: C2_Valkyrie_Helm
+    Name: Costume Valkyrie Helm
+    Type: Armor
+    Weight: 10
+    Locations:
+      Costume_Head_Top: true
+    ArmorLevel: 1
+    View: 3537
+  - Id: 3000
+    AegisName: FACEBOOK_STREAMER_CAP
+    Name: FACEBOOK STREAMER CAP
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Top: true
+    ArmorLevel: 1      
+    View: 3000   
+  - Id: 3001
+    AegisName: FACEBOOK_STREAMER_GEAR
+    Name: FACEBOOK STREAMER GEAR
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Mid: true
+    ArmorLevel: 1        
+    View: 3001 
+  - Id: 3002
+    AegisName: TIKTOK_STREAMER_CAP
+    Name: TIKTOK STREAMER CAP
+    Type: Armor
+    Weight: 1    
+    Locations:
+      Costume_Head_Top: true
+    ArmorLevel: 1       
+    View: 3002      
+  - Id: 3003
+    AegisName: TIKTOK_STREAMER_GEAR
+    Name: TIKTOK STREAMER GEAR
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Mid: true
+    ArmorLevel: 1
+    View: 3003
+  - Id: 3004
+    AegisName: TWITCH_STREAMER_GEAR
+    Name: TWITCH STREAMER GEAR
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Mid: true
+    ArmorLevel: 1
+    View: 3004
+  - Id: 3005
+    AegisName: YOUTUBE_STREAMER_CAP
+    Name: YOUTUBE STREAMER CAP
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Top: true
+    ArmorLevel: 1
+    View: 3005
+  - Id: 3006
+    AegisName: YOUTUBE_STREAMER_GEAR
+    Name: YOUTUBE STREAMER GEAR
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Mid: true
+    ArmorLevel: 1
+    View: 3006
+  - Id: 3007
+    AegisName: TWITCH_STREAMER_CAP
+    Name: TWITCH STREAMER CAP
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Top: true
+    ArmorLevel: 1
+    View: 3007
+  - Id: 3008
+    AegisName: LUFFYGEAR5_CLOUDS
+    Name: Luffy Gear 5 aura
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Mid: true
+    ArmorLevel: 1
+    View: 3008
+  - Id: 3009
+    AegisName: LUFFYGEAR5_HAT_GARMENT
+    Name: Luffy Gear 5 Garment
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Garment: true
+    ArmorLevel: 1
+    View: 1027
+  - Id: 3010
+    AegisName: LUFFYGEAR5_HEAD
+    Name: Luffy Gear 5 head
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Top: true
+    ArmorLevel: 1
+    View: 3009
+  - Id: 3011
+    AegisName: LUFFYGEAR5_LIGHTNINGAURA
+    Name: Luffy Gear 5 Raios
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Low: true
+    ArmorLevel: 1
+    View: 3011
+  - Id: 3012
+    AegisName: luffygear5_clouds_white
+    Name: Luffy white aura
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Mid: true
+    ArmorLevel: 1
+    View: 3013
+  - Id: 3013
+    AegisName: luffygear5_head_white
+    Name: Luffy head white
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Top: true
+    ArmorLevel: 1
+    View: 3012
+  - Id: 3014
+    AegisName: SILVER_MONARCH_HOOD
+    Name: SILVER MONARCH HOOD
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Top: true
+    ArmorLevel: 1
+    View: 3015
+  - Id: 3015
+    AegisName: SILVER_MONARCH_EYES
+    Name: SILVER MONARCH EYES
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Mid: true
+    ArmorLevel: 1
+    View: 3014
+  - Id: 3016
+    AegisName: SILVER_MONARCH_SHOULDERAMOR
+    Name: SILVER MONARCH SHOULDERAMOR
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Head_Low: true
+    ArmorLevel: 1
+    View: 3016
+  - Id: 3017
+    AegisName: SILVER_MONARCH_DUALSWORD
+    Name: SILVER MONARCH DUALSWORD
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_Garment: true
+    ArmorLevel: 1
+    Script: |
+      hateffect HAT_EF_SILVER_SHADOW_MONARCH_AURA, true;  
+    View: 161
+  - Id: 3018
+    AegisName: King_Horn_of_Baphomet
+    Name: King Horn of Baphomet
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_top: true
+    ArmorLevel: 1
+    View: 3017
+  - Id: 3019
+    AegisName: Articuno
+    Name: articuno
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |     
+      bonus2 bMagicAtkEle,Ele_Water,10;
+      bonus2 bSubEle,Ele_Fire,-5;      
+      bonus2 bMagicAddRace,RC_DemiHuman,2;
+      bonus2 bMagicAddRace,RC_Player_Human,2;    
+    View: 3018
+  - Id: 3020
+    AegisName: Baby_Chikorita
+    Name: Baby Chikorita
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |    
+      bonus bAtkEle,Ele_Wind;
+      bonus bAspd,1;    
+    View: 3019  
+  - Id: 3021
+    AegisName: Baby_Cyndaquil
+    Name: Baby Cyndaquil
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |    
+      bonus bAtkEle,Ele_Fire;
+      bonus bBaseAtk,10;     
+    View: 3020
+  - Id: 3022
+    AegisName: Baby_Eevee
+    Name: Baby Eevee
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |        
+      bonus2 bSubEle,Ele_Wind,1;    
+      bonus2 bSubEle,Ele_Water,1; 
+      bonus2 bSubEle,Ele_Fire,1; 
+      bonus2 bSubEle,Ele_Earth,1; 
+      bonus2 bSubEle,Ele_Poison,1;       
+    View: 3021
+  - Id: 3023
+    AegisName: Baby_Pikachu
+    Name: Baby Pikachu
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |    
+      bonus bAtkEle,Ele_Wind;    
+      bonus2 bSubEle,Ele_Earth,-5;      
+    View: 3022
+  - Id: 3024
+    AegisName: Baby_Totodile
+    Name: Baby Totodile
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus bAtkEle,Ele_Water;    
+      bonus2 bSubEle,Ele_Water,5;    
+    View: 3023
+  - Id: 3025
+    AegisName: Blastoise
+    Name: Blastoise
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |     
+      bonus2 bMagicAtkEle,Ele_Water,7;
+      bonus2 bSubEle,Ele_Fire,-7;      
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;    
+    View: 3024
+  - Id: 3026
+    AegisName: Charizard
+    Name: Charizard
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |    
+      bonus2 bMagicAtkEle,Ele_Fire,5;
+      bonus2 bSubEle,Ele_Earth,-5;      
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;     
+    View: 3025
+  - Id: 3027
+    AegisName: Charmeleon
+    Name: Charmeleon
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |    
+      bonus2 bSubEle,Ele_Fire,5;
+      bonus2 bSubEle,Ele_Earth,-5;     
+    View: 3026
+  - Id: 3028
+    AegisName: Ivyssaur
+    Name: Ivyssaur
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |    
+      bonus bAtkEle,Ele_Poison;
+      bonus4 bAutoSpellWhenHit,"AL_PNEUMA",1,30,0;    
+    View: 3027
+  - Id: 3029
+    AegisName: P_Butterfree
+    Name: Butterfree
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |    
+      bonus bAtkEle,Ele_Poison;
+      bonus bBaseAtk,10;     
+    View: 3028
+  - Id: 3030
+    AegisName: P_Clefable
+    Name: Clefable
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bAddEle,Ele_Ghost,3;  
+    View: 3029
+  - Id: 3031
+    AegisName: P_Flareon
+    Name: Flareon
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus bAtkEle,Ele_Fire;
+      bonus2 bSubEle,Ele_Water,-5;    
+    View: 3030
+  - Id: 3032
+    AegisName: P_Jolteon
+    Name: Jolteon
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus bAtkEle,Ele_Wind;
+      bonus2 bSubEle,Ele_Earth,-5;  
+    View: 3031
+  - Id: 3033
+    AegisName: P_LightFury
+    Name: LightFury
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus bSpeedRate,10;
+    View: 3032
+  - Id: 3034
+    AegisName: P_Metapod
+    Name: Metapod
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus bAtkEle,Ele_Earth;
+      bonus2 bMagicAtkEle,Ele_Earth,2;
+      bonus2 bSubEle,Ele_Fire,-5;      
+    View: 3033
+  - Id: 3035
+    AegisName: P_MewPirate
+    Name: MewPirate
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus bNoGemStone;
+      bonus2 bAddRace,RC_DemiHuman,5;
+      bonus2 bAddRace,RC_Player_Human,5;      
+    View: 3034
+  - Id: 3036
+    AegisName: P_PikachuDemon
+    Name: PikachuDemon
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus bAtkEle,Ele_Dark;
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;    
+      bonus2 bSubEle,Ele_Holy,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;   
+    View: 3035
+  - Id: 3037
+    AegisName: P_Slowpoke
+    Name: Slowpoke
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubEle,Ele_Water,1;    
+    View: 3036
+  - Id: 3038
+    AegisName: P_Togepi
+    Name: Togepi
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubEle,Ele_Water,1;    
+    View: 3037
+  - Id: 3039
+    AegisName: P_TotoLoki
+    Name: TotoLoki
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubEle,Ele_Water,5;     
+    View: 3038
+  - Id: 3040
+    AegisName: P_Vaporeon
+    Name: Vaporeon
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubEle,Ele_Water,10;    
+    View: 3039
+  - Id: 3041
+    AegisName: P_Vulpix
+    Name: Vulpix
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus bAtkEle,Ele_Fire;
+      bonus2 bSubEle,Ele_Earth,-5;     
+    View: 3040
+  - Id: 3042
+    AegisName: zapdos
+    Name: Zapdos
+    Type: Armor
+    Weight: 1
+    Locations:
+      Costume_head_Top: true
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;      
+    View: 3041
+  - Id: 3043
+    AegisName: Rune_Aura_Rainbow
+    Name: Rune Aura Rainbow
+    Type: Armor
+    Weight: 1
+    Locations:
+      Head_Low: true
+    ArmorLevel: 1
+    Script: |    
+      bonus bAgi,6;
+      bonus bLuk,6;      
+      if (BaseClass == Job_Mage){
+         bonus bSpeedRate,25;
+         bonus bInt,5;
+      }
+      else if  (BaseClass == Job_Swordman) {
+         bonus2 bCriticalAddRace,RC_DemiHuman,10;
+         bonus2 bCriticalAddRace,RC_Player_Human,10;
+         bonus2 bSubSize,Size_Medium,10;  
+      }
+      else if (BaseClass == Job_Merchant) {
+         bonus bLuk,10;
+         bonus2 bSkillAtk,"MC_MAMMONITE",30;
+      }         
+      else if (BaseClass == Job_Thief) {
+         bonus bLuk,10; 
+         bonus2 bComaRace,RC_DemiHuman,30;
+         bonus2 bComaRace,RC_Player_Human,30;
+      }   
+      else if (BaseClass == Job_Archer) {
+         bonus bLuk,10;
+         bonus2 bSkillAtk,"SN_SHARPSHOOTING",50;
+      }   
+      else if (BaseClass == Job_Acolyte) {
+         bonus bLuk,10; 
+         bonus bAgi,10;  
+         bonus2 bSkillAtk,"MO_FINGEROFFENSIVE",50;    
+      }    
+    View: 3042
+  - Id: 3044
+    AegisName: Rune_Aura_Black
+    Name: Rune Aura Black
+    Type: Armor
+    Weight: 1
+    Locations:
+      Head_Low: true
+    ArmorLevel: 1
+    Script: |
+      bonus bStr,6;
+      bonus bVit,6;      
+      if (BaseClass == Job_Mage){
+         bonus bDex,5;
+         bonus bMaxHP,1000;
+      }
+      else if  (BaseClass == Job_Swordman) {
+         bonus bShortWeaponDamageReturn,10;  
+         bonus2 bSubSize,Size_Medium,10;  
+      }
+      else if (BaseClass == Job_Merchant) {
+         bonus bHit,10;
+         bonus2 bSkillAtk,"WS_CARTTERMINATION",10;
+      }         
+      else if (BaseClass == Job_Thief) {
+         bonus bStr,6; 
+         bonus2 bSubSize,Size_Medium,10; 
+      }   
+      else if (BaseClass == Job_Archer) {
+         bonus bDex,6;
+         bonus2 bAddSize,Size_Small,10;
+         bonus2 bAddSize,Size_Medium,10;     
+      }   
+      else if (BaseClass == Job_Acolyte) {
+         bonus bStr,6; 
+         bonus bMaxHP,1000; 
+         bonus2 bSkillAtk,"AL_HOLYLIGHT",100;    
+      }   
+    View: 3043
+  - Id: 3045
+    AegisName: Rune_Aura_Red
+    Name: Rune Aura Red
+    Type: Armor
+    Weight: 1
+    Locations:
+      Head_Low: true
+    ArmorLevel: 1
+    View: 3044
+  - Id: 3047
+    AegisName: C_Arch_Angel
+    Name: Arch Angel
+    Type: Armor
+    Weight: 1
+    Defense: 0
+    Slots: 0
+    Locations:
+      Costume_Garment: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    View: 1028
+  - Id: 3048
+    AegisName: C_Dark_Angel
+    Name: C Arch Angel
+    Type: Armor
+    Weight: 1
+    Defense: 0
+    Slots: 0
+    Locations:
+      Costume_Garment: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    View: 1029
+  - Id: 3049
+    AegisName: C_Arch_Demon
+    Name: C Arch Demon
+    Type: Armor
+    Weight: 1
+    Defense: 0
+    Slots: 0
+    Locations:
+      Costume_Garment: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    View: 1030
+  - Id: 3050
+    AegisName: akatsuki
+    Name: Akatsuki Suite
+    Type: Armor
+    Weight: 15
+    Defense: 0
+    Slots: 0
+    Locations:
+      Costume_head_Low: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    View: 3078
+  - Id: 3051
+    AegisName: admiral_dark_white_coat
+    Name: Admiral Coat
+    Type: Armor
+    Weight: 15
+    Defense: 0
+    Slots: 0
+    Locations:
+      Costume_Garment: true
+    ArmorLevel: 1
+    EquipLevelMin: 25
+    View: 1033 
+  - Id: 3052
+    AegisName: Bishop_Hat
+    Name: Bishop Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true
+    Jobs:
+      Priest: true      
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 50
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3046       
+  - Id: 3053
+    AegisName: Black_Helm_of_Darkness
+    Name: Black Helm D
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 80
+    ArmorLevel: 1
+    Script: |
+      bonus bStr,5;
+      bonus2 bAddRace,RC_DemiHuman,10;
+      bonus2 bAddRace,RC_Player_Human,10;
+    View: 3047
+  - Id: 3054
+    AegisName: Black_Holy_Marcher_Hat
+    Name: Black Holly Marcher
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3048
+  - Id: 3084
+    AegisName: Blue_Noble
+    Name: Blue Noble Hat
+    Type: Armor
+    Weight: 15
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3079
+  - Id: 3056
+    AegisName: byakugan
+    Name: Byakugan
+    Type: Armor
+    Weight: 10
+    Defense: 0 
+    Slots: 1
+    Locations:
+      Head_Mid: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus bInt,3;
+      bonus2 bResEff,Eff_Blind,1000;
+    View: 3050
+  - Id: 3057
+    AegisName: catoninetails_hat
+    Name: catoninetails hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAddRace,RC_DemiHuman,10;
+      bonus2 bMagicAddRace,RC_Player_Human,10;      
+      bonus2 bCastrate,"PF_DOUBLECASTING",-50;
+      bonus2 bCastrate,"HW_MAGICPOWER",-50;
+    View: 3051
+  - Id: 3058
+    AegisName: Checkered_Cap
+    Name: Checkered Cap
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3052
+  - Id: 3059
+    AegisName: Dragon_Helm
+    Name: Dragon Helm
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bAddClass,Class_All,10;
+      bonus bStr,5;       
+      bonus3 bAutoSpell,"WZ_METEOR",3,30;
+    View: 3053
+  - Id: 3060
+    AegisName: dullahanhat
+    Name: Dullahan hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3054
+  - Id: 3061
+    AegisName: Enchanted_Magical_Hat
+    Name: Enchanted Magical Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3055
+  - Id: 3062
+    AegisName: Golden_Dragon_Helm
+    Name: Golden Dragon Helm
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bSubRace,RC_DemiHuman,10;
+      bonus2 bSubRace,RC_Player_Human,10;       
+      bonus bStr,5;
+      bonus bVit,5;
+    View: 3056
+  - Id: 3063
+    AegisName: Green_Noble_Hat
+    Name: Green Noble Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3057
+  - Id: 3064
+    AegisName: hod
+    Name: Hod Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus bInt,5;
+      bonus2 bAddRace,RC_DemiHuman,10;
+      bonus2 bAddRace,RC_Player_Human,10;
+    View: 3058
+  - Id: 3065
+    AegisName: Hokage_Hat
+    Name: Hokage Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus bAllStats,3;
+      bonus2 bSubEle,Ele_Fire,10;       
+      bonus2 bAddSize,Size_All,5;
+    View: 3059
+  - Id: 3066
+    AegisName: Holy_Marcher_Hat
+    Name: Holy Marcher Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3060
+  - Id: 3067
+    AegisName: Kankurohood
+    Name: Kankuro hood
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3061  
+  - Id: 3068
+    AegisName: Kankuromask
+    Name: Kankuro Mask
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Mid: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3062
+  - Id: 3069
+    AegisName: Kazekage_Hat
+    Name: Kazekage Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3063
+  - Id: 3070
+    AegisName: mangekyou
+    Name: mangekyou Sharingan
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Mid: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3064
+  - Id: 3071
+    AegisName: Mizukage_Hat
+    Name: Mizukage Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3065
+  - Id: 3072
+    AegisName: musketeerhat
+    Name: Musketeer hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3066
+  - Id: 3073
+    AegisName: Nekoring_Hat
+    Name: Nekoring Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3067
+  - Id: 3074
+    AegisName: Orcish_Helm
+    Name: Orcish Helm
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3068
+  - Id: 3075
+    AegisName: Pimp_Hat
+    Name: Pimp Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3069
+  - Id: 3076
+    AegisName: Raikage_Hat
+    Name: Raikage Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3070
+  - Id: 3077
+    AegisName: Red_Helm_of_Darkness
+    Name: Red Helm of Darkness
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus bDex,5;
+      bonus2 bAddRace,RC_DemiHuman,10;
+      bonus2 bAddRace,RC_Player_Human,10;
+    View: 3071
+  - Id: 3078
+    AegisName: Red_Note_Headphones
+    Name: Red Note Headphones
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3072
+  - Id: 3079
+    AegisName: rinnegan
+    Name: Rinnegan
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Mid: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3073
+  - Id: 3080
+    AegisName: sharingan
+    Name: sharingan
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Mid: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus bAllStats,1;
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3074
+  - Id: 3081
+    AegisName: sharingan2
+    Name: Sharingan dois
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Mid: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3075  
+  - Id: 3082
+    AegisName: sharingan3
+    Name: Sharingan tres
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Mid: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3076 
+  - Id: 3083
+    AegisName: Tsuchikage_Hat
+    Name: Tsuchikage Hat
+    Type: Armor
+    Weight: 1
+    Defense: 5   
+    Slots: 1
+    Locations:
+      Head_Top: true     
+    ArmorLevel: 1
+    Refineable: true
+    EquipLevelMin: 40
+    ArmorLevel: 1
+    Script: |
+      bonus2 bMagicAtkEle,Ele_Wind,5;
+      bonus2 bSubEle,Ele_Water,-5;       
+      bonus2 bMagicAddRace,RC_DemiHuman,1;
+      bonus2 bMagicAddRace,RC_Player_Human,1;
+    View: 3077

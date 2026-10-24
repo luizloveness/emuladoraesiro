@@ -1,0 +1,21 @@
+prontera,155,133,4	script	Skill Master	76,{
+	mes "[Skill Master]";
+	mes "Deseja aprender todas as skills?";
+	next;
+
+	if (select("Sim:Não") == 2)
+		close;
+
+	atcommand "@allskill";
+
+	mes "Pronto!";
+	close;
+
+
+OnInit:
+	delwaitingroom;
+	waitingroom "Bug skill Click Here", 0;
+	end;
+
+
+}

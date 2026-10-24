@@ -1,0 +1,48 @@
+//===== PvP Ladder System =====
+//== Por ChatGPT, adaptado para rAthena
+//=============================
+
+-	script	PvP Ladder Control	-1,{
+	
+OnPCKillEvent:
+
+	//  Ignora Battleground
+	if (getmapflag(strcharinfo(3), mf_battleground)) end;
+
+	// ❌Evita kill por si mesmo
+	if (killedrid == getcharid(3)) end;
+	
+	// Nome dos jogadores
+	.@killer$ = strcharinfo(0);
+	.@victim$ = rid2name(killedrid);
+
+	// Kills
+	query_sql("INSERT INTO pvpm_data (`name`, `kills`, `dies`) VALUES ('"+escape_sql(.@killer$)+"',1,0) ON DUPLICATE KEY UPDATE kills = kills + 1");
+
+	// Deaths
+	query_sql("INSERT INTO pvpm_data (`name`, `kills`, `dies`) VALUES ('"+escape_sql(.@victim$)+"',0,1) ON DUPLICATE KEY UPDATE dies = dies + 1");
+
+end;
+}
+
+//===========================
+//== NPC para Ranking PvP ==
+prontera,173,192,5	script	[PvP Ranking]	857,{
+	mes "[PvP Ladder]";
+	mes "Check out the best killers!";
+	mes "=======================";
+	
+	set .@n$, "";
+	query_sql("SELECT name, kills, dies FROM pvpm_data ORDER BY kills DESC, dies ASC LIMIT 10", @name$, @kills, @dies);
+	
+	if (@name$[0] == "") {
+		mes "No one registered yet.";
+		close;
+	}
+
+	for (set .@i, 0; .@i < getarraysize(@name$); set .@i, .@i + 1) {
+		mes (.@i+1)+". ^0000FF"+@name$[.@i]+"^000000 - "+@kills[.@i]+" K / "+@dies[.@i]+" D";
+	}
+	
+	close;
+}

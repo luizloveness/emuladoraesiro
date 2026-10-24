@@ -581,7 +581,6 @@ pay_fild08,218,283,2	script	Mysterious Man#magum	89,{
 					mes "evil power. As for the Emperium, consider it my test to see if you";
 					mes "are truly capable of wielding";
 					mes "the accursed Executioner...";
-					set dmdswrd_Q2,dmdswrd_Q2 | 32;
 					set event_magum,6;
 					close;
 				}
